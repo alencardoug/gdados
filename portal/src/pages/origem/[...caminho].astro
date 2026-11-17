@@ -3,6 +3,7 @@
 // Markdown é exibido saneado; os demais formatos, como texto. Cada pasta tem um índice.
 import Base from "../../layouts/Base.astro";
 import Md from "../../components/Md.astro";
+import DiagramasDaOrigem from "../../components/DiagramasDaOrigem.astro";
 import {
   caminhosCopiados, pastasCopiadas, procedencia, rota, rotaDoArquivo, registroDoArquivo, lerArquivo, mdDoArquivo, commitCurto,
 } from "../../lib/portal.mjs";
@@ -34,6 +35,7 @@ if (pasta) {
   conteudo = lerArquivo(caminho);
 }
 const registro = pasta ? null : registroDoArquivo(caminho);
+const temDiagrama = html?.includes('class="language-mermaid"') ?? false;
 ---
 <Base titulo={caminho} secao="estrutura">
 <p class="migalhas">
@@ -50,7 +52,7 @@ const registro = pasta ? null : registroDoArquivo(caminho);
 {pasta ? (
   <ul>{filhos.map((f) => <li><a href={rotaDoArquivo(`${caminho}/${f}`)}><code>{f}</code></a></li>)}</ul>
 ) : html ? (
-  <article class="documento"><Md html={html} /></article>
+  <article class="documento"><Md html={html} />{temDiagrama && <DiagramasDaOrigem />}</article>
 ) : (
   <pre><code>{conteudo}</code></pre>
 )}
