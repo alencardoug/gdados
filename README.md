@@ -10,7 +10,8 @@ por que existe e como aparece na governança já implementada.
 e reconferida em 13 e 14/11/2026. E0 fechada pelo Owner em 14/11/2026; E1 e E2 autorizadas. Em
 17/11/2026 o pacote de metadados da origem foi fixado na `v2.1.0` e validado contra o esquema do
 mesmo commit. No mesmo dia começou a aplicação, em `portal/` (Astro): as três páginas leem o
-pacote validado no build; o conteúdo editorial da página de conceitos ainda não foi escrito.
+pacote validado no build. A camada editorial da página de conceitos tem formato e inventário;
+as explicações estão em redação.
 
 ## Escopo
 
@@ -103,9 +104,18 @@ O histórico desta conversa não é necessário para compreender o escopo docume
   ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
   não espera por ela; quando for anunciada, refixar e revalidar pela D03.
 
-**Próximo passo:** a parte editorial da E1, que ainda falta: o formato das entradas da página de
-conceitos, o inventário de termos e lacunas e a redação das explicações. Depois, a E2 completa e a
-E3 ([plano](PLANO.md), §5, passos 3 e 4).
+- a camada editorial está em `portal/src/conteudo/` (formato na
+  [página de conceitos §9](docs/pagina_de_conceitos.md#9-formato-da-camada-editorial-17112026)):
+  inventário de termos com as definições da origem extraídas por commit, as primeiras explicações,
+  as limitações conhecidas e a ida e volta entre objeto e explicação. Três divergências do Glossário
+  Técnico da origem foram encaminhadas no [alinhamento, §7](docs/alinhamento_entre_projetos.md#7-para-a-origem);
+
+- também em 17/11/2026: os percursos de leitura, mais explicações (24 dos 62 termos do inventário),
+  as travessias ligadas ao grafo de linhagem e os diagramas Mermaid dos documentos da origem
+  desenhados no portal ([D02](docs/decisoes.md#d02--diagramas-e-grafos));
+
+**Próximo passo:** redigir as explicações pendentes (plano, §5, passo 2) e, depois, a E3
+([plano](PLANO.md), §5, passo 4).
 
 Os caches e temporários de npm, `uv` e Playwright ficam em `.cache/` (variáveis em
 `provas/README.md`). Na origem, só leitura de arquivos e `git show`/`git log`.

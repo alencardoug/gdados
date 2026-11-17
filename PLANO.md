@@ -108,21 +108,23 @@ tag nova trará, como as chaves de `analytics` (F34), aparecem como "não declar
 1. **Provas da D01 e da D02.** **Feitas** em 17/11/2026; o Owner adotou Astro e Mermaid com
    Cytoscape.js no mesmo dia ([D01](docs/decisoes.md#d01--estrutura-da-aplicação),
    [D02](docs/decisoes.md#d02--diagramas-e-grafos)).
-2. **E1 sem dependência de stack.** **Feitos** em 17/11/2026: comando de cópia (D03) e
-   [mapeamento](docs/mapeamento_do_pacote.md). **A fazer:** inventário de termos e lacunas e formato
-   da camada editorial ([página de conceitos](docs/pagina_de_conceitos.md)).
+2. **E1 sem dependência de stack.** **Feitos** em 17/11/2026: comando de cópia (D03),
+   [mapeamento](docs/mapeamento_do_pacote.md), formato da camada editorial, inventário de termos e
+   limitações ([página de conceitos §9](docs/pagina_de_conceitos.md#9-formato-da-camada-editorial-17112026))
+   os percursos da §5 e as explicações dos termos com ligação contextual nas páginas (24 dos 62 do
+   inventário em 17/11/2026). **A fazer:** as explicações dos termos ainda pendentes; a situação de
+   cada termo está em `dados/editorial.json` da build.
 3. **Início da E2 com a E1 na stack.** **Feito** em 17/11/2026, em `portal/` (Astro 7, com
    `package.json` próprio, lendo `origem/` no build): conferência dos SHA-256 da cópia e validação
    do pacote contra o esquema do mesmo commit, recusando `format` diferente de 1 (D03); tratamento
    de ausência e estado (D03); Markdown saneado para os textos do pacote e de `origem/arquivos/`;
    as três condições da D02, com o layout em camadas por caminho mais longo, sem extensão
    ([D02](docs/decisoes.md#d02--diagramas-e-grafos)). As dependências estão na
-   [D01](docs/decisoes.md#d01--estrutura-da-aplicação). A parte editorial da E1 continua no passo 2;
-   até lá, a página de conceitos aponta para as definições da origem e marca como pendentes as
-   explicações do portal.
-4. **E2 e E3** sobre o pacote fixado, com todas as verificações da E3 medindo fidelidade a ele. A
-   E3 inclui um teste que preserva `_` nos identificadores (achado da prova da D02), já em
-   `portal/test/markdown.test.mjs`.
+   [D01](docs/decisoes.md#d01--estrutura-da-aplicação). A parte editorial da E1 está no passo 2.
+4. **E2 e E3** sobre o pacote fixado. Na E2, feitos em 17/11/2026: as travessias ligadas ao grafo de
+   linhagem e os diagramas Mermaid dos documentos da origem ([D02](docs/decisoes.md#d02--diagramas-e-grafos)).
+   Todas as verificações da E3 medem fidelidade ao pacote fixado. A E3 inclui um teste que preserva
+   `_` nos identificadores (achado da prova da D02), já em `portal/test/markdown.test.mjs`.
 5. **Na tag nova da origem**, quando anunciada: refixar e revalidar pela D03, sem esperar por ela
    nas etapas anteriores. As mudanças previstas são aditivas no formato 1.
 6. **E4**, avaliação pelo Owner; **E5** só depois dela, com a D04 decidida à luz da Q14.

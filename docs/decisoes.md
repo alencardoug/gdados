@@ -175,6 +175,18 @@ na camada da sua relação. Nenhum nome de camada é fixado no código, e a orde
 saem do próprio grafo. Conferido no navegador em 17/11/2026: recorte inicial, expansão, recorte por
 coluna, aviso acima de 300 nós e visão geral. A medição formal fica para a E3, item 9.
 
+**Travessias no grafo (17/11/2026, PLANO §2.2):** as travessias de `crossings` entram na linhagem
+por relação e na visão geral como nós próprios (losangos), ligados por linha tracejada às *sources*.
+O destino declarado como relação liga só a ela; o destino declarado como camada liga às *sources*
+dessa camada que não têm travessia própria, e a ligação é rotulada como "travessia declarada para a
+camada". O grafo por coluna não as mostra, porque o pacote não declara travessia por coluna. A regra
+está em `portal/src/lib/travessias.mjs`, com teste contra o pacote fixado.
+
+**Diagramas dos documentos da origem (17/11/2026):** os blocos Mermaid que a origem já publica nos
+documentos lidos por commit, como os diagramas entidade-relacionamento do modelo transacional
+(Modelo de Dados §2.11), são desenhados no navegador com `securityLevel: "strict"`. A definição
+continua visível como texto, e o Mermaid só é carregado nas páginas que têm esses blocos (condição 3).
+
 **Pendente:** nada nesta decisão. `cytoscape-dagre` e `cytoscape-elk` não foram adotados; se a E3 ou
 a E4 mostrarem que o layout próprio não basta, a extensão é avaliada e registrada aqui antes de entrar.
 
@@ -215,7 +227,8 @@ limpo sem o checkout da origem. O comando é `scripts/copiar_pacote.sh`.
 **Textos lidos por commit (17/11/2026, aprovação do Owner):** o mesmo comando copia, no mesmo
 commit, os arquivos da origem que o portal lê fora do pacote, listados em
 `scripts/arquivos_da_origem.txt`, para `origem/arquivos/`, com o SHA-256 de cada um em
-`origem/procedencia.json`. A lista é declarada no gdados a partir das referências do pacote
+`origem/procedencia.json`. Em 17/11/2026, a lista ganhou `docs/glossario.md`, o Glossário
+Técnico, fonte das definições da página de conceitos, e a cópia foi refeita no mesmo commit. A lista é declarada no gdados a partir das referências do pacote
 ([mapeamento §3](mapeamento_do_pacote.md#3-o-que-o-portal-lê-por-commit-fora-do-pacote)). O comando
 recusa `.env`, estados e variáveis do Terraform, chaves, credenciais e endereços de e-mail fora dos
 domínios reservados para exemplo. Os identificadores dos projetos GCP já excluídos aparecem no

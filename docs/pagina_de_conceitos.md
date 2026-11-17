@@ -2,7 +2,7 @@
 
 | Campo | Informação |
 |---|---|
-| Estado | Requisito incorporado ao plano; aplicação e conteúdo final ainda não implementados |
+| Estado | Formato da camada editorial e inventário definidos e implementados em 17/11/2026 (§9); explicações em redação |
 | Pedido do Owner | Tornar compreensível a governança existente, dando à parte conceitual e teórica o mesmo peso da técnica |
 | Escopo deste arquivo | Objetivos de aprendizagem, organização da página e critérios editoriais |
 
@@ -160,3 +160,44 @@ Além das verificações técnicas previstas no [plano](../PLANO.md), avaliar se
 
 Registrar as dúvidas surgidas na avaliação do Owner e corrigir as explicações correspondentes.
 Testes automatizados podem conferir links e estrutura, mas não provar a compreensão do leitor.
+
+## 9. Formato da camada editorial (17/11/2026)
+
+A camada editorial fica no portal, em `portal/src/conteudo/`, como *content collections* do próprio
+Astro (D01), sem dependência nova. O esquema de cada parte está em `portal/src/content.config.mjs`;
+um arquivo fora do esquema recusa a build.
+
+| Arquivo | O que é |
+|---|---|
+| `grupos.yml` | Os grupos da §4, na mesma ordem |
+| `inventario.yml` | O inventário dos termos e artefatos que a interface expõe. Cada item tem um identificador estável (o endereço `/conceitos/<id>/`), o grupo, os termos de busca (português, identificador em inglês, sigla), os pré-requisitos e onde a origem define o termo |
+| `conceitos/<id>.md` | A explicação do portal para um item do inventário: resumo ("o que é"), corpo nas seções da §3 que ajudam, exemplos reais, exemplos didáticos, divergências entre fontes da origem, referências gerais e data de revisão |
+| `limitacoes.yml` | As limitações e lacunas que a interface exibe, com onde aparecem, o responsável e a situação |
+| `percursos.yml` | Os percursos da §5: passos que apontam para termos do inventário e uma prática com objetos reais, conferida como os exemplos |
+
+**Natureza de cada bloco (§6 e §7).** A página de um termo separa visualmente:
+
+- a **definição da origem**, extraída literalmente do glossário da origem no commit fixado. Para isso,
+  o inventário aponta o arquivo e o termo em negrito do verbete, e a página mostra o arquivo e o
+  commit. O portal não reescreve esse texto;
+- a **explicação do portal**, que é texto do gdados;
+- a **aplicação real**, um identificador do pacote (relação, coluna, pergunta, métrica, filtro),
+  um arquivo copiado da origem ou uma página do portal, conferido na build;
+- o **exemplo didático**, rotulado como simplificação, sem números do projeto;
+- a **divergência entre fontes da origem**, com as duas fontes e o encaminhamento, sem escolher uma.
+
+**Identificadores do pacote no texto editorial.** Os exemplos citam identificadores do pacote, como
+pede a §5.2. Para que um pacote novo não exija reescrever conteúdo (PLANO §6), um exemplo que não
+exista mais aparece como "não encontrado no pacote fixado" e não derruba a build. A build gera
+`dados/editorial.json` com os exemplos, as definições e as âncoras não encontrados, e o teste
+`portal/test/definicoes.test.mjs` exige que a lista esteja vazia. Ao refixar o commit (D03), o
+relatório indica o que revisar. As contagens do pacote não entram no texto editorial.
+
+**Ida e volta.** Um link contextual para um termo leva o endereço de origem, com filtros e recorte,
+e a página do termo oferece o retorno a ele (§2). Cada relação lista as explicações que a usam como
+exemplo.
+
+**Termo sem explicação.** O item do inventário sem `conceitos/<id>.md` tem página mesmo assim, com a
+definição da origem, os documentos da origem e a marca "explicação do portal pendente". A situação de
+cada termo aparece no índice da página de conceitos e em `dados/editorial.json`.
+

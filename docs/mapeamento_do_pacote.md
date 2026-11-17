@@ -94,5 +94,6 @@ Não são lacunas a pedir, porque o formato as declara: `data_type` fora de `ana
 ## 5. Em aberto no gdados
 
 - **Textos lidos por commit (§3):** decidido em 17/11/2026 na D03, cópia por lista.
-- **Inventário de termos e lacunas editoriais** e **formato da camada editorial**: próximos
-  entregáveis da E1 independentes da stack.
+- **Inventário de termos e lacunas editoriais** e **formato da camada editorial**: feitos em
+  17/11/2026 ([página de conceitos §9](pagina_de_conceitos.md#9-formato-da-camada-editorial-17112026)).
+  As limitações que a interface exibe ficam em `portal/src/conteudo/limitacoes.yml`.
