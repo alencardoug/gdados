@@ -59,6 +59,8 @@ export async function iniciarLinhagem(raiz) {
     } },
     { selector: 'edge[tipo = "travessia"]', style: { "line-style": "dashed", "line-color": "#64748b", "target-arrow-color": "#64748b" } },
     { selector: ".apagado", style: { opacity: 0.18 } },
+    // Visão geral: rótulo abaixo de 8 px na tela não é desenhado (ilegível de qualquer forma).
+    ...(modo === "tudo" ? [{ selector: "node", style: { "min-zoomed-font-size": 8 } }] : []),
     { selector: "node:selected", style: { "border-width": 3, "border-color": "#f59e0b" } },
     { selector: "edge.caminho", style: { width: 2.5, "line-color": "#f59e0b", "target-arrow-color": "#f59e0b" } },
   ];
