@@ -34,6 +34,8 @@ const lnk = (coluna) => (relacaoPorId.has(relacaoDaColuna(coluna)) ? rotaDaColun
 const tabelaDeValores = (obj) => Object.entries(obj ?? {});
 const auditoria = x.auditoria;
 const citada = conceitosQueCitam("relacao", x.id);
+// meta.grants além de select (que já está em grants_select), como a gravação do streaming.
+const outrasConcessoes = Object.entries(meta.grants ?? {}).filter(([op, v]) => op !== "select" && Array.isArray(v) && v.length);
 const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference) : null;
 ---
 <Base titulo={x.id} secao="governanca" descricao={`Relação ${x.id} no catálogo do portal.`}>
@@ -53,6 +55,7 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
   <dt>Escritores</dt><dd><Ausente valor={meta.writers} texto="não declarados" /></dd>
   <dt><Conceito id="retencao">Retenção</Conceito></dt><dd><Ausente valor={meta.retention} texto="não declarada" /></dd>
   <dt><Conceito id="acesso-por-papel">Papéis com leitura</Conceito></dt><dd>{r.grants_select.length ? r.grants_select.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão de leitura</span>}</dd>
+  {outrasConcessoes.length > 0 && <><dt>Outras concessões</dt><dd>{outrasConcessoes.map(([op, papeis]) => <div><code>{op}</code>: {papeis.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b])}</div>)}</dd></>}
   <dt><Conceito id="chave">Chaves primária e estrangeiras</Conceito></dt><dd><span class="ausente">não declaradas no pacote da {procedencia.ref}</span></dd>
   {citada.length > 0 && <><dt>Exemplo nas explicações</dt><dd>{citada.map((t) => <a href={t.href}>{t.titulo}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
   {x.perguntas.length > 0 && <><dt>Perguntas que a usam</dt><dd>{x.perguntas.map((q) => <a href={rotaDaPergunta(q)}>{q}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
