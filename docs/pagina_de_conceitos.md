@@ -2,7 +2,7 @@
 
 | Campo | Informação |
 |---|---|
-| Estado | Formato da camada editorial e inventário definidos e implementados em 17/11/2026 (§9); explicações em redação |
+| Estado | Formato da camada editorial e inventário definidos e implementados em 17/11/2026 (§9); primeira redação das explicações feita no mesmo dia, a revisar pelo Owner na E4 |
 | Pedido do Owner | Tornar compreensível a governança existente, dando à parte conceitual e teórica o mesmo peso da técnica |
 | Escopo deste arquivo | Objetivos de aprendizagem, organização da página e critérios editoriais |
 

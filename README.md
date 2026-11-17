@@ -10,8 +10,8 @@ por que existe e como aparece na governança já implementada.
 e reconferida em 13 e 14/11/2026. E0 fechada pelo Owner em 14/11/2026; E1 e E2 autorizadas. Em
 17/11/2026 o pacote de metadados da origem foi fixado na `v2.1.0` e validado contra o esquema do
 mesmo commit. No mesmo dia começou a aplicação, em `portal/` (Astro): as três páginas leem o
-pacote validado no build. A camada editorial da página de conceitos tem formato e inventário;
-as explicações estão em redação.
+pacote validado no build. A camada editorial da página de conceitos tem formato, inventário e a
+primeira redação das explicações, a revisar pelo Owner.
 
 ## Escopo
 
@@ -110,12 +110,12 @@ O histórico desta conversa não é necessário para compreender o escopo docume
   as limitações conhecidas e a ida e volta entre objeto e explicação. Três divergências do Glossário
   Técnico da origem foram encaminhadas no [alinhamento, §7](docs/alinhamento_entre_projetos.md#7-para-a-origem);
 
-- também em 17/11/2026: os percursos de leitura, mais explicações (24 dos 62 termos do inventário),
-  as travessias ligadas ao grafo de linhagem e os diagramas Mermaid dos documentos da origem
-  desenhados no portal ([D02](docs/decisoes.md#d02--diagramas-e-grafos));
+- também em 17/11/2026: os percursos de leitura, a primeira redação das explicações de todos os
+  termos do inventário, as travessias ligadas ao grafo de linhagem e os diagramas Mermaid dos
+  documentos da origem desenhados no portal ([D02](docs/decisoes.md#d02--diagramas-e-grafos));
 
-**Próximo passo:** redigir as explicações pendentes (plano, §5, passo 2) e, depois, a E3
-([plano](PLANO.md), §5, passo 4).
+**Próximo passo:** a E3, verificação local com relatório ([plano](PLANO.md), §5, passo 4). A
+revisão conceitual das explicações pelo Owner fica para a E4.
 
 Os caches e temporários de npm, `uv` e Playwright ficam em `.cache/` (variáveis em
 `provas/README.md`). Na origem, só leitura de arquivos e `git show`/`git log`.
