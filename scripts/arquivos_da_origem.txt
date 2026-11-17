@@ -32,5 +32,8 @@ streaming/fluxo.yml
 docs/governanca_de_dados.md
 docs/dicionario_de_dados.md
 
+# definições de origem da página de conceitos (termos técnicos)
+docs/glossario.md
+
 # view_audits.*.reference
 tests/auditoria/
