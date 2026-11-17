@@ -1,5 +1,6 @@
 ---
 // Pergunta → view → montagem (view_rules) → fatos e dimensões → linhagem (PLANO §2.1; conceitos §5.2).
+import Conceito from "../../../components/Conceito.astro";
 import Base from "../../../layouts/Base.astro";
 import Md from "../../../components/Md.astro";
 import {
@@ -35,7 +36,7 @@ const motivo = ref ? await mdDoPacoteEmLinha(ref.reason) : null;
 
 <h2>Medidas da pergunta</h2>
 <div class="rolagem"><table>
-<thead><tr><th scope="col">Coluna da view</th><th scope="col">Aditividade</th><th scope="col">Nota</th></tr></thead>
+<thead><tr><th scope="col">Coluna da view</th><th scope="col"><Conceito id="aditividade">Aditividade</Conceito></th><th scope="col">Nota</th></tr></thead>
 <tbody>
 {q.measures.map((m) => (
   <tr>
@@ -59,7 +60,7 @@ const motivo = ref ? await mdDoPacoteEmLinha(ref.reason) : null;
   </>
 ) : (
   <>
-  <h3>Grão</h3>
+  <h3><Conceito id="grao">Grão</Conceito></h3>
   <div class="rolagem"><table>
   <thead><tr><th scope="col">Coluna</th><th scope="col">Expressão</th></tr></thead>
   <tbody>{Object.entries(regras.grain).map(([c, e]) => <tr><td><code>{c}</code></td><td><code>{e}</code></td></tr>)}</tbody>

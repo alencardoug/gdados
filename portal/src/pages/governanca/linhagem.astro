@@ -1,6 +1,7 @@
 ---
 // Exploração da linhagem (PLANO §2.2; D02). A abertura é sempre um recorte (condição 1); o grafo
 // inteiro é visão geral. O Mermaid não é carregado aqui (condição 3).
+import Conceito from "../../components/Conceito.astro";
 import Base from "../../layouts/Base.astro";
 import { pacote, camadas, rota } from "../../lib/portal.mjs";
 import { corDaCamada } from "../../cliente/camadas.js";
@@ -21,6 +22,7 @@ const modos = [
   calculada pelo caminho mais longo de cada relação desde as origens.
 </p>
 <p class="suave">
+  O que é: <Conceito id="linhagem">linhagem</Conceito>, <Conceito id="origem-terminal">origem terminal</Conceito>, <Conceito id="dependencia-de-juncao-e-filtro">dependência por junção ou filtro</Conceito>.
   Uma ligação diz que o valor vem dali. Uma junção ou um filtro de que a relação também depende pode não aparecer como ligação.
   Uma origem do tipo seed ou valor gerado é um fim válido do caminho, não uma quebra.
 </p>

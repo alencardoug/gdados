@@ -1,6 +1,7 @@
 ---
 // Medidas, métricas e filtros (mapeamento §1: metrics, filters). O denominador zero é lido de
 // on_zero_denominator; o zero_denominator antigo não é lido (D03, 17/11/2026).
+import Conceito from "../../components/Conceito.astro";
 import Base from "../../layouts/Base.astro";
 import Md from "../../components/Md.astro";
 import { pacote, rota, rotaDaRelacao, rotaDaColuna, rotaDaMetrica, rotaDoFiltro, rotaDaReferencia, relacaoDaColuna, nomeDaColuna, mdDoPacoteEmLinha } from "../../lib/portal.mjs";
@@ -27,10 +28,10 @@ const zero = (m) => {
 <p class="migalhas"><a href={rota("governanca/")}>Governança</a></p>
 <h1>Medidas, métricas e filtros</h1>
 <p class="lead">
-  Uma <strong>medida</strong> agrega uma coluna de uma única fonte em <code>analytics</code>. Uma <strong>métrica</strong> faz uma conta sobre outras medidas:
+  Uma <Conceito id="medida-e-metrica"><strong>medida</strong></Conceito> agrega uma coluna de uma única fonte em <code>analytics</code>. Uma <strong>métrica</strong> faz uma conta sobre outras medidas:
   uma razão ou uma diferença. As expressões abaixo são a declaração em SQL sobre os apelidos da fonte. Não são o SQL compilado da view.
 </p>
-<nav aria-label="Nesta página"><a href="#medidas">Medidas e métricas</a> · <a href="#filtros">Filtros</a></nav>
+<nav aria-label="Nesta página"><a href="#medidas">Medidas e métricas</a> · <a href="#filtros">Filtros</a> · <Conceito id="aditividade">o que é aditividade</Conceito></nav>
 
 <h2 id="medidas">Medidas e métricas</h2>
 {metricas.map(({ nome, m, nota }) => (
@@ -49,7 +50,7 @@ const zero = (m) => {
       {m.kind === "ratio" && <>
         <dt>Numerador</dt><dd><a href={rotaDaMetrica(m.numerator)}><code>{m.numerator}</code></a></dd>
         <dt>Denominador</dt><dd><a href={rotaDaMetrica(m.denominator)}><code>{m.denominator}</code></a></dd>
-        <dt>Denominador zero</dt><dd>{zero(m) ?? <span class="ausente">não declarado</span>}</dd>
+        <dt><Conceito id="denominador-zero">Denominador zero</Conceito></dt><dd>{zero(m) ?? <span class="ausente">não declarado</span>}</dd>
       </>}
       {m.kind === "difference" && <>
         <dt>Minuendo</dt><dd><a href={rotaDaMetrica(m.minuend)}><code>{m.minuend}</code></a></dd>
@@ -66,7 +67,7 @@ const zero = (m) => {
 ))}
 
 <h2 id="filtros">Filtros</h2>
-<p>Os filtros dizem qual população entra numa medida. O conceito do glossário é a definição de negócio de onde o filtro sai.</p>
+<p>Os filtros dizem qual <Conceito id="populacao">população</Conceito> entra numa medida. O conceito do glossário é a definição de negócio de onde o filtro sai.</p>
 {filtros.map(([nome, f]) => {
   const c = conceito(f.concept);
   return (

@@ -1,5 +1,6 @@
 ---
 // Catálogo (PLANO §2.1): relações do pacote com busca e filtros por camada, domínio, sensibilidade e tipo.
+import Conceito from "../../components/Conceito.astro";
 import Base from "../../layouts/Base.astro";
 import Ausente from "../../components/Ausente.astro";
 import { relacoes, camadas, dominios, sensibilidades, tiposDeRecurso, rota, rotaDaRelacao, pacote } from "../../lib/portal.mjs";
@@ -45,7 +46,7 @@ const resumo = (t, n = 140) => {
 </form>
 <p id="catalogo-situacao" role="status" class="suave">{relacoes.length} relações.</p>
 <p class="suave">
-  A sensibilidade classifica a coluna, mas não diz quem pode lê-la. Quem lê cada relação está nos papéis com leitura (<code>grants_select</code>), na página de cada relação.
+  A <Conceito id="sensibilidade">sensibilidade</Conceito> classifica a coluna, mas não diz quem pode lê-la. Quem lê cada relação está nos papéis com leitura (<code>grants_select</code>), na página de cada relação.
 </p>
 <div class="rolagem"><table id="relacoes">
 <thead><tr><th scope="col">Relação</th><th scope="col">Camada</th><th scope="col">Tipo</th><th scope="col">Domínio</th><th scope="col">Colunas</th><th scope="col">Descrição</th></tr></thead>

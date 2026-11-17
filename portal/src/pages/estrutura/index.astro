@@ -2,6 +2,7 @@
 // Estrutura do projeto e ambientes (PLANO §3; mapeamento §2.2). Camadas e materializações derivadas
 // de relations; travessias de crossings (Mermaid, só nesta página: D02, condição 3); artefatos de
 // infraestrutura e documentos de environments, lidos por commit.
+import Conceito from "../../components/Conceito.astro";
 import Base from "../../layouts/Base.astro";
 import Md from "../../components/Md.astro";
 import { pacote, procedencia, relacoes, camadas, rota, rotaDaRelacao, rotaDaReferencia, mdDoPacoteEmLinha, data, caminhosCopiados } from "../../lib/portal.mjs";
@@ -59,7 +60,7 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
 </p>
 <nav aria-label="Nesta página"><a href="#fisica">Camadas</a> · <a href="#travessias">Travessias</a> · <a href="#logica">Entidades e grãos</a> · <a href="#ambientes">Ambientes e documentos</a> · <a href="#arquivos">Arquivos da origem</a></nav>
 
-<h2 id="fisica">Camadas e materializações</h2>
+<h2 id="fisica"><Conceito id="camada">Camadas</Conceito> e <Conceito id="materializacao">materializações</Conceito></h2>
 <p>As camadas aparecem na ordem do pipeline, calculada pela linhagem. A materialização diz como cada objeto existe no banco: tabela, view, incremental, snapshot ou seed. Uma <em>source</em> não é materializada pelo dbt; ela é a origem.</p>
 <div class="rolagem"><table>
 <thead><tr><th scope="col">Camada (schema)</th><th scope="col">Relações</th><th scope="col">Tipo · materialização</th><th scope="col">Papéis com leitura em alguma relação</th></tr></thead>
@@ -75,7 +76,7 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
 </tbody></table></div>
 <p class="suave">Um schema separa os nomes dentro do banco. Ele não garante, sozinho, que o armazenamento fique isolado. Os papéis com leitura vêm de <code>grants_select</code>.</p>
 
-<h2 id="travessias">Travessias fora do dbt</h2>
+<h2 id="travessias"><Conceito id="travessia">Travessias</Conceito> fora do dbt</h2>
 <p>Antes do dbt, os dados chegam às camadas de origem por ingestão em lote, por <em>streaming</em> e por captura do legado. A ligação é por camada, como o pacote a declara: não há precisão por coluna nessas travessias.</p>
 <div id="diagrama" class="diagrama" data-definicao={definicao}><p class="suave">Carregando o diagrama…</p></div>
 <details><summary>Definição do diagrama (Mermaid, gerada do pacote)</summary><pre><code>{definicao}</code></pre></details>
@@ -94,13 +95,13 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
 ))}
 </tbody></table></div>
 
-<h2 id="logica">Entidades e grãos</h2>
+<h2 id="logica"><Conceito id="entidade-e-relacionamento">Entidades</Conceito> e <Conceito id="grao">grãos</Conceito></h2>
 <p>
   O grão diz o que uma linha representa. É o primeiro passo para ler um fato ou uma dimensão.
   Abaixo estão as relações que declaram grão no pacote.
 </p>
 <p>
-  <span class="ausente">Relacionamentos não declarados no pacote da {procedencia.ref}.</span>
+  <span class="ausente">Relacionamentos não declarados no pacote da {procedencia.ref}</span> (<a href={rota("conceitos/limitacoes/#chaves-estrangeiras")}>limitação conhecida</a>).
   O pacote ainda não traz o destino das chaves estrangeiras, e o portal não deduz as ligações pelo nome dos testes.
   A origem aceitou acrescentar esse campo na próxima versão do pacote. Quando ele chegar, o diagrama entidade-relacionamento passa a ser gerado a partir dele.
 </p>
@@ -134,7 +135,7 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
 })}
 </tbody></table></div>
 <p class="suave">
-  O ambiente GCP foi desmontado. Desse lado, a comparação local ↔ GCP usa a declaração (Terraform, mapa de paridade) e o registro datado da fase GCP.
+  <Conceito id="paridade">Paridade local ↔ GCP</Conceito>: o ambiente GCP foi desmontado. Desse lado, a comparação local ↔ GCP usa a declaração (Terraform, mapa de paridade) e o registro datado da fase GCP.
   Ela não usa uma observação atual. As evidências coletadas no GCP aparecem como indisponíveis enquanto a origem não decidir se e como entram.
 </p>
 

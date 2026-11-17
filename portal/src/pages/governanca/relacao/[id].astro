@@ -1,6 +1,8 @@
 ---
 // Página de uma relação (PLANO §2.1): significado, ficha, colunas com sensibilidade e domínio de
 // valores, linhagem imediata, testes, auditoria e as perguntas que a usam.
+import Conceito from "../../../components/Conceito.astro";
+import { conceitosQueCitam } from "../../../lib/editorial.mjs";
 import Base from "../../../layouts/Base.astro";
 import Ausente from "../../../components/Ausente.astro";
 import Md from "../../../components/Md.astro";
@@ -31,6 +33,7 @@ const ORIGEM = { source: "origem", seed: "seed", generated: "valor gerado" };
 const lnk = (coluna) => (relacaoPorId.has(relacaoDaColuna(coluna)) ? rotaDaColuna(relacaoDaColuna(coluna), nomeDaColuna(coluna)) : null);
 const tabelaDeValores = (obj) => Object.entries(obj ?? {});
 const auditoria = x.auditoria;
+const citada = conceitosQueCitam("relacao", x.id);
 const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference) : null;
 ---
 <Base titulo={x.id} secao="governanca" descricao={`Relação ${x.id} no catálogo do portal.`}>
@@ -41,16 +44,17 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
   : <Md html={descricao} ausente="descrição ausente" />}
 
 <dl class="ficha">
-  <dt>Camada (schema)</dt><dd>{r.schema}</dd>
+  <dt><Conceito id="camada">Camada</Conceito> (schema)</dt><dd>{r.schema}</dd>
   <dt>Tipo</dt><dd>{r.resource_type}</dd>
-  <dt>Materialização</dt><dd><Ausente valor={r.materialization} texto={r.resource_type === "source" ? "não se aplica (source)" : "ausente"} /></dd>
-  <dt>Grão</dt><dd><Ausente valor={r.grain} texto="não declarado" /></dd>
-  <dt>Domínio</dt><dd><Ausente valor={meta.domain} texto="não declarado" /></dd>
-  <dt>Responsável</dt><dd><Ausente valor={meta.owner} texto="não declarado" /></dd>
+  <dt><Conceito id="materializacao">Materialização</Conceito></dt><dd><Ausente valor={r.materialization} texto={r.resource_type === "source" ? "não se aplica (source)" : "ausente"} /></dd>
+  <dt><Conceito id="grao">Grão</Conceito></dt><dd><Ausente valor={r.grain} texto="não declarado" /></dd>
+  <dt><Conceito id="dominio">Domínio</Conceito></dt><dd><Ausente valor={meta.domain} texto="não declarado" /></dd>
+  <dt><Conceito id="responsavel">Responsável</Conceito></dt><dd><Ausente valor={meta.owner} texto="não declarado" /></dd>
   <dt>Escritores</dt><dd><Ausente valor={meta.writers} texto="não declarados" /></dd>
-  <dt>Retenção</dt><dd><Ausente valor={meta.retention} texto="não declarada" /></dd>
-  <dt>Papéis com leitura</dt><dd>{r.grants_select.length ? r.grants_select.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão de leitura</span>}</dd>
-  <dt>Chaves primária e estrangeiras</dt><dd><span class="ausente">não declaradas no pacote da {procedencia.ref}</span></dd>
+  <dt><Conceito id="retencao">Retenção</Conceito></dt><dd><Ausente valor={meta.retention} texto="não declarada" /></dd>
+  <dt><Conceito id="acesso-por-papel">Papéis com leitura</Conceito></dt><dd>{r.grants_select.length ? r.grants_select.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão de leitura</span>}</dd>
+  <dt><Conceito id="chave">Chaves primária e estrangeiras</Conceito></dt><dd><span class="ausente">não declaradas no pacote da {procedencia.ref}</span></dd>
+  {citada.length > 0 && <><dt>Exemplo nas explicações</dt><dd>{citada.map((t) => <a href={t.href}>{t.titulo}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
   {x.perguntas.length > 0 && <><dt>Perguntas que a usam</dt><dd>{x.perguntas.map((q) => <a href={rotaDaPergunta(q)}>{q}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
 </dl>
 
@@ -65,7 +69,7 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
 </dl>
 </>}
 
-<h2>Linhagem imediata</h2>
+<h2><Conceito id="linhagem">Linhagem</Conceito> imediata</h2>
 <p>
   <a href={rota(`governanca/linhagem/?r=${x.id}`)}>Ver no grafo por relação</a>{" · "}
   <a href={rota(`governanca/linhagem/?modo=coluna&r=${x.id}`)}>Ver no grafo por coluna</a>
@@ -82,7 +86,7 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
 
 <h2>Colunas</h2>
 <div class="rolagem"><table>
-<thead><tr><th scope="col">Coluna</th><th scope="col">Tipo</th><th scope="col">Sensibilidade</th><th scope="col">Descrição</th><th scope="col">Origens terminais</th></tr></thead>
+<thead><tr><th scope="col">Coluna</th><th scope="col">Tipo</th><th scope="col"><Conceito id="sensibilidade">Sensibilidade</Conceito></th><th scope="col">Descrição</th><th scope="col"><Conceito id="origem-terminal">Origens terminais</Conceito></th></tr></thead>
 <tbody>
 {colunas.map(({ nome, c, m, descricao, linhagem, metricas }) => (
   <tr id={`coluna-${nome}`}>
@@ -121,7 +125,7 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
   O tipo da coluna só vem declarado em <code>analytics</code> e <code>consumption</code>.
 </p>
 
-<h2>Testes</h2>
+<h2><Conceito id="teste">Testes</Conceito></h2>
 {x.testes.length === 0 ? <p><span class="ausente">Nenhum teste declarado para esta relação.</span></p> : (
 <div class="rolagem"><table>
 <thead><tr><th scope="col">Teste</th><th scope="col">Tipo</th><th scope="col">Coluna</th><th scope="col">Declarado em</th><th scope="col">Resultado</th></tr></thead>
