@@ -1,0 +1,67 @@
+---
+// Layout comum: navegação principal (três páginas, PLANO §2 a §4) e rodapé de procedência,
+// visível em toda página (D03: data dos artefatos e commit fixado sempre visíveis).
+import "../styles/portal.css";
+import { procedencia, pacote, rota, dataHora, commitCurto, rotaDoArquivo } from "../lib/portal.mjs";
+
+interface Props {
+  titulo: string;
+  secao?: "inicio" | "governanca" | "estrutura" | "conceitos";
+  descricao?: string;
+}
+const { titulo, secao = "inicio", descricao } = Astro.props;
+const p = pacote.provenance;
+const w = p.warehouse;
+const itens = [
+  { id: "governanca", rotulo: "Governança", href: rota("governanca/") },
+  { id: "estrutura", rotulo: "Estrutura e ambientes", href: rota("estrutura/") },
+  { id: "conceitos", rotulo: "Conceitos e artefatos", href: rota("conceitos/") },
+];
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{titulo} · gdados</title>
+{descricao && <meta name="description" content={descricao}>}
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="topo">
+  <div class="faixa">
+    <a class="marca" href={rota()}>gdados</a>
+    <nav aria-label="Principal">
+      <ul>
+        {itens.map((i) => <li><a href={i.href} aria-current={secao === i.id ? "page" : undefined}>{i.rotulo}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="conteudo">
+  <slot />
+</main>
+<footer class="procedencia">
+  <div class="faixa">
+    <p>
+      Pacote de metadados de <code>{procedencia.repository}</code> na <code>{procedencia.ref}</code>
+      (<code title={procedencia.commit}>{commitCurto(procedencia.commit)}</code>, commit de {dataHora(procedencia.commit_date)}),
+      copiado para o portal em {dataHora(procedencia.copied_at)}. Formato {pacote.format}.
+    </p>
+    <p>
+      Artefatos do dbt {p.dbt.dbt_version} (<code>{p.dbt.adapter_type}</code>, alvo <code>{p.environment.dbt_target}</code>):
+      manifesto de {dataHora(p.dbt.manifest_generated_at)}; resultados de {dataHora(p.dbt.run_results_generated_at)}.
+      Armazém: <span class={`estado ${w.status}`}>{w.status}</span>
+      {w.status === "verified"
+        ? <> — construído do commit <code title={w.built_from_commit}>{commitCurto(w.built_from_commit)}</code> em {dataHora(w.built_at)}.</>
+        : <> — {w.reason ?? <span class="ausente">motivo ausente</span>}</>}
+    </p>
+    <p>
+      O portal lê o pacote como está e não consulta bancos. <a href={rota("procedencia/")}>Detalhes da procedência</a>.
+    </p>
+  </div>
+</footer>
+</body>
+</html>

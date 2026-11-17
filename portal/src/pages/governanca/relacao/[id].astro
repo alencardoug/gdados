@@ -1,0 +1,143 @@
+---
+// Página de uma relação (PLANO §2.1): significado, ficha, colunas com sensibilidade e domínio de
+// valores, linhagem imediata, testes, auditoria e as perguntas que a usam.
+import Base from "../../../layouts/Base.astro";
+import Ausente from "../../../components/Ausente.astro";
+import Md from "../../../components/Md.astro";
+import Resultado from "../../../components/Resultado.astro";
+import {
+  relacoes, relacaoPorId, procedencia, pacote, rota, rotaDaRelacao, rotaDaColuna, rotaDaPergunta, rotaDaMetrica,
+  rotaDaReferencia, mdDoPacote, mdDoPacoteEmLinha, relacaoDaColuna, nomeDaColuna, metricasPorColuna, commitCurto,
+} from "../../../lib/portal.mjs";
+
+export function getStaticPaths() {
+  return relacoes.map((x) => ({ params: { id: x.id } }));
+}
+const x = relacaoPorId.get(Astro.params.id);
+const r = x.r;
+const meta = r.meta ?? {};
+const descricao = x.semDescricao ? null : await mdDoPacote(r.description);
+const colunas = await Promise.all(
+  Object.entries(r.columns).map(async ([nome, c]) => ({
+    nome,
+    c,
+    m: c.meta ?? {},
+    descricao: x.colunasSemDescricao.has(nome) ? null : await mdDoPacoteEmLinha(c.description),
+    linhagem: x.linhagem?.columns?.[nome] ?? null,
+    metricas: metricasPorColuna.get(`${x.id}.${nome}`) ?? [],
+  })),
+);
+const ORIGEM = { source: "origem", seed: "seed", generated: "valor gerado" };
+const lnk = (coluna) => (relacaoPorId.has(relacaoDaColuna(coluna)) ? rotaDaColuna(relacaoDaColuna(coluna), nomeDaColuna(coluna)) : null);
+const tabelaDeValores = (obj) => Object.entries(obj ?? {});
+const auditoria = x.auditoria;
+const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference) : null;
+---
+<Base titulo={x.id} secao="governanca" descricao={`Relação ${x.id} no catálogo do portal.`}>
+<p class="migalhas"><a href={rota("governanca/")}>Governança</a> › <a href={rota(`governanca/?camada=${x.camada}#catalogo`)}>{x.camada}</a></p>
+<h1><code>{x.id}</code></h1>
+{x.semDescricao
+  ? <p><span class="ausente">Sem descrição declarada</span> <span class="suave">(registrada em <code>description_gaps</code>).</span></p>
+  : <Md html={descricao} ausente="descrição ausente" />}
+
+<dl class="ficha">
+  <dt>Camada (schema)</dt><dd>{r.schema}</dd>
+  <dt>Tipo</dt><dd>{r.resource_type}</dd>
+  <dt>Materialização</dt><dd><Ausente valor={r.materialization} texto={r.resource_type === "source" ? "não se aplica (source)" : "ausente"} /></dd>
+  <dt>Grão</dt><dd><Ausente valor={r.grain} texto="não declarado" /></dd>
+  <dt>Domínio</dt><dd><Ausente valor={meta.domain} texto="não declarado" /></dd>
+  <dt>Responsável</dt><dd><Ausente valor={meta.owner} texto="não declarado" /></dd>
+  <dt>Escritores</dt><dd><Ausente valor={meta.writers} texto="não declarados" /></dd>
+  <dt>Retenção</dt><dd><Ausente valor={meta.retention} texto="não declarada" /></dd>
+  <dt>Papéis com leitura</dt><dd>{r.grants_select.length ? r.grants_select.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão de leitura</span>}</dd>
+  <dt>Chaves primária e estrangeiras</dt><dd><span class="ausente">não declaradas no pacote da {procedencia.ref}</span></dd>
+  {x.perguntas.length > 0 && <><dt>Perguntas que a usam</dt><dd>{x.perguntas.map((q) => <a href={rotaDaPergunta(q)}>{q}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
+</dl>
+
+{auditoria && <>
+<h2>Auditoria da view</h2>
+<dl class="ficha">
+  <dt>Estado</dt><dd><span class={`estado ${auditoria.status}`}>{auditoria.status}</span></dd>
+  <dt>Commit da auditoria</dt><dd><Ausente valor={auditoria.commit} /></dd>
+  <dt>Critérios</dt><dd>{auditoria.criteria.length ? auditoria.criteria.map((c) => <code>{c}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhum</span>}</dd>
+  <dt>Achados</dt><dd><Ausente valor={auditoria.findings} texto="nenhum" /></dd>
+  <dt>Consulta de referência</dt><dd>{auditoria.reference == null ? <span class="ausente">ausente</span> : refAuditoria ? <a href={refAuditoria}><code>{auditoria.reference}</code></a> : <code>{auditoria.reference}</code>}</dd>
+</dl>
+</>}
+
+<h2>Linhagem imediata</h2>
+<p>
+  <a href={rota(`governanca/linhagem/?r=${x.id}`)}>Ver no grafo por relação</a>{" · "}
+  <a href={rota(`governanca/linhagem/?modo=coluna&r=${x.id}`)}>Ver no grafo por coluna</a>
+</p>
+{r.resource_type === "source" && <p class="suave">Uma <em>source</em> não tem insumo no dbt: é por onde os dados entram. Como chegam até aqui é assunto das <a href={rota("estrutura/#travessias")}>travessias</a>.</p>}
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Sentido</th><th scope="col">Relação</th><th scope="col">Colunas ligadas</th></tr></thead>
+<tbody>
+{x.entradas.map((a) => <tr><td>insumo</td><td><a href={rotaDaRelacao(a.source)}><code>{a.source}</code></a></td><td>{a.n}</td></tr>)}
+{x.saidas.map((a) => <tr><td>consumidor</td><td><a href={rotaDaRelacao(a.target)}><code>{a.target}</code></a></td><td>{a.n}</td></tr>)}
+{x.entradas.length + x.saidas.length === 0 && <tr><td colspan="3"><span class="ausente">nenhuma ligação na linhagem do pacote</span></td></tr>}
+</tbody></table></div>
+<p class="suave">"Colunas ligadas" conta as ligações de coluna para coluna da linhagem do pacote (<code>leaves</code>). A linhagem diz de onde vem o valor de cada coluna. Uma junção ou um filtro de que a relação também depende pode não aparecer como ligação.</p>
+
+<h2>Colunas</h2>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Coluna</th><th scope="col">Tipo</th><th scope="col">Sensibilidade</th><th scope="col">Descrição</th><th scope="col">Origens terminais</th></tr></thead>
+<tbody>
+{colunas.map(({ nome, c, m, descricao, linhagem, metricas }) => (
+  <tr id={`coluna-${nome}`}>
+    <th scope="row"><code>{nome}</code></th>
+    <td><Ausente valor={c.data_type} texto="não declarado no pacote" /></td>
+    <td>{c.sensitivity}{m.sensitivity_reason && <div class="suave">{m.sensitivity_reason}</div>}</td>
+    <td class="md">
+      {x.colunasSemDescricao.has(nome) ? <span class="ausente">sem descrição declarada</span> : <Md html={descricao} em="span" />}
+      {m.description_from && <div class="suave">Descrição herdada de <code>{m.description_from}</code>.</div>}
+      {m.description_reason && <div class="suave">Motivo da descrição própria: {m.description_reason}</div>}
+      {metricas.length > 0 && <div>Publica: {metricas.map((n) => <a href={rotaDaMetrica(n)}><code>{n}</code></a>).reduce((a, b) => [a, ", ", b])}</div>}
+      {m.values && (
+        <details><summary>Valores{m.value_domain && <> (domínio <code>{m.value_domain}</code>)</>}</summary>
+          <table><tbody>{tabelaDeValores(m.values).map(([v, s]) => <tr><td><code>{v}</code></td><td>{s}</td></tr>)}</tbody></table>
+        </details>
+      )}
+      {m.null_meaning && <div><span class="etiqueta">nulo</span> {m.null_meaning}</div>}
+      {m.unknown_member && <div><span class="etiqueta">membro desconhecido</span> <code>{m.unknown_member}</code></div>}
+      {m.not_observed && <details><summary>Valores não observados no dado atual</summary><table><tbody>{tabelaDeValores(m.not_observed).map(([v, s]) => <tr><td><code>{v}</code></td><td>{s}</td></tr>)}</tbody></table></details>}
+      {m.impossible && <details><summary>Valores impossíveis</summary><table><tbody>{tabelaDeValores(m.impossible).map(([v, s]) => <tr><td><code>{v}</code></td><td>{s}</td></tr>)}</tbody></table></details>}
+    </td>
+    <td>
+      {linhagem == null
+        ? (r.resource_type === "source" ? <span class="suave">é origem</span> : <span class="ausente">sem linhagem no pacote</span>)
+        : linhagem.origins.length === 0
+          ? <span class="ausente">nenhuma origem declarada</span>
+          : <ul class="sem-marcador">{linhagem.origins.map((o) => <li>{lnk(o.column) ? <a href={lnk(o.column)}><code>{o.column}</code></a> : <code>{o.column}</code>} <span class="etiqueta">{ORIGEM[o.kind] ?? o.kind}</span></li>)}</ul>}
+    </td>
+  </tr>
+))}
+</tbody></table></div>
+<p class="suave">
+  Tipos de origem terminal: <strong>origem</strong> é uma coluna de <em>source</em>; <strong>seed</strong> é uma tabela de referência versionada no projeto;
+  <strong>valor gerado</strong> é um valor criado na transformação, como uma constante ou um rótulo de sistema.
+  Os três são finais válidos de um caminho de linhagem. Nenhum deles indica quebra de linhagem.
+  O tipo da coluna só vem declarado em <code>analytics</code> e <code>consumption</code>.
+</p>
+
+<h2>Testes</h2>
+{x.testes.length === 0 ? <p><span class="ausente">Nenhum teste declarado para esta relação.</span></p> : (
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Teste</th><th scope="col">Tipo</th><th scope="col">Coluna</th><th scope="col">Declarado em</th><th scope="col">Resultado</th></tr></thead>
+<tbody>
+{x.testes.map((t) => (
+  <tr>
+    <td><code>{t.test}</code></td>
+    <td>{t.kind}</td>
+    <td>{t.column == null ? <span class="suave">relação</span> : <a href={`#coluna-${t.column}`}><code>{t.column}</code></a>}</td>
+    <td>{rotaDaReferencia(t.declared_in) ? <a href={rotaDaReferencia(t.declared_in)}><code>{t.declared_in}</code></a> : <code>{t.declared_in}</code>}</td>
+    <td><Resultado resultado={t.result} />{t.result && !t.result.same_invocation_as_manifest && <div class="suave">execução diferente da do manifesto</div>}</td>
+  </tr>
+))}
+</tbody></table></div>)}
+<p class="suave">
+  Os resultados são os da execução registrada no pacote, não do estado atual do banco.
+  O destino dos testes <code>relationships</code> (relação e coluna referenciadas) não está no pacote da {procedencia.ref}.
+</p>
+</Base>

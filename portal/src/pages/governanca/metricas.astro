@@ -1,0 +1,84 @@
+---
+// Medidas, métricas e filtros (mapeamento §1: metrics, filters). O denominador zero é lido de
+// on_zero_denominator; o zero_denominator antigo não é lido (D03, 17/11/2026).
+import Base from "../../layouts/Base.astro";
+import Md from "../../components/Md.astro";
+import { pacote, rota, rotaDaRelacao, rotaDaColuna, rotaDaMetrica, rotaDoFiltro, rotaDaReferencia, relacaoDaColuna, nomeDaColuna, mdDoPacoteEmLinha } from "../../lib/portal.mjs";
+import { resolverNaOrigem } from "../../lib/markdown.mjs";
+
+const TIPO = { measure: "medida", ratio: "razão", difference: "diferença" };
+const ADITIVIDADE = { additive: "aditiva", semi_additive: "semiaditiva", non_additive: "não aditiva" };
+const metricas = await Promise.all(
+  Object.entries(pacote.metrics).sort(([a], [b]) => a.localeCompare(b)).map(async ([nome, m]) => ({ nome, m, nota: await mdDoPacoteEmLinha(m.note) })),
+);
+const filtros = Object.entries(pacote.filters).sort(([a], [b]) => a.localeCompare(b));
+const conceito = (c) => {
+  if (c == null) return null;
+  const alvo = resolverNaOrigem(c, pacote.provenance.link_base ?? "");
+  return alvo ? { caminho: alvo.caminho, href: rotaDaReferencia(alvo.caminho + (alvo.ancora ? `#${alvo.ancora}` : "")) } : null;
+};
+const zero = (m) => {
+  if (m.on_zero_denominator === "returns_null") return "a razão resulta nula (returns_null)";
+  if (m.on_zero_denominator == null) return m.kind === "ratio" ? null : "não se aplica";
+  return m.on_zero_denominator;
+};
+---
+<Base titulo="Métricas e filtros" secao="governanca">
+<p class="migalhas"><a href={rota("governanca/")}>Governança</a></p>
+<h1>Medidas, métricas e filtros</h1>
+<p class="lead">
+  Uma <strong>medida</strong> agrega uma coluna de uma única fonte em <code>analytics</code>. Uma <strong>métrica</strong> faz uma conta sobre outras medidas:
+  uma razão ou uma diferença. As expressões abaixo são a declaração em SQL sobre os apelidos da fonte. Não são o SQL compilado da view.
+</p>
+<nav aria-label="Nesta página"><a href="#medidas">Medidas e métricas</a> · <a href="#filtros">Filtros</a></nav>
+
+<h2 id="medidas">Medidas e métricas</h2>
+{metricas.map(({ nome, m, nota }) => (
+  <section id={`metrica-${nome}`} aria-labelledby={`t-${nome}`}>
+    <h3 id={`t-${nome}`}><code>{nome}</code> <span class="etiqueta">{TIPO[m.kind] ?? m.kind}</span> <span class="etiqueta">{ADITIVIDADE[m.additivity] ?? m.additivity}</span></h3>
+    <dl class="ficha">
+      {m.kind === "measure" && m.source && <>
+        <dt>Fonte</dt><dd><a href={rotaDaRelacao(m.source.relation)}><code>{m.source.relation}</code></a> (apelido <code>{m.source.alias}</code>)</dd>
+        <dt>Data do período</dt><dd>{m.source.date ? <><code>{m.source.date.column}</code> — {m.source.date.label}</> : <span class="ausente">ausente</span>}</dd>
+        {m.source.joins.length > 0 && <><dt>Junções</dt><dd>{m.source.joins.map((j) => <div><a href={rotaDaRelacao(j.relation)}><code>{j.relation}</code></a> como <code>{j.alias}</code>{j.using && <> por {j.using.map((u) => <code>{u}</code>).reduce((a, b) => [a, ", ", b])}</>}{j.match && <> ({j.match})</>}</div>)}</dd></>}
+        <dt>Agregado</dt><dd><code>{m.aggregate}</code>{m.identity && <> da identidade {m.identity.map((i) => <code>{i}</code>).reduce((a, b) => [a, ", ", b])}</>}</dd>
+        {m.expression && <><dt>Expressão</dt><dd><code>{m.expression}</code></dd></>}
+        {m.where && <><dt>Condição própria</dt><dd><code>{m.where}</code></dd></>}
+        <dt>Filtros</dt><dd>{m.filters?.length ? m.filters.map((f) => <a href={rotaDoFiltro(f)}><code>{f}</code></a>).reduce((a, b) => [a, ", ", b]) : <span class="suave">nenhum</span>}</dd>
+      </>}
+      {m.kind === "ratio" && <>
+        <dt>Numerador</dt><dd><a href={rotaDaMetrica(m.numerator)}><code>{m.numerator}</code></a></dd>
+        <dt>Denominador</dt><dd><a href={rotaDaMetrica(m.denominator)}><code>{m.denominator}</code></a></dd>
+        <dt>Denominador zero</dt><dd>{zero(m) ?? <span class="ausente">não declarado</span>}</dd>
+      </>}
+      {m.kind === "difference" && <>
+        <dt>Minuendo</dt><dd><a href={rotaDaMetrica(m.minuend)}><code>{m.minuend}</code></a></dd>
+        <dt>Subtraendo</dt><dd><a href={rotaDaMetrica(m.subtrahend)}><code>{m.subtrahend}</code></a></dd>
+      </>}
+      {m.scale != null && <><dt>Escala</dt><dd>× {m.scale}</dd></>}
+      {m.cast != null && <><dt>Conversão</dt><dd><code>{m.cast}</code></dd></>}
+      {m.round != null && <><dt>Arredondamento</dt><dd>{m.round} casas</dd></>}
+      <dt>Publicada em</dt>
+      <dd>{m.columns.length ? m.columns.map((c) => <div><a href={rotaDaColuna(relacaoDaColuna(c.column), nomeDaColuna(c.column))}><code>{c.column}</code></a> <span class="suave">({ADITIVIDADE[c.additivity] ?? c.additivity} na view)</span></div>) : <span class="ausente">nenhuma coluna</span>}</dd>
+      {m.note && <><dt>Nota</dt><dd class="md"><Md html={nota} em="span" /></dd></>}
+    </dl>
+  </section>
+))}
+
+<h2 id="filtros">Filtros</h2>
+<p>Os filtros dizem qual população entra numa medida. O conceito do glossário é a definição de negócio de onde o filtro sai.</p>
+{filtros.map(([nome, f]) => {
+  const c = conceito(f.concept);
+  return (
+  <section id={`filtro-${nome}`}>
+    <h3><code>{nome}</code></h3>
+    <dl class="ficha">
+      <dt>Rótulo</dt><dd>{f.label}</dd>
+      <dt>Predicado</dt><dd><code>{f.predicate}</code></dd>
+      <dt>Relação</dt><dd><a href={rotaDaRelacao(f.relation)}><code>{f.relation}</code></a></dd>
+      <dt>Conceito</dt><dd>{f.concept == null ? <span class="ausente">ausente</span> : c?.href ? <a href={c.href}><code>{c.caminho}</code></a> : <code>{f.concept}</code>}</dd>
+    </dl>
+  </section>
+  );
+})}
+</Base>

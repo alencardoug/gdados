@@ -1,0 +1,7 @@
+---
+// Valor do pacote, ou a marca de ausência: null nunca vira zero nem texto vazio (D03).
+interface Props { valor: unknown; texto?: string }
+const { valor, texto = "ausente" } = Astro.props;
+const vazio = valor == null || (Array.isArray(valor) && valor.length === 0);
+---
+{vazio ? <span class="ausente">{texto}</span> : Array.isArray(valor) ? valor.join(", ") : String(valor)}

@@ -1,0 +1,123 @@
+---
+// Estado e evidência (mapeamento §2.1): open_items, view_audits, checks e o resumo de tests, com a
+// data da execução. O portal mostra como o pacote declara; não liga itens a objetos (objects: null).
+import Base from "../../layouts/Base.astro";
+import Md from "../../components/Md.astro";
+import Resultado from "../../components/Resultado.astro";
+import { pacote, procedencia, rota, rotaDaRelacao, rotaDaReferencia, mdDoPacoteEmLinha, dataHora, caminhosCopiados, lerArquivo } from "../../lib/portal.mjs";
+import { semMarcacao } from "../../lib/markdown.mjs";
+
+const ESTADO = { pending: "pendente", deferred: "adiado" };
+const itens = await Promise.all(pacote.open_items.map(async (i) => ({ ...i, tituloHtml: await mdDoPacoteEmLinha(i.title) })));
+
+// checks agrupados por módulo, com as contagens por estado (sem resultado = result null).
+const modulos = new Map();
+for (const [id, c] of Object.entries(pacote.checks)) {
+  if (!modulos.has(c.module)) modulos.set(c.module, { modulo: c.module, resumo: c.summary, camadas: new Set(), estados: {}, itens: [] });
+  const m = modulos.get(c.module);
+  m.camadas.add(c.layer);
+  const e = c.result?.status ?? "sem resultado";
+  m.estados[e] = (m.estados[e] ?? 0) + 1;
+  m.itens.push({ id, ...c });
+}
+const listaDeModulos = [...modulos.values()].sort((a, b) => a.modulo.localeCompare(b.modulo));
+const execucoes = [...new Set(Object.values(pacote.checks).map((c) => c.result?.run_id).filter(Boolean))];
+
+const contar = (xs, f) => xs.reduce((acc, x) => ((acc[f(x)] = (acc[f(x)] ?? 0) + 1), acc), {});
+const testes = Object.values(pacote.tests);
+const testesPorEstado = contar(testes, (t) => t.result?.status ?? "sem resultado");
+const testesPorTipo = Object.entries(contar(testes, (t) => `${t.kind}\u0000${t.test}`))
+  .map(([k, n]) => ({ kind: k.split("\u0000")[0], test: k.split("\u0000")[1], n }))
+  .sort((a, b) => b.n - a.n || a.test.localeCompare(b.test));
+const execucoesDosTestes = [...new Set(testes.map((t) => t.result?.invocation_id).filter(Boolean))];
+
+// Decisões registradas em ADR copiadas para o portal (D66 está na ADR-0053 da origem).
+const adrs = caminhosCopiados
+  .filter((c) => /^docs\/adr\/.+\.md$/.test(c))
+  .map((c) => ({ caminho: c, titulo: semMarcacao((/^#\s+(.+)$/m.exec(lerArquivo(c)) ?? [null, c])[1]) }));
+---
+<Base titulo="Estado e evidência" secao="governanca">
+<p class="migalhas"><a href={rota("governanca/")}>Governança</a></p>
+<h1>Estado e evidência</h1>
+<p class="lead">
+  Esta página mostra o que o pacote registra sobre testes, verificações, auditorias e itens em aberto, cada um com a data da execução.
+  Um resultado vale para a execução registrada no pacote da <code>{procedencia.ref}</code>. Ele não descreve o estado atual do banco nem do GCP.
+</p>
+<nav aria-label="Nesta página"><a href="#itens">Itens em aberto</a> · <a href="#decisoes">Decisões registradas</a> · <a href="#auditorias">Auditorias das views</a> · <a href="#verificacoes">Verificações</a> · <a href="#testes">Testes do dbt</a></nav>
+
+<h2 id="itens">Itens em aberto</h2>
+<p>Decisões e verificações que a origem mantém abertas (<code>open_items</code>). O portal as exibe como a origem as registra, sem reinterpretá-las.</p>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Item</th><th scope="col">Título</th><th scope="col">Estado</th><th scope="col">Objetos</th></tr></thead>
+<tbody>
+{itens.map((i) => (
+  <tr>
+    <th scope="row">{rotaDaReferencia(i.anchor) ? <a href={rotaDaReferencia(i.anchor)}>{i.id}</a> : i.id}</th>
+    <td class="md"><Md html={i.tituloHtml} em="span" /></td>
+    <td><span class={`estado ${i.state}`}>{ESTADO[i.state] ?? i.state}</span></td>
+    <td>{i.objects == null ? <span class="ausente">não declarados</span> : i.objects.map((o) => <div><a href={rotaDaRelacao(o)}><code>{o}</code></a></div>)}</td>
+  </tr>
+))}
+</tbody></table></div>
+<p class="suave">"Não declarados": o pacote não diz quais objetos o item afeta, e o portal não faz essa ligação por conta própria.</p>
+
+<h2 id="decisoes">Decisões registradas</h2>
+<p>
+  Uma decisão já tomada na origem não entra em <code>open_items</code>. Ela é lida no documento responsável.
+  Estas são as ADRs da origem copiadas para o portal no commit fixado:
+</p>
+<ul>
+  {adrs.map((a) => <li><a href={rotaDaReferencia(a.caminho)}>{a.titulo}</a> <span class="suave">(<code>{a.caminho}</code>)</span></li>)}
+</ul>
+
+<h2 id="auditorias">Auditorias das views</h2>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">View</th><th scope="col">Estado</th><th scope="col">Commit</th><th scope="col">Critérios</th><th scope="col">Achados</th><th scope="col">Referência</th></tr></thead>
+<tbody>
+{Object.entries(pacote.view_audits).map(([v, a]) => (
+  <tr>
+    <td><a href={rotaDaRelacao(v)}><code>{v}</code></a></td>
+    <td><span class={`estado ${a.status}`}>{a.status}</span></td>
+    <td>{a.commit ? <code>{a.commit}</code> : <span class="ausente">ausente</span>}</td>
+    <td>{a.criteria.map((c) => <div><code>{c}</code></div>)}</td>
+    <td>{a.findings.length ? a.findings.join(", ") : <span class="suave">nenhum</span>}</td>
+    <td>{a.reference == null ? <span class="ausente">ausente</span> : rotaDaReferencia(a.reference) ? <a href={rotaDaReferencia(a.reference)}><code>{a.reference}</code></a> : <code>{a.reference}</code>}</td>
+  </tr>
+))}
+</tbody></table></div>
+
+<h2 id="verificacoes">Verificações do <code>pytest</code></h2>
+<p>
+  São {Object.keys(pacote.checks).length} verificações em {listaDeModulos.length} módulos, registradas em {execucoes.length === 1 ? "uma execução" : `${execucoes.length} execuções`}.
+  Elas cobrem a prova de acesso por execução, as invariantes, as reconciliações e a certificação da captura.
+  Uma verificação <span class="estado skipped">skipped</span> foi pulada, e o pacote não registra o motivo.
+</p>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Módulo</th><th scope="col">O que guarda</th><th scope="col">Camada</th><th scope="col">Resultados</th></tr></thead>
+<tbody>
+{listaDeModulos.map((m) => (
+  <tr>
+    <td>{rotaDaReferencia(m.modulo) ? <a href={rotaDaReferencia(m.modulo)}><code>{m.modulo}</code></a> : <code>{m.modulo}</code>}</td>
+    <td>{m.resumo ?? <span class="ausente">ausente</span>}</td>
+    <td>{[...m.camadas].every((c) => c == null) ? <span class="ausente">não declarada</span> : [...m.camadas].filter(Boolean).join(", ")}</td>
+    <td>
+      {Object.entries(m.estados).map(([e, n]) => <div>{e === "sem resultado" ? <span class="ausente">sem resultado</span> : <span class={`estado ${e}`}>{e}</span>} {n}</div>)}
+      <details><summary>Verificações</summary>
+        <ul>{m.itens.map((c) => <li><code>{c.id.split("::").slice(1).join("::")}</code> <Resultado resultado={c.result} /></li>)}</ul>
+      </details>
+    </td>
+  </tr>
+))}
+</tbody></table></div>
+
+<h2 id="testes">Testes do dbt</h2>
+<p>
+  São {testes.length} testes, com resultados {Object.entries(testesPorEstado).map(([e, n]) => <>{e === "sem resultado" ? <span class="ausente">sem resultado</span> : <span class={`estado ${e}`}>{e}</span>} {n} </>)},
+  registrados em {execucoesDosTestes.length === 1 ? "uma execução" : `${execucoesDosTestes.length} execuções`}
+  (resultados de {dataHora(pacote.provenance.dbt.run_results_generated_at)}). Os testes de cada relação estão na página dela.
+</p>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Teste</th><th scope="col">Tipo</th><th scope="col">Quantidade</th></tr></thead>
+<tbody>{testesPorTipo.map((t) => <tr><td><code>{t.test}</code></td><td>{t.kind}</td><td>{t.n}</td></tr>)}</tbody>
+</table></div>
+</Base>

@@ -1,0 +1,156 @@
+---
+// Estrutura do projeto e ambientes (PLANO §3; mapeamento §2.2). Camadas e materializações derivadas
+// de relations; travessias de crossings (Mermaid, só nesta página: D02, condição 3); artefatos de
+// infraestrutura e documentos de environments, lidos por commit.
+import Base from "../../layouts/Base.astro";
+import Md from "../../components/Md.astro";
+import { pacote, procedencia, relacoes, camadas, rota, rotaDaRelacao, rotaDaReferencia, mdDoPacoteEmLinha, data, caminhosCopiados } from "../../lib/portal.mjs";
+import { semMarcacao } from "../../lib/markdown.mjs";
+
+// Camadas e materializações (perspectiva física).
+const porCamada = camadas.map((c) => {
+  const xs = relacoes.filter((x) => x.camada === c);
+  const combinacoes = {};
+  for (const x of xs) {
+    const k = `${x.r.resource_type}${x.r.materialization ? ` · ${x.r.materialization}` : ""}`;
+    combinacoes[k] = (combinacoes[k] ?? 0) + 1;
+  }
+  const papeis = [...new Set(xs.flatMap((x) => x.r.grants_select))].sort();
+  return { camada: c, n: xs.length, combinacoes, papeis };
+});
+
+// Travessias: diagrama Mermaid gerado do pacote. Rótulo = texto plano, com aspas e < > codificados.
+const rotulo = (s, n = 48) => {
+  const t = semMarcacao(s);
+  return (t.length > n ? `${t.slice(0, n - 1)}…` : t).replace(/#/g, "#35;").replace(/"/g, "#quot;").replace(/</g, "#lt;").replace(/>/g, "#gt;");
+};
+const ids = new Map();
+const idDe = (texto) => ids.get(texto) ?? ids.set(texto, `n${ids.size}`).get(texto);
+const linhas = [
+  "flowchart LR",
+  "  accTitle: Travessias fora do dbt",
+  "  accDescr: Como os dados chegam às camadas de origem do armazém, conforme crossings do pacote de metadados",
+];
+for (const t of pacote.crossings) {
+  const o = idDe(t.origin), d = idDe(t.destination);
+  linhas.push(`  ${o}["${rotulo(t.origin)}"] -->|"${rotulo(t.mechanism.split(/ — |, |\(/)[0], 36)}"| ${d}["${rotulo(t.destination)}"]`);
+}
+const definicao = linhas.join("\n");
+const travessias = await Promise.all(
+  pacote.crossings.map(async (t) => ({
+    origem: await mdDoPacoteEmLinha(t.origin),
+    destino: await mdDoPacoteEmLinha(t.destination),
+    mecanismo: await mdDoPacoteEmLinha(t.mechanism),
+    frequencia: await mdDoPacoteEmLinha(t.frequency),
+    nota: await mdDoPacoteEmLinha(t.note),
+  })),
+);
+
+const ENTREGA = { read_by_commit: "lido por commit", not_available: "indisponível" };
+const comGrao = relacoes.filter((x) => x.r.grain != null);
+const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].sort();
+---
+<Base titulo="Estrutura e ambientes" secao="estrutura" descricao="Camadas, travessias, infraestrutura local e GCP.">
+<h1>Estrutura do projeto e ambientes</h1>
+<p class="lead">
+  O projeto pode ser visto por várias perspectivas: negócio, modelo lógico, implementação física, infraestrutura e código.
+  Esta página separa o que o projeto <strong>declara</strong> (configuração e código), o que foi <strong>registrado</strong> numa data
+  (execução e evidência) e o que <strong>não está disponível</strong> ao portal.
+</p>
+<nav aria-label="Nesta página"><a href="#fisica">Camadas</a> · <a href="#travessias">Travessias</a> · <a href="#logica">Entidades e grãos</a> · <a href="#ambientes">Ambientes e documentos</a> · <a href="#arquivos">Arquivos da origem</a></nav>
+
+<h2 id="fisica">Camadas e materializações</h2>
+<p>As camadas aparecem na ordem do pipeline, calculada pela linhagem. A materialização diz como cada objeto existe no banco: tabela, view, incremental, snapshot ou seed. Uma <em>source</em> não é materializada pelo dbt; ela é a origem.</p>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Camada (schema)</th><th scope="col">Relações</th><th scope="col">Tipo · materialização</th><th scope="col">Papéis com leitura em alguma relação</th></tr></thead>
+<tbody>
+{porCamada.map((c) => (
+  <tr>
+    <th scope="row"><a href={rota(`governanca/?camada=${c.camada}#catalogo`)}>{c.camada}</a></th>
+    <td>{c.n}</td>
+    <td>{Object.entries(c.combinacoes).map(([k, n]) => <div>{k}: {n}</div>)}</td>
+    <td>{c.papeis.length ? c.papeis.map((p) => <code>{p}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão</span>}</td>
+  </tr>
+))}
+</tbody></table></div>
+<p class="suave">Um schema separa os nomes dentro do banco. Ele não garante, sozinho, que o armazenamento fique isolado. Os papéis com leitura vêm de <code>grants_select</code>.</p>
+
+<h2 id="travessias">Travessias fora do dbt</h2>
+<p>Antes do dbt, os dados chegam às camadas de origem por ingestão em lote, por <em>streaming</em> e por captura do legado. A ligação é por camada, como o pacote a declara: não há precisão por coluna nessas travessias.</p>
+<div id="diagrama" class="diagrama" data-definicao={definicao}><p class="suave">Carregando o diagrama…</p></div>
+<details><summary>Definição do diagrama (Mermaid, gerada do pacote)</summary><pre><code>{definicao}</code></pre></details>
+<h3>Travessias (alternativa em tabela)</h3>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Origem</th><th scope="col">Destino</th><th scope="col">Mecanismo</th><th scope="col">Frequência</th><th scope="col">Nota</th></tr></thead>
+<tbody>
+{travessias.map((t) => (
+  <tr>
+    <td class="md"><Md html={t.origem} em="span" /></td>
+    <td class="md"><Md html={t.destino} em="span" /></td>
+    <td class="md"><Md html={t.mecanismo} em="span" /></td>
+    <td class="md"><Md html={t.frequencia} em="span" /></td>
+    <td class="md"><Md html={t.nota} em="span" /></td>
+  </tr>
+))}
+</tbody></table></div>
+
+<h2 id="logica">Entidades e grãos</h2>
+<p>
+  O grão diz o que uma linha representa. É o primeiro passo para ler um fato ou uma dimensão.
+  Abaixo estão as relações que declaram grão no pacote.
+</p>
+<p>
+  <span class="ausente">Relacionamentos não declarados no pacote da {procedencia.ref}.</span>
+  O pacote ainda não traz o destino das chaves estrangeiras, e o portal não deduz as ligações pelo nome dos testes.
+  A origem aceitou acrescentar esse campo na próxima versão do pacote. Quando ele chegar, o diagrama entidade-relacionamento passa a ser gerado a partir dele.
+</p>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Relação</th><th scope="col">Grão declarado</th><th scope="col">Domínio</th></tr></thead>
+<tbody>
+{comGrao.map((x) => (
+  <tr><td><a href={rotaDaRelacao(x.id)}><code>{x.id}</code></a></td><td>{x.r.grain}</td><td>{x.r.meta?.domain ?? <span class="ausente">não declarado</span>}</td></tr>
+))}
+</tbody></table></div>
+
+<h2 id="ambientes">Ambientes e documentos</h2>
+<p>
+  Artefatos que o pacote indica para esta página (<code>environments</code>). Os lidos por commit estão copiados no portal com o restante da origem.
+  Uma data de congelamento indica que o conteúdo descreve um estado encerrado naquela data.
+</p>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Artefato</th><th scope="col">Caminho</th><th scope="col">Entrega</th><th scope="col">Congelado em</th><th scope="col">Nota</th></tr></thead>
+<tbody>
+{pacote.environments.map((e) => {
+  const href = e.delivery === "read_by_commit" && e.repository === procedencia.repository ? rotaDaReferencia(e.path) : null;
+  return (
+  <tr id={`ambiente-${e.id}`}>
+    <th scope="row">{e.title}</th>
+    <td>{href ? <a href={href}><code>{e.path}</code></a> : <code>{e.path}</code>}<div class="suave">{e.repository}{e.commit && <> em <code>{e.commit}</code></>}</div></td>
+    <td><span class={`estado ${e.delivery}`}>{ENTREGA[e.delivery] ?? e.delivery}</span></td>
+    <td>{e.frozen_at ? data(e.frozen_at) : <span class="suave">—</span>}</td>
+    <td>{e.note ?? <span class="suave">—</span>}</td>
+  </tr>
+  );
+})}
+</tbody></table></div>
+<p class="suave">
+  O ambiente GCP foi desmontado. Desse lado, a comparação local ↔ GCP usa a declaração (Terraform, mapa de paridade) e o registro datado da fase GCP.
+  Ela não usa uma observação atual. As evidências coletadas no GCP aparecem como indisponíveis enquanto a origem não decidir se e como entram.
+</p>
+
+<h2 id="arquivos">Arquivos da origem</h2>
+<p>Arquivos que o portal lê por commit, fora do pacote, copiados no mesmo commit (<code>{procedencia.ref}</code>):</p>
+<ul>{pastasRaiz.map((p) => <li><a href={rotaDaReferencia(`${p}/`)}><code>{p}/</code></a></li>)}</ul>
+</Base>
+<script>
+import mermaid from "mermaid";
+const alvo = document.getElementById("diagrama");
+const escuro = matchMedia("(prefers-color-scheme: dark)").matches;
+mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: escuro ? "dark" : "neutral" });
+mermaid.render("travessias-svg", alvo.dataset.definicao).then(({ svg }) => {
+  alvo.innerHTML = svg;
+  alvo.dataset.pronto = "1";
+}).catch((e) => {
+  alvo.textContent = `O diagrama não pôde ser desenhado (${e.message}). As travessias estão na tabela abaixo.`;
+});
+</script>

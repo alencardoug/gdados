@@ -1,0 +1,65 @@
+---
+// Página de conceitos e artefatos (PLANO §4; docs/pagina_de_conceitos.md). Nesta etapa: a entrada
+// própria, o glossário da origem como definição de origem e os termos do pacote cuja explicação
+// editorial ainda não foi escrita. Nenhum texto explicativo é inventado aqui.
+import Base from "../../layouts/Base.astro";
+import { caminhosCopiados, lerArquivo, rota, rotaDaReferencia, procedencia } from "../../lib/portal.mjs";
+import { semMarcacao } from "../../lib/markdown.mjs";
+
+const titulo = (c) => semMarcacao((/^#\s+(.+)$/m.exec(lerArquivo(c)) ?? [null, c.split("/").pop()])[1]);
+const glossario = caminhosCopiados
+  .filter((c) => /^docs\/glossario_de_negocio\/.+\.md$/.test(c))
+  .map((c) => ({ caminho: c, titulo: titulo(c), indice: /README\.md$/.test(c) }))
+  .sort((a, b) => Number(b.indice) - Number(a.indice) || a.titulo.localeCompare(b.titulo, "pt-BR"));
+const documentos = ["docs/governanca_de_dados.md", "docs/dicionario_de_dados.md", "docs/modelo_de_dados.md", "docs/arquitetura.md"]
+  .filter((c) => caminhosCopiados.includes(c))
+  .map((c) => ({ caminho: c, titulo: titulo(c) }));
+// Vocabulário que as páginas do portal usam e que pede explicação (mapeamento §2.3).
+const termos = [
+  { termo: "Grão", onde: "relações, perguntas e views", href: rota("estrutura/#logica") },
+  { termo: "Aditividade", onde: "perguntas e métricas", href: rota("governanca/metricas/") },
+  { termo: "Sensibilidade", onde: "colunas do catálogo", href: rota("governanca/#catalogo") },
+  { termo: "Origem terminal, seed e valor gerado", onde: "linhagem por coluna", href: rota("governanca/linhagem/?modo=coluna") },
+  { termo: "Travessia", onde: "estrutura e ambientes", href: rota("estrutura/#travessias") },
+  { termo: "Contrato", onde: "relações de analytics", href: null },
+  { termo: "Razão e denominador zero", onde: "métricas", href: rota("governanca/metricas/") },
+  { termo: "Procedência", onde: "rodapé de todas as páginas", href: rota("procedencia/") },
+];
+---
+<Base titulo="Conceitos e artefatos" secao="conceitos" descricao="Fundamentos para ler o catálogo, a linhagem e os ambientes.">
+<h1>Conceitos e artefatos</h1>
+<p class="lead">
+  Esta página reúne os fundamentos para interpretar as outras: o que é cada termo, que problema resolve,
+  como aparece neste projeto e onde vê-lo na prática.
+</p>
+<p>
+  <span class="ausente">Explicações do portal ainda não escritas.</span>
+  O formato das entradas e o inventário de termos são a próxima etapa editorial. Por enquanto, esta página aponta para as definições que a origem mantém,
+  identificadas como tais, e para os lugares do portal onde cada termo aparece.
+</p>
+
+<h2>Definições da origem</h2>
+<p class="suave">Textos de <code>{procedencia.repository}</code> na <code>{procedencia.ref}</code>. A origem é a responsável por essas definições.</p>
+<h3>Glossário de negócio</h3>
+<ul>
+  {glossario.map((g) => <li><a href={rotaDaReferencia(g.caminho)}>{g.titulo}</a>{g.indice && <span class="suave"> (índice do glossário)</span>}</li>)}
+</ul>
+<h3>Documentos de referência</h3>
+<ul>
+  {documentos.map((d) => <li><a href={rotaDaReferencia(d.caminho)}>{d.titulo}</a> <span class="suave">(<code>{d.caminho}</code>)</span></li>)}
+</ul>
+
+<h2>Termos usados pelo portal</h2>
+<p>Termos do pacote que aparecem nas outras páginas e ainda vão receber uma explicação do portal.</p>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Termo</th><th scope="col">Onde aparece</th><th scope="col">Explicação do portal</th></tr></thead>
+<tbody>
+{termos.map((t) => (
+  <tr>
+    <th scope="row">{t.termo}</th>
+    <td>{t.href ? <a href={t.href}>{t.onde}</a> : t.onde}</td>
+    <td><span class="ausente">pendente</span></td>
+  </tr>
+))}
+</tbody></table></div>
+</Base>

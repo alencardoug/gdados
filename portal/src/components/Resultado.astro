@@ -1,0 +1,9 @@
+---
+// Resultado de um teste ou de um check do pacote: result null é "sem resultado" (D03).
+import { dataHora } from "../lib/portal.mjs";
+interface Props { resultado: { status: string; executed_at?: string } | null }
+const { resultado } = Astro.props;
+---
+{resultado == null
+  ? <span class="ausente">sem resultado</span>
+  : <><span class={`estado ${resultado.status}`}>{resultado.status}</span>{resultado.executed_at && <span class="suave"> em {dataHora(resultado.executed_at)}</span>}</>}

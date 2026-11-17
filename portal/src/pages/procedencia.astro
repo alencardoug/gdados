@@ -1,0 +1,62 @@
+---
+// Painel de procedência (mapeamento §1, provenance): de onde vêm os dados exibidos e em que estado.
+import Base from "../layouts/Base.astro";
+import Ausente from "../components/Ausente.astro";
+import { procedencia, pacote, dataHora, rotaDoArquivo, caminhosCopiados } from "../lib/portal.mjs";
+const p = pacote.provenance;
+const w = p.warehouse;
+---
+<Base titulo="Procedência" descricao="De onde vêm os metadados exibidos pelo portal.">
+<p class="migalhas"><a href="../">Início</a></p>
+<h1>Procedência do pacote</h1>
+<p class="lead">
+  O portal lê uma cópia do pacote de metadados da origem, feita por comando explícito num commit fixado (decisão D03 do gdados).
+  A build confere o SHA-256 de cada arquivo copiado e valida o pacote contra o esquema do mesmo commit. Se algo falhar, a build é recusada.
+</p>
+<h2>Cópia</h2>
+<dl class="ficha">
+  <dt>Repositório</dt><dd><code>{procedencia.repository}</code></dd>
+  <dt>Referência</dt><dd><code>{procedencia.ref}</code></dd>
+  <dt>Commit</dt><dd><code>{procedencia.commit}</code></dd>
+  <dt>Data do commit</dt><dd>{dataHora(procedencia.commit_date)}</dd>
+  <dt>Copiado em</dt><dd>{dataHora(procedencia.copied_at)}</dd>
+  <dt>Arquivos conferidos</dt><dd>{procedencia.files.length}: o pacote, o esquema, o exemplo e {caminhosCopiados.length} arquivos lidos por commit</dd>
+</dl>
+<h2>Geração do pacote na origem</h2>
+<dl class="ficha">
+  <dt>Formato</dt><dd>{pacote.format}</dd>
+  <dt>dbt</dt><dd>{p.dbt.dbt_version}, adaptador <code>{p.dbt.adapter_type}</code>, alvo <code>{p.environment.dbt_target}</code></dd>
+  <dt>Manifesto</dt><dd>{dataHora(p.dbt.manifest_generated_at)}, invocação <code>{p.dbt.manifest_invocation_id}</code></dd>
+  <dt>Resultados da execução</dt><dd>{p.dbt.run_results_generated_at ? <>{dataHora(p.dbt.run_results_generated_at)}, invocação <code>{p.dbt.run_results_invocation_id}</code></> : <span class="ausente">ausente</span>}</dd>
+  <dt>Arquivos de entrada</dt><dd>{p.inputs.length}, resumo SHA-256 <code>{p.inputs_sha256}</code></dd>
+  <dt>Base dos links</dt><dd><Ausente valor={p.link_base} /></dd>
+  <dt>Árvore com alterações na geração</dt>
+  <dd>
+    {String(p.tree_dirty_at_generation)}
+    {p.tree_dirty_at_generation && <span class="suave"> Segundo a especificação da origem, esse é o valor no fluxo normal: muda-se a declaração, gera-se o pacote e depois se faz o commit. Sozinho, o valor não indica defeito nem prova nada. Quem prova que o pacote bate com os insumos versionados é o <code>inputs_sha256</code>.</span>}
+  </dd>
+</dl>
+<h2>Armazém</h2>
+<dl class="ficha">
+  <dt>Estado</dt><dd><span class={`estado ${w.status}`}>{w.status}</span></dd>
+  {w.status === "verified" ? <>
+    <dt>Construído do commit</dt><dd><code>{w.built_from_commit}</code></dd>
+    <dt>Construído em</dt><dd>{dataHora(w.built_at)}</dd>
+    <dt>Invocação</dt><dd><code>{w.built_by_invocation_id}</code></dd>
+  </> : <>
+    <dt>Motivo</dt><dd><Ausente valor={w.reason} /></dd>
+  </>}
+</dl>
+<h2>Arquivos copiados</h2>
+<div class="rolagem"><table>
+<thead><tr><th>Arquivo na origem</th><th>Bytes</th><th>SHA-256</th></tr></thead>
+<tbody>
+{procedencia.files.map((f) => (
+  <tr>
+    <td>{f.path.startsWith("arquivos/") ? <a href={rotaDoArquivo(f.source_path)}><code>{f.source_path}</code></a> : <code>{f.source_path}</code>}</td>
+    <td>{f.bytes.toLocaleString("pt-BR")}</td>
+    <td><code>{f.sha256.slice(0, 16)}…</code></td>
+  </tr>
+))}
+</tbody></table></div>
+</Base>

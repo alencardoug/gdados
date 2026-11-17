@@ -1,0 +1,7 @@
+---
+// HTML já saneado por lib/markdown.mjs. Nunca recebe texto que não tenha passado pelo saneador.
+interface Props { html: string | null; em?: "div" | "span"; ausente?: string }
+const { html, em = "div", ausente = "ausente" } = Astro.props;
+const Tag = em;
+---
+{html == null ? <span class="ausente">{ausente}</span> : <Tag class="md"><Fragment set:html={html} /></Tag>}

@@ -1,0 +1,65 @@
+---
+// Exploração da linhagem (PLANO §2.2; D02). A abertura é sempre um recorte (condição 1); o grafo
+// inteiro é visão geral. O Mermaid não é carregado aqui (condição 3).
+import Base from "../../layouts/Base.astro";
+import { pacote, camadas, rota } from "../../lib/portal.mjs";
+import { corDaCamada } from "../../cliente/camadas.js";
+// Recorte padrão: a view da primeira pergunta do pacote, sem fixar identificador no código.
+const padrao = Object.values(pacote.questions)[0]?.view ?? Object.keys(pacote.relations)[0];
+const modos = [
+  { id: "relacao", rotulo: "Por relação" },
+  { id: "coluna", rotulo: "Por coluna" },
+  { id: "tudo", rotulo: "Visão geral (todas as relações)" },
+];
+---
+<Base titulo="Linhagem" secao="governanca">
+<p class="migalhas"><a href={rota("governanca/")}>Governança</a></p>
+<h1>Linhagem</h1>
+<p class="lead">
+  A linhagem mostra de onde vem o valor de cada coluna. No grafo <strong>por coluna</strong>, cada ligação vai de uma coluna ao insumo imediato dela.
+  No grafo <strong>por relação</strong>, essas ligações são somadas entre as relações. As camadas vão da esquerda para a direita na ordem do pipeline,
+  calculada pelo caminho mais longo de cada relação desde as origens.
+</p>
+<p class="suave">
+  Uma ligação diz que o valor vem dali. Uma junção ou um filtro de que a relação também depende pode não aparecer como ligação.
+  Uma origem do tipo seed ou valor gerado é um fim válido do caminho, não uma quebra.
+</p>
+
+<div id="linhagem" data-dados={rota("dados/")} data-rota-relacao={rota("governanca/relacao/")} data-padrao={padrao}>
+  <nav aria-label="Modo da linhagem" class="filtros">
+    {modos.map((m) => <a class="modo" data-modo={m.id} href={`?modo=${m.id}`}>{m.rotulo}</a>)}
+    <button type="button" id="ajustar">Ajustar à área visível</button>
+  </nav>
+  <p id="aviso" role="status"></p>
+  <ul class="legenda" aria-label="Legenda das camadas">
+    {camadas.map((c, i) => <li><span class="amostra" style={`background:${corDaCamada(i)}`}></span>{c}</li>)}
+  </ul>
+  <div id="grafo" role="img" aria-label="Grafo de linhagem do recorte. As mesmas ligações estão na tabela abaixo."></div>
+  <p class="suave">Clique num nó para destacar o caminho dele no recorte. Clique duas vezes, ou use o botão na lista, para expandir um nível. Role para dar zoom e arraste para deslocar.</p>
+  <p id="selecao" aria-live="polite"></p>
+
+  <div id="nos-bloco">
+    <h2>Nós do recorte</h2>
+    <ul id="nos" class="resultados"></ul>
+  </div>
+  <h2>Ligações (alternativa em tabela)</h2>
+  <p id="ligacoes-situacao" class="suave" role="status"></p>
+  <div class="rolagem"><table>
+    <thead><tr><th scope="col">Insumo</th><th scope="col">Destino</th><th scope="col">Colunas ligadas</th></tr></thead>
+    <tbody id="ligacoes"></tbody>
+  </table></div>
+</div>
+</Base>
+<script>
+import { iniciarLinhagem } from "../../cliente/linhagem.js";
+const raiz = document.getElementById("linhagem");
+const params = new URLSearchParams(location.search);
+const modo = params.get("modo") ?? "relacao";
+for (const a of raiz.querySelectorAll("a.modo")) {
+  const u = new URL(a.href);
+  u.searchParams.set("r", params.get("r") ?? raiz.dataset.padrao);
+  a.href = u.toString();
+  if (a.dataset.modo === modo) a.setAttribute("aria-current", "page");
+}
+iniciarLinhagem(raiz);
+</script>

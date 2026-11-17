@@ -1,0 +1,130 @@
+/* Estilo do portal gdados. Cores em variáveis, com tema escuro pela preferência do sistema. */
+:root {
+  --fundo: #fbfbfa;
+  --superficie: #ffffff;
+  --texto: #1c1d1f;
+  --suave: #5b5f66;
+  --borda: #dcdde0;
+  --realce: #1d4ed8;
+  --realce-fundo: #e8eefc;
+  --ausente: #8a5a00;
+  --ausente-fundo: #fff6e0;
+  --ok: #1f6f43;
+  --alerta: #a33a1a;
+  --codigo-fundo: #f1f2f4;
+  --largura: 72rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #151618;
+    --superficie: #1d1f22;
+    --texto: #e6e7e9;
+    --suave: #a3a7ae;
+    --borda: #34373c;
+    --realce: #8ab4ff;
+    --realce-fundo: #1f2a44;
+    --ausente: #f0c060;
+    --ausente-fundo: #3a2f14;
+    --ok: #6fd39b;
+    --alerta: #ff9a7a;
+    --codigo-fundo: #26292d;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--realce); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--realce);
+  outline-offset: 2px;
+}
+code, pre, kbd { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.9em; }
+code { background: var(--codigo-fundo); padding: 0.05em 0.3em; border-radius: 3px; overflow-wrap: anywhere; }
+pre { background: var(--codigo-fundo); padding: 0.75rem 1rem; overflow-x: auto; border-radius: 4px; }
+pre code { background: none; padding: 0; }
+
+.pular { position: absolute; left: -999px; }
+.pular:focus { left: 1rem; top: 1rem; background: var(--superficie); padding: 0.5rem; z-index: 10; }
+
+header.topo { border-bottom: 1px solid var(--borda); background: var(--superficie); }
+header.topo .faixa, main, footer .faixa { max-width: var(--largura); margin: 0 auto; padding: 0 1rem; }
+header.topo .faixa { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding-block: 0.75rem; }
+header.topo .marca { font-weight: 700; text-decoration: none; color: var(--texto); }
+header.topo nav ul { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; list-style: none; margin: 0; padding: 0; }
+header.topo nav a { text-decoration: none; }
+header.topo nav a[aria-current="page"] { font-weight: 700; text-decoration: underline; }
+
+main { padding-block: 1.5rem 3rem; }
+h1 { font-size: 1.6rem; line-height: 1.25; margin: 0.5rem 0 1rem; overflow-wrap: anywhere; }
+h2 { font-size: 1.25rem; margin-top: 2rem; }
+h3 { font-size: 1.05rem; }
+.migalhas { font-size: 0.9rem; color: var(--suave); margin: 0; }
+.migalhas a { color: var(--suave); }
+.lead { font-size: 1.05rem; max-width: 48rem; }
+.suave { color: var(--suave); }
+
+.ausente {
+  color: var(--ausente);
+  background: var(--ausente-fundo);
+  padding: 0 0.3em;
+  border-radius: 3px;
+  font-style: italic;
+  font-size: 0.92em;
+}
+.estado { font-size: 0.85em; padding: 0.05em 0.4em; border-radius: 3px; border: 1px solid currentColor; white-space: nowrap; }
+.estado.pass, .estado.verified, .estado.audited { color: var(--ok); }
+.estado.fail, .estado.error, .estado.not_verified { color: var(--alerta); }
+.estado.skipped, .estado.pending, .estado.deferred, .estado.not_available { color: var(--ausente); }
+.etiqueta { font-size: 0.8em; color: var(--suave); border: 1px solid var(--borda); border-radius: 3px; padding: 0 0.35em; white-space: nowrap; }
+.fora-da-copia { color: var(--suave); text-decoration: underline dotted; cursor: help; }
+
+.rolagem { overflow-x: auto; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--borda); }
+th { background: var(--superficie); position: sticky; top: 0; }
+td code { white-space: nowrap; }
+td.md p:first-child { margin-top: 0; }
+td.md p:last-child { margin-bottom: 0; }
+
+dl.ficha { display: grid; grid-template-columns: minmax(9rem, max-content) 1fr; gap: 0.35rem 1rem; }
+dl.ficha dt { color: var(--suave); }
+dl.ficha dd { margin: 0; }
+@media (max-width: 40rem) {
+  dl.ficha { grid-template-columns: 1fr; }
+  dl.ficha dd { margin-bottom: 0.5rem; }
+}
+
+.cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; padding: 0; list-style: none; }
+.cartoes > li { background: var(--superficie); border: 1px solid var(--borda); border-radius: 6px; padding: 1rem; }
+.cartoes h2, .cartoes h3 { margin-top: 0; }
+
+.filtros { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: end; margin: 1rem 0; }
+.filtros label { display: flex; flex-direction: column; font-size: 0.85rem; color: var(--suave); gap: 0.2rem; }
+input[type="search"], select { font: inherit; padding: 0.35rem 0.5rem; border: 1px solid var(--borda); border-radius: 4px; background: var(--superficie); color: var(--texto); }
+input[type="search"] { min-width: min(22rem, 100%); }
+button { font: inherit; padding: 0.3rem 0.7rem; border: 1px solid var(--borda); border-radius: 4px; background: var(--superficie); color: var(--texto); cursor: pointer; }
+
+.resultados { list-style: none; padding: 0; margin: 0.5rem 0 1rem; max-height: 24rem; overflow: auto; }
+.resultados li { padding: 0.35rem 0; border-bottom: 1px solid var(--borda); }
+.resultados p { margin: 0.15rem 0 0; font-size: 0.9rem; color: var(--suave); }
+
+.md { max-width: 52rem; }
+.md table { font-size: 0.9rem; }
+.documento { max-width: 52rem; }
+
+#grafo { width: 100%; height: min(70vh, 40rem); border: 1px solid var(--borda); border-radius: 6px; background: var(--superficie); }
+.legenda { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; list-style: none; padding: 0; font-size: 0.85rem; }
+.legenda .amostra { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 50%; margin-right: 0.3em; vertical-align: -0.05em; }
+.diagrama { overflow-x: auto; background: var(--superficie); border: 1px solid var(--borda); border-radius: 6px; padding: 0.5rem; }
+
+footer.procedencia { border-top: 1px solid var(--borda); background: var(--superficie); font-size: 0.85rem; color: var(--suave); }
+footer.procedencia .faixa { padding-block: 1rem 1.5rem; }
+footer.procedencia p { margin: 0.25rem 0; }

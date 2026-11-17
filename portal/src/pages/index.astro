@@ -1,0 +1,42 @@
+---
+import Base from "../layouts/Base.astro";
+import { procedencia, pacote, rota, commitCurto, relacoes, camadas } from "../lib/portal.mjs";
+const n = (x) => Object.keys(x).length;
+---
+<Base titulo="Início" descricao="Portal de leitura e explicação da governança do projeto de dados.">
+<h1>Portal de engenharia e governança de dados</h1>
+<p class="lead">
+  Este portal ajuda a entender o projeto de dados <code>{procedencia.repository}</code>: das origens às views de consumo,
+  a organização do código e os ambientes local e GCP. Ele mostra o pacote de metadados do commit
+  <code>{commitCurto(procedencia.commit)}</code> (<code>{procedencia.ref}</code>) como está, sem consultar bancos.
+  As definições pertencem à origem. Organizar e explicar essas definições é papel do portal.
+</p>
+<ul class="cartoes">
+  <li>
+    <h2><a href={rota("governanca/")}>Governança</a></h2>
+    <p>Catálogo das {relacoes.length} relações declaradas no pacote, perguntas de negócio, métricas, linhagem por relação e por coluna, testes e itens em aberto.</p>
+  </li>
+  <li>
+    <h2><a href={rota("estrutura/")}>Estrutura e ambientes</a></h2>
+    <p>Camadas, travessias fora do dbt, artefatos de infraestrutura local e GCP lidos por commit e o que cada um declara ou registra.</p>
+  </li>
+  <li>
+    <h2><a href={rota("conceitos/")}>Conceitos e artefatos</a></h2>
+    <p>Os fundamentos para ler o restante: grão, aditividade, linhagem, sensibilidade, procedência e os termos do glossário da origem.</p>
+  </li>
+</ul>
+<h2>O que o pacote traz</h2>
+<p class="suave">Contagens do pacote copiado, calculadas no build. Elas mudam quando o commit fixado muda.</p>
+<div class="rolagem"><table>
+<thead><tr><th>Seção</th><th>Itens</th></tr></thead>
+<tbody>
+<tr><td><code>relations</code></td><td>{relacoes.length}, em {camadas.length} camadas</td></tr>
+<tr><td><code>lineage</code></td><td>{n(pacote.lineage.relations)} relações com linhagem por coluna</td></tr>
+<tr><td><code>questions</code></td><td>{n(pacote.questions)}</td></tr>
+<tr><td><code>metrics</code></td><td>{n(pacote.metrics)}</td></tr>
+<tr><td><code>tests</code></td><td>{n(pacote.tests)}</td></tr>
+<tr><td><code>checks</code></td><td>{n(pacote.checks)}</td></tr>
+<tr><td><code>open_items</code></td><td>{pacote.open_items.length}</td></tr>
+<tr><td><code>environments</code></td><td>{pacote.environments.length}</td></tr>
+</tbody></table></div>
+</Base>

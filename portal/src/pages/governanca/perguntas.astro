@@ -1,0 +1,26 @@
+---
+// Entrada por pergunta de negócio (PLANO §2.1): título, view, fatos e dimensões.
+import Base from "../../layouts/Base.astro";
+import { pacote, rota, rotaDaPergunta, rotaDaRelacao } from "../../lib/portal.mjs";
+const perguntas = Object.entries(pacote.questions);
+---
+<Base titulo="Perguntas de negócio" secao="governanca">
+<p class="migalhas"><a href={rota("governanca/")}>Governança</a></p>
+<h1>Perguntas de negócio</h1>
+<p class="lead">
+  Cada pergunta é respondida por uma view de <code>consumption</code>, montada a partir de fatos e dimensões de <code>analytics</code>.
+  Ao abrir uma pergunta, você pode seguir o caminho da view até as origens.
+</p>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Pergunta</th><th scope="col">View</th><th scope="col">Fatos</th><th scope="col">Dimensões</th></tr></thead>
+<tbody>
+{perguntas.map(([id, q]) => (
+  <tr>
+    <th scope="row"><a href={rotaDaPergunta(id)}>{id}</a> — {q.title}</th>
+    <td><a href={rotaDaRelacao(q.view)}><code>{q.view}</code></a></td>
+    <td>{q.facts.map((f) => <div><a href={rotaDaRelacao(f)}><code>{f}</code></a></div>)}</td>
+    <td>{q.dimensions.map((d) => <div><a href={rotaDaRelacao(d)}><code>{d}</code></a></div>)}</td>
+  </tr>
+))}
+</tbody></table></div>
+</Base>

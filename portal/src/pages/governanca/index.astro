@@ -1,0 +1,74 @@
+---
+// Catálogo (PLANO §2.1): relações do pacote com busca e filtros por camada, domínio, sensibilidade e tipo.
+import Base from "../../layouts/Base.astro";
+import Ausente from "../../components/Ausente.astro";
+import { relacoes, camadas, dominios, sensibilidades, tiposDeRecurso, rota, rotaDaRelacao, pacote } from "../../lib/portal.mjs";
+import { semMarcacao } from "../../lib/markdown.mjs";
+const resumo = (t, n = 140) => {
+  if (t == null) return null;
+  const s = semMarcacao(t);
+  return s.length > n ? `${s.slice(0, n - 1)}…` : s;
+};
+---
+<Base titulo="Governança" secao="governanca" descricao="Catálogo, perguntas, métricas e linhagem do projeto de dados.">
+<h1>Governança: da fonte às views</h1>
+<p class="lead">
+  Comece por uma <a href={rota("governanca/perguntas/")}>pergunta de negócio</a>, por uma <a href={rota("governanca/metricas/")}>métrica</a>
+  ou por uma relação do catálogo abaixo. Para ver como uma relação depende das outras, abra a <a href={rota("governanca/linhagem/")}>linhagem</a>.
+  A página de <a href={rota("governanca/evidencias/")}>estado e evidência</a> reúne testes, verificações, auditorias e itens em aberto.
+</p>
+
+<h2 id="busca-titulo">Buscar</h2>
+<div class="filtros" role="search" aria-labelledby="busca-titulo">
+  <label>Relação, coluna, pergunta ou métrica
+    <input id="busca" type="search" disabled placeholder="Carregando o índice…" autocomplete="off" data-indice={rota("dados/busca.json")}>
+  </label>
+</div>
+<p id="busca-situacao" role="status" class="suave"></p>
+<ul id="busca-resultados" class="resultados"></ul>
+
+<h2 id="catalogo">Catálogo de relações</h2>
+<form class="filtros" id="filtros" aria-label="Filtros do catálogo">
+  <label>Camada
+    <select name="camada"><option value="">Todas</option>{camadas.map((c) => <option value={c}>{c}</option>)}</select>
+  </label>
+  <label>Domínio
+    <select name="dominio"><option value="">Todos</option>{dominios.map((d) => <option value={d ?? "-"}>{d ?? "não declarado"}</option>)}</select>
+  </label>
+  <label>Sensibilidade de alguma coluna
+    <select name="sensibilidade"><option value="">Todas</option>{sensibilidades.map((s) => <option value={s}>{s}</option>)}</select>
+  </label>
+  <label>Tipo
+    <select name="tipo"><option value="">Todos</option>{tiposDeRecurso.map((t) => <option value={t}>{t}</option>)}</select>
+  </label>
+  <button type="reset">Limpar</button>
+</form>
+<p id="catalogo-situacao" role="status" class="suave">{relacoes.length} relações.</p>
+<p class="suave">
+  A sensibilidade classifica a coluna, mas não diz quem pode lê-la. Quem lê cada relação está nos papéis com leitura (<code>grants_select</code>), na página de cada relação.
+</p>
+<div class="rolagem"><table id="relacoes">
+<thead><tr><th scope="col">Relação</th><th scope="col">Camada</th><th scope="col">Tipo</th><th scope="col">Domínio</th><th scope="col">Colunas</th><th scope="col">Descrição</th></tr></thead>
+<tbody>
+{relacoes.map((x) => (
+  <tr data-camada={x.camada} data-dominio={x.r.meta?.domain ?? "-"} data-sensibilidade={x.sensibilidades.join(" ")} data-tipo={x.r.resource_type}>
+    <td><a href={rotaDaRelacao(x.id)}><code>{x.id}</code></a></td>
+    <td>{x.camada}</td>
+    <td>{x.r.resource_type}</td>
+    <td><Ausente valor={x.r.meta?.domain} texto="não declarado" /></td>
+    <td>{Object.keys(x.r.columns).length}</td>
+    <td>{x.semDescricao ? <span class="ausente">sem descrição declarada</span> : <Ausente valor={resumo(x.r.description)} />}</td>
+  </tr>
+))}
+</tbody></table></div>
+<p class="suave">
+  "Sem descrição declarada" é a falta que o pacote registra em <code>description_gaps</code> ({pacote.description_gaps.length} registros).
+  O registro cobre o que foi declarado e não inventaria o banco.
+</p>
+</Base>
+<script>
+import { iniciarBusca } from "../../cliente/busca.js";
+import { iniciarFiltros } from "../../cliente/filtros.js";
+iniciarBusca(document.getElementById("busca"), document.getElementById("busca-resultados"), document.getElementById("busca-situacao"));
+iniciarFiltros(document.getElementById("filtros"), document.querySelectorAll("#relacoes tbody tr"), document.getElementById("catalogo-situacao"));
+</script>
