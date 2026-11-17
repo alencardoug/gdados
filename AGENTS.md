@@ -1,0 +1,57 @@
+# Instruções para agentes — gdados
+
+## Antes de trabalhar
+
+Leia [README.md](README.md), [PLANO.md](PLANO.md) e [docs/decisoes.md](docs/decisoes.md).
+O pedido vivo do Owner define o trabalho: avaliar um plano não autoriza implementar a aplicação.
+
+## Limite de escrita
+
+- Toda escrita deste trabalho, inclusive planos, rascunhos, resultados, caches e artefatos, fica
+  dentro de `/home/doug/Projetos/gdados`.
+- O `mvp_eng_dados_2` (fonte vigente, lida por commit fixado), o `mvp_eng_dados_1` (arquivado,
+  referência histórica) e o Linkedia são fontes somente para leitura.
+- Não executar comandos nesses projetos que gerem logs, atualizem caches, compilem modelos,
+  modifiquem bancos ou acionem infraestrutura. Ler arquivos existentes é permitido. No
+  `mvp_eng_dados_2`, usar só leitura de arquivos e `git show`/`git log`; nenhum comando do projeto,
+  nem os que parecem só ler (`docs/consumidores.md` §2 da origem).
+- Se faltar uma exportação da origem, registrar a dependência e encaminhar a necessidade ao Owner.
+- Não desfazer alterações de outras sessões. Desfazer somente alterações próprias identificadas.
+
+## Estado da autorização
+
+Em 14/11/2026 o Owner fechou a E0 e autorizou as provas locais da D01 e da D02, a E1 como
+consumidora do formato da origem e a E2. Em 17/11/2026 fixou o pacote da origem na `v2.1.0`; as
+provas e as etapas passam a usar o pacote do commit fixado na D03. No mesmo dia, a resposta da
+origem, a pedido do Owner, liberou a E1 à E3 contra esse pacote, sem esperar a tag seguinte. Publicação e hospedagem
+aguardam a D04, na E5. Não há recurso novo autorizado no GCP (Q14). Os registros estão em
+[docs/decisoes.md](docs/decisoes.md).
+
+## Fontes e evidências
+
+- Português brasileiro em documentos, comentários e textos da interface; inglês nos identificadores
+  de código e nos nomes técnicos existentes das fontes.
+- Não inventar métricas, contagens, resultados de testes ou relações de linhagem.
+- Distinguir: proposto, declarado em código, medido em uma data e verificado no ambiente atual.
+- Metadados gerados devem informar origem, commit, ambiente, data do artefato e data da exportação.
+- Não transformar a classificação de sensibilidade em decisão de exposição ou permissão.
+- Não apresentar uma coluna gerada ou uma seed como quebra de linhagem.
+- Preservar limitações e decisões pendentes do projeto de dados; o portal não as resolve por conta própria.
+- Não copiar segredos, arquivos `.env`, estados Terraform, credenciais ou amostras de registros para o portal.
+
+## Diagramas
+
+Diagramas, esquemas e ilustrações devem ser definidos por código ou dados declarativos. Não usar
+figuras estáticas como fonte de verdade. Derivar relações dos artefatos responsáveis e oferecer
+uma alternativa textual ou tabular à visualização interativa.
+
+As bibliotecas propostas constam em `docs/decisoes.md`; a prova está autorizada, mas nenhuma foi
+adotada ainda.
+
+## Mudanças e validação
+
+- Não adicionar dependências ou provisionar serviços antes das decisões pertinentes do Owner.
+- Validar a aplicação localmente antes de propor a publicação.
+- Não publicar, criar projetos cloud ou configurar IAM antes da E5 e da decisão da D04.
+- Cada assunto tem um dono documental; não manter a mesma regra em vários arquivos.
+- Se houver commits, usar Conventional Commits com descrição em português e um assunto por commit.

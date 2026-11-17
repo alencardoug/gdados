@@ -1,0 +1,39 @@
+# Dependências e saídas de build
+node_modules/
+dist/
+build/
+.astro/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Execução, caches e evidências locais
+.cache/
+.pytest_cache/
+coverage/
+playwright-report/
+test-results/
+.local/
+*.log
+
+# Ambiente e credenciais
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+credentials*.json
+service-account*.json
+
+# Estado de ferramentas
+.firebase/
+.terraform/
+terraform.tfstate*
+terraform.tfvars
+*.tfplan
+
+# Editor e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

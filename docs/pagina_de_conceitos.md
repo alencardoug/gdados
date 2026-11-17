@@ -1,0 +1,162 @@
+# Página de conceitos e artefatos
+
+| Campo | Informação |
+|---|---|
+| Estado | Requisito incorporado ao plano; aplicação e conteúdo final ainda não implementados |
+| Pedido do Owner | Tornar compreensível a governança existente, dando à parte conceitual e teórica o mesmo peso da técnica |
+| Escopo deste arquivo | Objetivos de aprendizagem, organização da página e critérios editoriais |
+
+Este documento especifica a terceira página do portal. Não é o glossário final nem redefine as
+políticas do projeto de dados. O escopo e a sequência de entrega vivem no [plano](../PLANO.md).
+
+## 1. Objetivo
+
+Dar ao usuário condições de interpretar o catálogo, os diagramas, a linhagem e os ambientes.
+A navegação prática deve responder também ao significado, à finalidade e às consequências do
+que está sendo mostrado.
+
+A primeira explicação deve ser acessível a quem conhece o contexto do negócio, mas ainda não
+domina engenharia de dados. O aprofundamento deve permitir consultar a base conceitual, as escolhas
+reais do projeto e suas limitações, sem simplificações que mudem o significado técnico.
+
+## 2. Acesso e navegação
+
+- Entrada própria **Conceitos e artefatos** na navegação principal.
+- Busca por expressão em português, nome técnico em inglês, sigla e sinônimo pertinente.
+- Índice por assunto e consulta alfabética; os percursos orientados são uma opção adicional.
+- Ligações contextuais a partir de colunas, relações, controles e componentes dos diagramas.
+- Links permanentes para cada explicação e indicação de conceitos prévios para aprofundamento.
+- Retorno ao mesmo objeto, filtro e recorte depois de consultar uma explicação.
+- Acesso em texto e por teclado; o conteúdo não pode depender de tooltip, hover ou diagrama.
+
+Uma explicação contextual curta poderá abrir perto do objeto; o texto completo terá endereço
+próprio dentro da página. Consultar uma definição não deve obrigar o usuário a reiniciar sua análise.
+
+## 3. Estrutura editorial de uma explicação
+
+Cada entrada deverá reunir, quando aplicável:
+
+1. **O que é:** apresentação breve e precisa em linguagem simples.
+2. **Qual problema resolve:** propósito e consequência prática de sua ausência ou uso incorreto.
+3. **Como funciona:** fundamentos e relações com outros conceitos; detalhamento teórico progressivo.
+4. **O que não confundir:** diferenças relevantes, com exemplo de interpretação equivocada.
+5. **Como aparece neste projeto:** objeto, arquivo, regra ou componente real e sua função.
+6. **Explore na prática:** ligação para o catálogo, diagrama, métrica ou artefato relacionado.
+7. **Escolha e limites do projeto:** decisões particulares e restrições conhecidas, quando existirem.
+8. **Fontes e aprofundamento:** definição responsável, versão e referências primárias necessárias.
+
+Usar os campos que ajudam a compreender o assunto, sem transformar toda entrada em formulário
+repetitivo. Termos simples podem ter explicações curtas; conceitos centrais precisam de exemplos
+e aprofundamento. A extensão deverá acompanhar a dificuldade real, sem uma meta artificial de palavras.
+
+## 4. Inventário inicial de assuntos
+
+A lista abaixo é um roteiro de cobertura editorial, não a declaração de que todos os textos já
+existem ou de que todos os artefatos citados estão implementados. A existência e o estado de cada
+item deverão ser conferidos no inventário da etapa E1.
+
+| Grupo | Termos e questões a explicar | Fontes iniciais na origem |
+|---|---|---|
+| Governança e responsabilidades | Governança, gestão de dados, metadado, catálogo, dicionário, glossário, domínio, responsável e papéis de custódia | Política de governança, glossário técnico e Termo de Abertura |
+| Classificação e controles | Sensibilidade, exposição, permissão, acesso por papel, retenção, auditoria e qualidade | Política de governança, ADRs pertinentes e qualidade de dados |
+| Perspectivas de modelagem | Conceitual, lógico, físico, entidade, relacionamento, cardinalidade, chave, normalização e integridade | Modelo de dados, modelos SQLAlchemy e glossário técnico |
+| Análise dimensional e métricas | Fato, dimensão, grão, medida, métrica, razão e denominador zero, aditividade, SCD e população de um indicador | Modelo de dados, perguntas de negócio e glossário de negócio |
+| Fluxo e camadas | Origem, réplica, ingestão, transformação, batch, camadas raw/staging/trusted/analytics/consumption, quarentena, auditoria e histórico | Arquitetura, materialização e origem legada |
+| Linhagem e procedência | Dependência por tabela, origem de valor por coluna, join/filtro, origem terminal, seed, valor gerado e travessia externa | Dicionário §3 e módulos de linhagem |
+| Streaming | Evento, CDC, WAL, tópico, assinatura, tempo de evento, watermark, janela e idempotência | Streaming, contrato do evento e código do pipeline |
+| Artefatos e execução | YAML, modelo SQL, source/ref do dbt, seed, snapshot, manifest, catalog, run_results, teste, contrato, migração, DAG e certificado de captura | Projeto dbt, modelos, migrações, orquestração e origem legada |
+| Ambientes e infraestrutura | Banco, schema, dataset, tabela, view, contêiner, instância, serviço gerenciado, Terraform e paridade local/GCP | Arquitetura, Docker, Terraform e registro GCP |
+| Evidência e decisões | Proposta, declaração, derivado, execução observada, teste, medição histórica, aceite, princípio, ADR e pendência | Convenções, princípios, ADRs, pendências e registros de execução |
+
+Ferramentas também precisam de entradas: o problema que cada uma resolve, seu papel concreto e a
+ligação com os artefatos que produz ou consome. Nomes de produtos não substituirão a explicação
+de ingestão, transformação, orquestração, armazenamento ou controle de acesso.
+
+## 5. Percursos explicativos propostos
+
+### 5.1 Entender a governança que está sendo visualizada
+
+Dados e metadados → catálogo, dicionário e glossário → responsáveis e políticas → classificação,
+permissões e retenção → qualidade, auditoria e evidência.
+
+**Prática prevista:** abrir um objeto real e localizar seu significado, classificação, responsável
+e definição de acesso, distinguindo esses atributos. Mostrar ausências quando a fonte não as fornecer.
+
+### 5.2 Acompanhar uma pergunta de negócio até as fontes
+
+Pergunta → definição e população da métrica → grão → view → fatos e dimensões → transformações →
+fontes e travessias de ingestão.
+
+**Prática prevista:** usar a receita líquida para explorar o caminho real da P01. Apresentar o caso
+de P13/D66, decidido na origem em 14/11/2026 (ADR-0053 de lá), como exemplo de por que nome,
+linhagem e população não são suficientes isoladamente para interpretar uma métrica. O texto
+didático exibe a decisão como a origem a registra, sem reinterpretá-la; os itens ainda em aberto vêm
+de `open_items` do pacote.
+
+### 5.3 Comparar as perspectivas e os ambientes
+
+Conceito → modelo lógico → materialização física → infraestrutura → artefatos de código que
+mantêm essas definições.
+
+**Prática prevista:** acompanhar uma camada nos dois ambientes, identificando o que mantém o
+significado e o que muda em sua implementação. Explicar separadamente namespace, banco e instância;
+não presumir isolamento de armazenamento apenas pelo nome de um schema ou dataset.
+
+### 5.4 Compreender um fluxo contínuo
+
+Evento de negócio → captura de mudança → transporte → processamento por tempo de evento → destino →
+reconciliação com o caminho batch.
+
+**Prática prevista:** percorrer o estoque com as evidências disponíveis, respeitando diferenças
+entre ligação por tabela e por coluna e entre configuração e execução medida.
+
+Os percursos são sugestões de navegação. Não obrigar a conclusão de um curso antes de explorar
+o catálogo e não criar exercícios que executem serviços, SQL ou infraestrutura.
+
+## 6. Diagramas e exemplos
+
+As ilustrações seguirão a diretriz do portal: esquemas definidos por código ou dados declarativos,
+com legenda e equivalente textual. Diagramas curtos podem comparar conceitos antes de abrir o
+grafo técnico completo.
+
+Identificar dois tipos de exemplo:
+
+- **Aplicação real:** vinculada a um objeto ou artefato existente e ao commit de referência.
+- **Exemplo didático:** simplificação explicitamente rotulada, sem números ou relações apresentados
+  como medição do projeto.
+
+Ilustrações conceituais podem simplificar detalhes, mas não devem parecer prova da execução real.
+Valores didáticos, se necessários, serão identificados como tais e não entrarão nos indicadores do portal.
+
+## 7. Responsabilidade sobre o conteúdo
+
+O projeto de dados continua dono das definições de negócio, regras de governança, modelos e decisões.
+O portal é dono da organização pedagógica, da linguagem de apresentação e dos percursos de exploração.
+
+- Reutilizar as definições disponíveis nos glossários técnico e de negócio, com origem e versão.
+- Para termos sem explicação suficiente, registrar a lacuna e planejar complementação didática.
+- Para teoria geral adicional, pesquisar e citar referências primárias adequadas durante a autoria;
+  esta especificação não declara essa pesquisa nem a redação final como concluídas.
+- Diferenciar teoria geral, decisão particular do projeto e evidência efetivamente observada.
+- Não transformar uma prática particular em regra universal ou um controle declarado em garantia medida.
+- Não deduzir que uma classificação concede ou nega acesso; manter a distinção da política responsável.
+- Não atribuir ao glossário de origem um texto explicativo novo escrito no portal.
+- Em caso de divergência entre fontes, apontar a divergência e seu responsável, sem escolher uma regra
+  nova silenciosamente.
+
+A redação e a revisão conceitual fazem parte da entrega. Uma extração automática de descrições não
+substitui o trabalho editorial necessário para explicar os fundamentos.
+
+## 8. Critérios de avaliação local
+
+Além das verificações técnicas previstas no [plano](../PLANO.md), avaliar se a experiência permite:
+
+- encontrar o significado dos termos usados pelas outras páginas sem conhecimento prévio de toda a stack;
+- partir da explicação e localizar um exemplo real, e fazer o caminho inverso;
+- comparar conceitos próximos sem tratá-los como sinônimos por conveniência;
+- identificar o que é geral, o que é decisão do projeto e o que foi medido;
+- reconhecer limitações e conteúdo pendente sem receber uma impressão de completude artificial;
+- consultar e retomar o contexto da exploração em telas menores e com navegação por teclado.
+
+Registrar as dúvidas surgidas na avaliação do Owner e corrigir as explicações correspondentes.
+Testes automatizados podem conferir links e estrutura, mas não provar a compreensão do leitor.
