@@ -87,41 +87,36 @@ O histórico desta conversa não é necessário para compreender o escopo docume
 **Estado em 17/11/2026, ao fim da sessão:**
 
 - a pasta é um repositório Git local, sem remoto (o remoto depende da D04). Commits em Conventional
-  Commits, em português;
+  Commits, em português, um assunto por commit; a árvore ficou limpa;
 - o pacote da origem está fixado na `v2.1.0` (`eb11709`), copiado e versionado em `origem/` por
-  `scripts/copiar_pacote.sh`, com os textos lidos por commit em `origem/arquivos/`;
-  `scripts/copiar_pacote.sh --verificar` confere os SHA-256 (D03);
-- o [mapeamento do pacote](docs/mapeamento_do_pacote.md) está feito;
-- as provas da D01 e da D02 estão em `provas/`, com resultados na D01 e na D02. O Owner adotou
-  **Astro** e **Mermaid com Cytoscape.js**;
-- a aplicação existe em `portal/` (Astro 7, passo 3 do plano, §5): a build confere os SHA-256 da
-  cópia, recusa `format` diferente de 1 e valida o pacote com o esquema do mesmo commit (ajv);
-  os textos da origem passam por Markdown saneado; a linhagem usa layout em camadas próprio, sem
-  extensão. Páginas: catálogo, relação, perguntas, métricas e filtros, linhagem (por relação, por
-  coluna e visão geral), estado e evidência, estrutura e ambientes (com as travessias em Mermaid),
-  arquivos da origem, procedência e a entrada de conceitos. São 19 testes de unidade em `portal/test/`.
-  Nesta etapa a conferência no navegador foi avulsa; a verificação formal da interface é a E3;
-- a origem prepara uma tag nova, sem data, com F32, F33, F34 e outras mudanças aditivas
-  ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
-  não espera por ela; quando for anunciada, refixar e revalidar pela D03.
-
+  `scripts/copiar_pacote.sh`, com os textos lidos por commit em `origem/arquivos/` (inclusive o
+  Glossário Técnico); `scripts/copiar_pacote.sh --verificar` confere os SHA-256 (D03);
+- o portal está em `portal/` (Astro 7; dependências na D01). A build valida a cópia e o pacote e
+  gera 474 páginas: governança (catálogo, relação, perguntas, métricas, linhagem com travessias,
+  estado e evidência), estrutura e ambientes, conceitos e artefatos, arquivos da origem e procedência.
+  São 28 testes de unidade em `portal/test/`;
 - a camada editorial está em `portal/src/conteudo/` (formato na
   [página de conceitos §9](docs/pagina_de_conceitos.md#9-formato-da-camada-editorial-17112026)):
-  inventário de termos com as definições da origem extraídas por commit, as primeiras explicações,
-  as limitações conhecidas e a ida e volta entre objeto e explicação. Três divergências do Glossário
-  Técnico da origem foram encaminhadas no [alinhamento, §7](docs/alinhamento_entre_projetos.md#7-para-a-origem);
+  62 termos com a primeira redação das explicações, 4 percursos e 11 limitações conhecidas. Três
+  divergências do Glossário Técnico da origem foram encaminhadas no
+  [alinhamento, §7](docs/alinhamento_entre_projetos.md#7-para-a-origem);
+- a E3 foi feita com a verificação em `verificacao/`: 38 verificações automáticas passaram, com uma
+  ressalva (zoom no grafo inteiro) e um achado para a D04 (identificadores GCP nos textos da origem),
+  no [relatório](docs/relatorio_e3.md);
+- a E4 começou: o Owner achou o site ótimo e fez dois pedidos, registrados no
+  [plano](PLANO.md), E4: um **roteiro de aprendizado**, viável sem dependência nova
+  ([página de conceitos §10](docs/pagina_de_conceitos.md#10-roteiro-de-aprendizado-pedido-de-17112026)),
+  e **amostras de linhas** por tabela, que contrariam regras atuais e dependem de decisão
+  ([D06](docs/decisoes.md#d06--amostras-de-registros-no-portal));
+- a origem prepara uma tag nova, sem data, com F32, F33, F34 e outras mudanças aditivas
+  ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
+  não espera por ela; quando for anunciada, refixar e revalidar pela D03 e repetir a verificação.
 
-- também em 17/11/2026: os percursos de leitura, a primeira redação das explicações de todos os
-  termos do inventário, as travessias ligadas ao grafo de linhagem e os diagramas Mermaid dos
-  documentos da origem desenhados no portal ([D02](docs/decisoes.md#d02--diagramas-e-grafos));
-
-- a E3 foi feita em 17/11/2026 com a verificação em `verificacao/` (Playwright fora das dependências
-  do portal, aprovado pelo Owner): 38 verificações automáticas passaram, com ressalvas e achados no
-  [relatório](docs/relatorio_e3.md);
-
-**Próximo passo:** a E4, avaliação local pelo Owner ([plano](PLANO.md), E4): a revisão conceitual das
-explicações, os percursos, a ressalva do zoom no grafo inteiro e os identificadores GCP nos textos da
-origem (relatório, §3 e §5). Para avaliar: `cd portal && npm run build && npm run preview`.
+**Próximo passo:** continuar a E4. O primeiro trabalho proposto é o roteiro de aprendizado, que
+aguarda o "pode fazer" do Owner (página de conceitos §10). Depois, ou em paralelo, as decisões do
+Owner: D06 (amostras), a meta de zoom no grafo inteiro (relatório da E3, §3) e os identificadores
+GCP (D04). Para avaliar o portal localmente: `cd portal && npm run build && npm run preview`. Para
+repetir a verificação: [`verificacao/README.md`](verificacao/README.md).
 
 Os caches e temporários de npm, `uv` e Playwright ficam em `.cache/` (variáveis em
 `provas/README.md`). Na origem, só leitura de arquivos e `git show`/`git log`.

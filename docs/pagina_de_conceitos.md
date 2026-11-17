@@ -201,3 +201,33 @@ exemplo.
 definição da origem, os documentos da origem e a marca "explicação do portal pendente". A situação de
 cada termo aparece no índice da página de conceitos e em `dados/editorial.json`.
 
+## 10. Roteiro de aprendizado (pedido de 17/11/2026)
+
+**Pedido do Owner (E4.1):** "Para mim, que estou iniciando e vou precisar aprender e entender, começo
+por onde?" Uma guia que mostre os conteúdos mais importantes de aprender, dos isolados aos que
+dependem de outros e dos termos técnicos: um roteiro de aprendizado, além de disponibilizar o
+conhecimento.
+
+**Avaliação (17/11/2026):** viável, sem dependência nova e dentro das decisões D01 e D02. A
+implementação **aguarda o Owner autorizar**.
+
+**Proposta:**
+
+- completar o campo `prerequisitos` do `inventario.yml` para os 62 termos (hoje poucos o têm). A
+  ordem de leitura sai desse grafo, pela mesma lógica de camadas por caminho mais longo da linhagem
+  (`portal/src/cliente/camadas.js`): termos sem pré-requisito formam o primeiro nível;
+- uma página "Comece por aqui", com níveis (por exemplo: fundamentos, modelagem, fluxo e camadas,
+  linhagem e procedência, ambientes, evidência), cada um com objetivo de aprendizagem, os termos e
+  uma prática no catálogo. Os percursos da §5 viram trilhas dentro dele;
+- um mapa do roteiro gerado dos dados, com alternativa em lista (regra dos diagramas);
+- em cada termo, "leia antes" e "a seguir";
+- marcação de "já li" guardada só no navegador de quem lê, sem conta nem servidor, como
+  conveniência que pode se perder.
+
+**Condições:**
+
+- a ordem é decisão editorial do gdados, não da origem, e passa pela revisão do Owner (E4.3);
+- o roteiro é sugestão: não bloqueia a exploração nem exige concluir etapas (§5);
+- teste novo para o grafo de pré-requisitos (sem ciclo, todo termo alcançável) e verificação da
+  página na repetição da E3.
+

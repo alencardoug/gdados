@@ -48,6 +48,7 @@ a resposta abre uma fase curta de correções na origem, que terminará numa tag
 | A7 | D05: dois portais? Mesmo pacote? | **Fechada em 14/11/2026 (Q12):** dois portais, um pacote | [D05](decisoes.md#d05--relação-com-o-portal-da-etapa-27-do-bi-como-codigo) |
 | A8 | D04: hospedagem, repositório, site, domínio e audiência | Aberta; volta ao Owner na E5, à luz da Q14 | [D04](decisoes.md#d04--identidade-e-audiência-da-publicação) |
 | A9 | Fixar o pacote na `v2.1.0`, validá-lo e ler `on_zero_denominator` | **Instruída em 17/11/2026;** fixado e validado no mesmo dia; leitura do campo registrada para a E1 | [D03](decisoes.md#d03--pacote-e-atualização-de-metadados) |
+| A10 | D06: amostras de registros no portal | Aberta em 17/11/2026 (E4.2); se aprovada, vira pedido à origem nesta seção | [D06](decisoes.md#d06--amostras-de-registros-no-portal) |
 
 ## 3. Dependências do `mvp_eng_dados_2`
 

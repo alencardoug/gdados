@@ -23,7 +23,9 @@ O pedido vivo do Owner define o trabalho: avaliar um plano não autoriza impleme
 Em 14/11/2026 o Owner fechou a E0 e autorizou as provas locais da D01 e da D02, a E1 como
 consumidora do formato da origem e a E2. Em 17/11/2026 fixou o pacote da origem na `v2.1.0`; as
 provas e as etapas passam a usar o pacote do commit fixado na D03. No mesmo dia, a resposta da
-origem, a pedido do Owner, liberou a E1 à E3 contra esse pacote, sem esperar a tag seguinte. Publicação e hospedagem
+origem, a pedido do Owner, liberou a E1 à E3 contra esse pacote, sem esperar a tag seguinte. Em 17/11/2026 a E3 foi
+feita e a E4 começou; os pedidos da avaliação, como o roteiro de aprendizado, que aguarda o "pode
+fazer" do Owner, estão no PLANO, E4. Publicação e hospedagem
 aguardam a D04, na E5. Não há recurso novo autorizado no GCP (Q14). Os registros estão em
 [docs/decisoes.md](docs/decisoes.md).
 

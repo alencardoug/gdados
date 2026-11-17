@@ -341,3 +341,33 @@ pedir à origem uma versão sanitizada.
 
 **Consequência para o gdados:** o que for específico do gdados, como a camada editorial da página
 de conceitos (E1), não vira requisito do pacote nem do portal do BI.
+
+## D06 — Amostras de registros no portal
+
+**Estado:** pendente do Owner, aberta em 17/11/2026 (E4.2).
+
+**Pedido do Owner:** mostrar as cinco primeiras linhas de cada tabela, com todas as colunas, para ver
+exemplos de preenchimento na própria página da relação.
+
+**Avaliação (17/11/2026):** tecnicamente viável, porque os dados são sintéticos e cinco linhas por
+relação cabem nas metas de tamanho. Mas contraria três regras em vigor:
+
+1. o [AGENTS.md](../AGENTS.md) proíbe copiar "amostras de registros para o portal";
+2. o portal não lê banco ([alinhamento, §1](alinhamento_entre_projetos.md#1-direção-decidida); PLANO,
+   E1), e o armazém da origem não está de pé para isso;
+3. o pacote é só metadado, e o gdados não o completa: um campo novo é pedido à origem, que decide
+   (D03).
+
+**Para fazer, seria preciso:** (a) o Owner alterar a regra de amostras do AGENTS.md; (b) pedir à
+origem, pelo [alinhamento](alinhamento_entre_projetos.md), que exporte amostras com data e commit,
+pelo caminho que ela aceitar; (c) decidir o tratamento das colunas `personal` e dos *payloads* JSON
+do legado em `raw_legacy`; (d) levar o efeito à D04, porque dado com aparência de pessoal num site
+publicado é decisão de exposição, ainda que sintético (Governança §4 da origem: classificar não é
+expor).
+
+**Alternativa sem decisão nova:** destacar, por coluna, o que o pacote já declara sobre o
+preenchimento: tipo, domínio de valores e significado de cada valor, valores não observados e
+impossíveis e significado do nulo. Não equivale a ver linhas reais.
+
+**Pendente:** decisão do Owner entre manter a regra (com ou sem a alternativa) ou abrir a exceção
+pelos passos acima.

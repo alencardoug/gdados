@@ -246,6 +246,18 @@ Entregas: aplicação local navegável, conteúdo explicativo e relatório de E3
 considerar a precisão técnica e a clareza conceitual; registrar os ajustes e o aceite da versão.
 Aceitar o plano ou aprovar o build tecnicamente não equivale a autorizar a publicação.
 
+**Em andamento desde 17/11/2026.** Primeira impressão do Owner: "o site está ótimo, muito conteúdo,
+como esperado". Como está começando na área, pediu um caminho para aprender, além do conteúdo
+disponível. Pedidos e pendências da avaliação:
+
+| # | Pedido ou pendência | Situação | Dono |
+|---|---|---|---|
+| E4.1 | Roteiro de aprendizado: por onde começar, do conteúdo isolado ao que depende de outros e dos termos técnicos | Avaliado como viável sem dependência nova; proposta registrada; **aguarda o Owner autorizar a implementação** | [Página de conceitos §10](docs/pagina_de_conceitos.md#10-roteiro-de-aprendizado-pedido-de-17112026) |
+| E4.2 | As cinco primeiras linhas de cada tabela, com todas as colunas | Tecnicamente viável, mas contraria o AGENTS.md (amostras), a decisão de o portal não ler banco e o formato do pacote; **aguarda decisão do Owner** | [D06](docs/decisoes.md#d06--amostras-de-registros-no-portal) |
+| E4.3 | Revisão conceitual das explicações e dos percursos | A fazer pelo Owner; dúvidas registradas aqui e corrigidas | [Página de conceitos §8](docs/pagina_de_conceitos.md#8-critérios-de-avaliação-local) |
+| E4.4 | Meta de zoom no grafo inteiro, cumprida na mediana e não em toda rodada | Aceitar ou ajustar a meta | [Relatório da E3](docs/relatorio_e3.md), §3; [D02](docs/decisoes.md#d02--diagramas-e-grafos) |
+| E4.5 | Identificadores de projetos GCP e prefixo de conta de faturamento nos textos copiados | Decidir antes de publicar | [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação); relatório da E3, §5 |
+
 ### E5 — Preparar a publicação
 
 Depois da avaliação local, preparar workflow com validação, testes e build antes do deploy,
