@@ -1,0 +1,28 @@
+{
+  "repository": "mvp_eng_dados_2",
+  "ref": "v2.1.0",
+  "commit": "eb117098e2b73370cf8ce027da1ffefa6acf01a7",
+  "commit_date": "2026-11-17T03:42:55-03:00",
+  "copied_at": "2026-11-17T17:35:08+00:00",
+  "decision": "D03 em docs/decisoes.md",
+  "files": [
+    {
+      "path": "pacote_de_metadados.json",
+      "source_path": "docs/pacote_de_metadados.json",
+      "sha256": "5fe93e964fe007e3748f850ff6a5a21b3d9f534a1cc37a0cad019c5a10184a7e",
+      "bytes": 5303811
+    },
+    {
+      "path": "pacote_de_metadados.schema.json",
+      "source_path": "docs/pacote_de_metadados.schema.json",
+      "sha256": "34c13dfef9a51fcbb92dede3c9260df95ba25cee7ba9801d809576283d7c4cd9",
+      "bytes": 51162
+    },
+    {
+      "path": "pacote_de_metadados.exemplo.json",
+      "source_path": "docs/pacote_de_metadados.exemplo.json",
+      "sha256": "0b70bf3808f7066294e0b5d7cd8d016c5f0cf366885808293479ad36af92b3f8",
+      "bytes": 21986
+    }
+  ]
+}
