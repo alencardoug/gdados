@@ -83,6 +83,17 @@ build de alguns segundos.
 **Decisão (17/11/2026):** o Owner confirmou a recomendação. O portal é construído com Astro 7, com
 versão fixada no lockfile.
 
+**Dependências do portal (17/11/2026).** Ao criar `portal/`, o Owner aprovou as alternativas
+recomendadas para as duas peças que o Astro, o Mermaid e o Cytoscape.js não cobrem:
+
+| Pacote | Versão | Para quê | Alternativas descartadas |
+|---|---|---|---|
+| `astro` | 7.4.5 | Aplicação (esta decisão) | — |
+| `cytoscape` | 3.34.4 | Linhagem ([D02](#d02--diagramas-e-grafos)) | — |
+| `mermaid` | 12.2.0 | Diagramas declarativos (D02) | — |
+| `ajv` | 8.20.0 | Validação do pacote com o esquema JSON Schema 2020-12 do mesmo commit ([D03](#d03--pacote-e-atualização-de-metadados)), em modo estrito menos `strictTypes`; o único `format` do esquema, `date`, é conferido por código próprio, sem `ajv-formats` | `jsonschema` em Python, que poria Python e `uv` na build; adiar a validação |
+| `@astrojs/markdown-satteri` | 0.4.6 | Processador de Markdown do próprio Astro 7, na versão que ele usa, declarado para receber o plugin de saneamento do portal (`portal/src/lib/markdown.mjs`): HTML bruto vira texto, só ficam elementos do Markdown, links só para âncora, http(s) ou arquivo copiado da origem | Mostrar só texto, perdendo listas, tabelas e links; `rehype-sanitize`, dependência nova que não se encaixa no satteri |
+
 **Pendente:** nada nesta decisão. As versões seguem a regra da prova: a mais recente publicada há pelo
 menos duas semanas, fixada no lockfile.
 
@@ -154,13 +165,23 @@ sem extensão. Medições em `provas/medicao/resultados/2026-11-17T18-03-17-484Z
 
 **Decisão (17/11/2026):** o Owner confirmou a recomendação, com as três condições.
 
-**Pendente:** avaliar na E2 o layout em camadas (posição por camada ou extensão `cytoscape-dagre` ou
-`cytoscape-elk`); extensão só entra depois de avaliada e registrada aqui.
+**Layout em camadas (17/11/2026):** resolvido **sem extensão**, em código próprio
+(`portal/src/cliente/camadas.js`, com testes). A camada de cada relação é o caminho mais longo desde
+um nó sem insumo, calculado no build sobre o grafo inteiro. Um nó sem insumo é puxado para a camada
+anterior ao seu primeiro consumidor, e por isso `dim_date` não aparece mais ao lado de `raw` nem
+arrasta as views para perto de `staging`. O navegador posiciona o recorte com o layout `preset` do
+núcleo: x pela camada e y pela camada do schema e pelo nome. Na linhagem por coluna, a coluna fica
+na camada da sua relação. Nenhum nome de camada é fixado no código, e a ordem e as cores da legenda
+saem do próprio grafo. Conferido no navegador em 17/11/2026: recorte inicial, expansão, recorte por
+coluna, aviso acima de 300 nós e visão geral. A medição formal fica para a E3, item 9.
+
+**Pendente:** nada nesta decisão. `cytoscape-dagre` e `cytoscape-elk` não foram adotados; se a E3 ou
+a E4 mostrarem que o layout próprio não basta, a extensão é avaliada e registrada aqui antes de entrar.
 
 ## D03 — Pacote e atualização de metadados
 
 **Estado:** decidida em 14/11/2026 (resposta central §1 e §3, A4 a A6). Em 17/11/2026, o pacote foi
-fixado na `v2.1.0` da origem, por instrução do Owner. A implementação está pendente na E1.
+fixado na `v2.1.0` da origem, por instrução do Owner. Implementada no portal no mesmo dia.
 
 **Contrato:** o formato 1 do pacote da origem, especificado antes da geração por decisão do Owner
 (Q13) e gerado pela origem desde 14/11/2026.
@@ -252,8 +273,16 @@ valida contra o esquema do mesmo commit. Até lá, o commit fixado continua `eb1
   editorial;
 - campo novo do formato 1 que o portal não usa é tolerado, conforme as regras acima.
 
-**Pendente:** implementar na E1 o comando de cópia, a validação e o tratamento acima. A validação
-de 17/11/2026 foi avulsa e não escolhe a ferramenta do comando, que acompanha a D01.
+**Implementação (17/11/2026):** o comando de cópia é `scripts/copiar_pacote.sh`. A leitura fica em
+`portal/src/lib/origem.mjs` e roda em toda build (`npm run build`) e em `npm run validar`. Ela confere
+o SHA-256 de cada arquivo registrado em `origem/procedencia.json`, recusa `format` diferente de 1 e
+valida o pacote com o esquema do mesmo commit, usando ajv (D01). Qualquer falha interrompe a build.
+O tratamento de ausência e de estado acima está nas páginas: `null` como ausente, `result: null` como
+sem resultado, `warehouse.status` como está e o rodapé de procedência em toda página. As métricas
+leem `on_zero_denominator`. Os testes ficam em `portal/test/origem.test.mjs`.
+
+**Pendente:** nada na implementação. A troca do commit fixado segue a regra acima quando a tag nova
+for anunciada.
 
 ## D04 — Identidade e audiência da publicação
 

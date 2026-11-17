@@ -9,7 +9,8 @@ por que existe e como aparece na governança já implementada.
 **Estado:** base documental criada em 10/11/2026. Viabilidade verificada sobre artefatos locais
 e reconferida em 13 e 14/11/2026. E0 fechada pelo Owner em 14/11/2026; E1 e E2 autorizadas. Em
 17/11/2026 o pacote de metadados da origem foi fixado na `v2.1.0` e validado contra o esquema do
-mesmo commit. A implementação da interface ainda não começou.
+mesmo commit. No mesmo dia começou a aplicação, em `portal/` (Astro): as três páginas leem o
+pacote validado no build; o conteúdo editorial da página de conceitos ainda não foi escrito.
 
 ## Escopo
 
@@ -53,9 +54,21 @@ válidas como fotografias datadas daqueles commits
 
 ## Desenvolvimento e publicação
 
-Não há aplicação, dependências ou comando de execução da interface definidos nesta etapa. As
-configurações básicas de edição e de exclusão do Git não representam aprovação de stack. As provas
-da D01 e da D02 ficam em `provas/`, isoladas.
+A aplicação fica em `portal/`, com `package.json` e lockfile próprios. As dependências e o motivo
+de cada uma estão na [D01](docs/decisoes.md#d01--estrutura-da-aplicação). As provas da D01 e da D02
+continuam em `provas/`, isoladas.
+
+```bash
+cd portal
+export npm_config_cache="$PWD/../.cache/npm" TMPDIR="$PWD/../.cache/tmp"
+mkdir -p "$TMPDIR" && npm ci --no-audit
+npm run validar   # confere SHA-256, formato e esquema da cópia em ../origem/, sem construir
+npm test          # testes de unidade (node:test)
+npm run build     # gera dist/; recusa a build se a cópia ou o pacote não passarem (D03)
+npm run preview   # serve dist/ localmente
+```
+
+A build lê só `origem/`, versionada no gdados; não precisa do checkout da origem nem de banco.
 
 O destino indicado em 10/11/2026 foi **GitHub → Firebase Hosting**, seguindo o padrão do Linkedia.
 Em 14/11/2026 o Owner proibiu recursos novos no GCP, e um projeto Firebase é um deles; a hospedagem
@@ -79,14 +92,20 @@ O histórico desta conversa não é necessário para compreender o escopo docume
 - o [mapeamento do pacote](docs/mapeamento_do_pacote.md) está feito;
 - as provas da D01 e da D02 estão em `provas/`, com resultados na D01 e na D02. O Owner adotou
   **Astro** e **Mermaid com Cytoscape.js**;
-- ainda não existem a aplicação do portal, a validação do pacote no build nem a validação da
-  interface. A validação de 17/11/2026 foi avulsa, com `jsonschema` em ambiente temporário;
+- a aplicação existe em `portal/` (Astro 7, passo 3 do plano, §5): a build confere os SHA-256 da
+  cópia, recusa `format` diferente de 1 e valida o pacote com o esquema do mesmo commit (ajv);
+  os textos da origem passam por Markdown saneado; a linhagem usa layout em camadas próprio, sem
+  extensão. Páginas: catálogo, relação, perguntas, métricas e filtros, linhagem (por relação, por
+  coluna e visão geral), estado e evidência, estrutura e ambientes (com as travessias em Mermaid),
+  arquivos da origem, procedência e a entrada de conceitos. São 19 testes de unidade em `portal/test/`.
+  Nesta etapa a conferência no navegador foi avulsa; a verificação formal da interface é a E3;
 - a origem prepara uma tag nova, sem data, com F32, F33, F34 e outras mudanças aditivas
   ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
   não espera por ela; quando for anunciada, refixar e revalidar pela D03.
 
-**Próximo passo:** o passo 3 da sequência do [plano](PLANO.md), §5: criar a aplicação Astro e fazer
-a E1 na stack. Em paralelo, o inventário de termos e o formato da camada editorial.
+**Próximo passo:** a parte editorial da E1, que ainda falta: o formato das entradas da página de
+conceitos, o inventário de termos e lacunas e a redação das explicações. Depois, a E2 completa e a
+E3 ([plano](PLANO.md), §5, passos 3 e 4).
 
 Os caches e temporários de npm, `uv` e Playwright ficam em `.cache/` (variáveis em
 `provas/README.md`). Na origem, só leitura de arquivos e `git show`/`git log`.
