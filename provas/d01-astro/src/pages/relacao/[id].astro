@@ -1,0 +1,40 @@
+---
+import Base from "../../layouts/Base.astro";
+import Ausente from "../../components/Ausente.astro";
+import { detalhes } from "../../dados.js";
+export function getStaticPaths() {
+  return detalhes().map((r) => ({ params: { id: r.id }, props: { r } }));
+}
+const { r } = Astro.props;
+const m = r.meta ?? {};
+---
+<Base titulo={r.id}>
+<h1><code>{r.id}</code></h1>
+<p>{r.description == null ? <span class="ausente">Sem descrição declarada.</span> : r.description}</p>
+<dl>
+<dt>Tipo</dt><dd>{r.resource_type}</dd>
+<dt>Materialização</dt><dd><Ausente valor={r.materialization} /></dd>
+<dt>Grão</dt><dd><Ausente valor={r.grain} /></dd>
+<dt>Domínio</dt><dd><Ausente valor={m.domain} /></dd>
+<dt>Dono</dt><dd><Ausente valor={m.owner} /></dd>
+<dt>Retenção</dt><dd><Ausente valor={m.retention} /></dd>
+<dt>Papéis com leitura</dt><dd>{r.grants_select.length ? r.grants_select.join(", ") : <span class="ausente">nenhum</span>}</dd>
+</dl>
+<p><a href={`/linhagem/?r=${r.id}`}>Linhagem por relação</a> · <a href={`/linhagem/?modo=coluna&r=${r.id}`}>Linhagem por coluna</a></p>
+<h2>Colunas</h2>
+<div class="rolagem"><table><thead><tr><th>Coluna</th><th>Tipo</th><th>Sensibilidade</th><th>Descrição</th><th>Origens terminais</th></tr></thead>
+<tbody>
+{Object.entries(r.columns).map(([nome, c]) => (
+  <tr id={`coluna-${nome}`}><td><code>{nome}</code></td><td><Ausente valor={c.data_type} texto="não declarado" /></td><td>{c.sensitivity}</td><td><Ausente valor={c.description} /></td>
+  <td>{c.lineage ? c.lineage.origins.map((o) => <>{o.column} <span class="tipo">{o.kind}</span><br /></>) : <span class="ausente">sem linhagem no pacote</span>}</td></tr>
+))}
+</tbody></table></div>
+<h2>Testes</h2>
+{r.tests.length ? (
+  <div class="rolagem"><table><thead><tr><th>Teste</th><th>Coluna</th><th>Resultado</th></tr></thead><tbody>
+  {r.tests.map((t) => (
+    <tr><td>{t.test}</td><td><Ausente valor={t.column} /></td><td>{t.result ? `${t.result.status} em ${t.result.executed_at}` : <span class="ausente">sem resultado</span>}</td></tr>
+  ))}
+  </tbody></table></div>
+) : <p class="ausente">Nenhum teste declarado.</p>}
+</Base>

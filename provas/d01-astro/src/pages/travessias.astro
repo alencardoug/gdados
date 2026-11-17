@@ -1,0 +1,14 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base titulo="Travessias">
+<h1>Travessias fora do dbt</h1>
+<div id="diagrama"></div>
+<h2>Travessias (alternativa em tabela)</h2>
+<div class="rolagem"><table><thead><tr><th>Origem</th><th>Destino</th><th>Mecanismo</th><th>Frequência</th><th>Nota</th></tr></thead><tbody id="tabela"></tbody></table></div>
+</Base>
+<script>
+import mermaid from "mermaid";
+import { iniciarTravessias } from "../../../comum/cliente/travessias.js";
+iniciarTravessias({ mermaid, container: document.getElementById("diagrama"), tabela: document.getElementById("tabela") });
+</script>

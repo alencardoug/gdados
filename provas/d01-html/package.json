@@ -1,0 +1,13 @@
+{
+  "name": "prova-d01-html",
+  "private": true,
+  "type": "module",
+  "description": "Prova da D01: HTML/CSS/JavaScript sem framework, contra o pacote fixado.",
+  "scripts": {
+    "build": "node ../comum/preparar_dados.mjs && node construir.mjs"
+  },
+  "dependencies": {
+    "cytoscape": "3.34.4",
+    "mermaid": "12.2.0"
+  }
+}

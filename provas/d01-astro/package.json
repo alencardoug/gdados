@@ -1,0 +1,14 @@
+{
+  "name": "prova-d01-astro",
+  "private": true,
+  "type": "module",
+  "description": "Prova da D01: Astro, contra o pacote fixado.",
+  "scripts": {
+    "build": "node ../comum/preparar_dados.mjs && node preparar_public.mjs && ASTRO_TELEMETRY_DISABLED=1 astro build"
+  },
+  "dependencies": {
+    "astro": "7.4.5",
+    "cytoscape": "3.34.4",
+    "mermaid": "12.2.0"
+  }
+}

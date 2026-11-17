@@ -1,0 +1,16 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base titulo="Linhagem">
+<h1>Linhagem</h1>
+<p><a href="/linhagem/">Recorte por relação</a> · <a href="/linhagem/?modo=coluna">Por coluna</a> · <a href="/linhagem/?modo=tudo">Todas as relações</a>. Duplo clique num nó expande um nível.</p>
+<p id="aviso" role="status"></p>
+<div id="grafo" role="img" aria-label="Grafo de linhagem; as mesmas ligações estão na tabela abaixo"></div>
+<h2>Ligações (alternativa em tabela)</h2>
+<div class="rolagem"><table><thead><tr><th>Insumo</th><th>Destino</th><th>Colunas</th></tr></thead><tbody id="ligacoes"></tbody></table></div>
+</Base>
+<script>
+import cytoscape from "cytoscape";
+import { iniciarLinhagem } from "../../../comum/cliente/linhagem.js";
+iniciarLinhagem({ cytoscape, container: document.getElementById("grafo"), tabela: document.getElementById("ligacoes"), aviso: document.getElementById("aviso"), params: new URLSearchParams(location.search) });
+</script>

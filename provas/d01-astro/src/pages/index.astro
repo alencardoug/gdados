@@ -1,0 +1,31 @@
+---
+import Base from "../layouts/Base.astro";
+import Ausente from "../components/Ausente.astro";
+import { relacoes } from "../dados.js";
+const camadas = [...new Set(relacoes.map((r) => r.camada))];
+---
+<Base titulo="Catálogo">
+<h1>Catálogo</h1>
+<label for="busca">Buscar</label>
+<input id="busca" type="search" disabled placeholder="Carregando o índice…" autocomplete="off">
+<p id="situacao" role="status"></p>
+<ul id="resultados"></ul>
+<label for="camada">Camada</label>
+<select id="camada"><option value="">Todas</option>{camadas.map((c) => <option>{c}</option>)}</select>
+<div class="rolagem"><table id="relacoes">
+<thead><tr><th>Relação</th><th>Camada</th><th>Tipo</th><th>Colunas</th><th>Descrição</th></tr></thead>
+<tbody>
+{relacoes.map((r) => (
+  <tr data-camada={r.camada}><td><a href={`/relacao/${r.id}/`}>{r.id}</a></td><td>{r.camada}</td><td>{r.tipo}</td><td>{r.colunas}</td>
+  <td>{r.sem_descricao ? <span class="ausente">sem descrição declarada</span> : <Ausente valor={r.descricao} />}</td></tr>
+))}
+</tbody></table></div>
+</Base>
+<script>
+import { iniciarBusca } from "../../../comum/cliente/busca.js";
+iniciarBusca({ entrada: document.getElementById("busca"), lista: document.getElementById("resultados"), situacao: document.getElementById("situacao") });
+const filtro = document.getElementById("camada");
+filtro.addEventListener("change", () => {
+  for (const tr of document.querySelectorAll("#relacoes tbody tr")) tr.hidden = filtro.value !== "" && tr.dataset.camada !== filtro.value;
+});
+</script>

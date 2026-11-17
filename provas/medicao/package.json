@@ -1,0 +1,12 @@
+{
+  "name": "prova-medicao",
+  "private": true,
+  "type": "module",
+  "description": "Medição das provas da D01 e da D02 contra as metas do PLANO, E3, item 9.",
+  "scripts": {
+    "medir": "node medir.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.64.1"
+  }
+}

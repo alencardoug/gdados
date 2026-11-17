@@ -37,3 +37,9 @@ terraform.tfvars
 .idea/
 .DS_Store
 Thumbs.db
+
+# Provas (D01, D02): dados gerados a partir de origem/
+provas/**/gerado/
+
+# Capturas regeneráveis por provas/medicao/capturar.mjs
+provas/medicao/capturas/

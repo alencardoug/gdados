@@ -1,0 +1,22 @@
+---
+import { procedencia as proc } from "../dados.js";
+const { titulo } = Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{titulo} · gdados (prova)</title>
+<link rel="stylesheet" href="/cliente/estilo.css">
+</head>
+<body>
+<header><nav aria-label="Principal"><a href="/">Catálogo</a><a href="/linhagem/">Linhagem</a><a href="/travessias/">Travessias</a></nav></header>
+<main><slot /></main>
+<footer>
+Pacote de <code>{proc.repository}</code> em <code>{proc.ref}</code> (<code>{proc.commit.slice(0, 7)}</code>),
+copiado em {proc.copied_at}. Manifesto de {proc.manifest_generated_at}, dbt {proc.dbt_version} ({proc.adapter_type}).
+Armazém: <code>{proc.warehouse.status}</code>{proc.warehouse.reason && ` (${proc.warehouse.reason})`}.
+</footer>
+</body>
+</html>

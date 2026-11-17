@@ -1,0 +1,20 @@
+/* Estilo mínimo comum às duas candidatas da prova; não é o design do portal. */
+:root { --fundo: #ffffff; --texto: #111827; --suave: #4b5563; --borda: #d1d5db; --realce: #1d4ed8; }
+@media (prefers-color-scheme: dark) {
+  :root { --fundo: #111827; --texto: #f3f4f6; --suave: #9ca3af; --borda: #374151; --realce: #93c5fd; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.5 system-ui, sans-serif; background: var(--fundo); color: var(--texto); }
+header, main, footer { padding: 0 16px; max-width: 1200px; margin: 0 auto; }
+header nav { display: flex; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--borda); }
+a { color: var(--realce); }
+footer { color: var(--suave); font-size: 13px; border-top: 1px solid var(--borda); margin-top: 32px; padding-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; border-bottom: 1px solid var(--borda); padding: 4px 6px; vertical-align: top; }
+.ausente { color: var(--suave); font-style: italic; }
+.tipo { font-size: 12px; color: var(--suave); }
+#resultados { list-style: none; padding: 0; }
+#resultados p { margin: 0 0 8px; color: var(--suave); font-size: 13px; }
+#grafo { height: 70vh; border: 1px solid var(--borda); }
+.rolagem { overflow-x: auto; }
+input[type="search"] { width: 100%; padding: 8px; font: inherit; }
