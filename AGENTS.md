@@ -51,6 +51,8 @@ adotada ainda.
 ## Mudanças e validação
 
 - Não adicionar dependências ou provisionar serviços antes das decisões pertinentes do Owner.
+  Exceção aprovada em 17/11/2026: as provas da D01 e da D02 instalam suas candidatas só dentro de
+  `provas/`, sem que isso seja adoção.
 - Validar a aplicação localmente antes de propor a publicação.
 - Não publicar, criar projetos cloud ou configurar IAM antes da E5 e da decisão da D04.
 - Cada assunto tem um dono documental; não manter a mesma regra em vários arquivos.

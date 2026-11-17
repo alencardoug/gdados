@@ -186,8 +186,8 @@ Verificações previstas:
    de infraestrutura ao pacote utilizado.
 7. Busca, filtros, seleção, histórico de navegação e links diretos para objetos.
 8. Legibilidade, navegação por teclado, alternativa tabular e adaptação a telas menores.
-9. Desempenho com o grafo real, medido localmente; metas numéricas serão registradas antes do aceite,
-   sem apresentar estimativas como resultados.
+9. Desempenho com o grafo real, medido localmente contra as metas abaixo, sem apresentar
+   estimativas como resultados.
 10. Build reproduzível e revisão dos arquivos que seriam publicados, incluindo ausência de segredos
     e material privado fora do escopo.
 11. Cobertura dos termos técnicos e artefatos expostos, incluindo busca por nomes em português,
@@ -198,6 +198,23 @@ Verificações previstas:
     geral, escolha do projeto e evidência de execução explicitadas.
 14. Percursos locais de leitura e exploração previstos na especificação da página de conceitos,
     com registro de lacunas editoriais, links quebrados e dúvidas levantadas pelo Owner.
+
+**Metas de desempenho (propostas em 17/11/2026).** Servem às provas da D01 e da D02 e ao item 9.
+São alvos, não medições; o Owner pode ajustá-los na E4. Medição em build de produção servida
+localmente, no Chrome desta máquina, sem limitação de rede ou CPU, e repetida com CPU 4× mais lenta
+para registrar a margem.
+
+| Medida | Meta |
+|---|---|
+| Build completa a partir da cópia do pacote | até 60 s |
+| Página de governança: primeira renderização com conteúdo | até 1,5 s |
+| Dados transferidos ao abrir uma página, comprimidos | até 1 MB, sem carregar o pacote inteiro |
+| Busca: resultados após digitar | até 150 ms |
+| Linhagem por relação: recorte inicial (relação e vizinhos imediatos) desenhado | até 1 s |
+| Linhagem: expandir um nível | até 500 ms |
+| Grafo de relações inteiro (todas as relações do `lineage`) desenhado com layout | até 3 s |
+| Linhagem por coluna: maior recorte exibido de uma vez | até 300 nós; acima disso, a interface pede filtro ou expansão |
+| Zoom e deslocamento no maior recorte permitido | sem quadro acima de 50 ms no perfil do navegador |
 
 Os itens que medem fidelidade (2 a 6, 9 e 13) medem fidelidade ao pacote do commit fixado, não ao
 estado atual do banco nem do GCP. Contra o exemplo, valeriam só como ensaio do mecanismo.

@@ -15,6 +15,11 @@ mesmo commit e passar o portal a ler `on_zero_denominator`, a partir do aviso
 `mvp_eng_dados_2/data/medicoes/base_consumidores/avisos/aviso_gdados_20261117.md` (fora do Git).
 Os efeitos estão na D01, na D02 e na D03.
 
+Ainda em 17/11/2026, o Owner aprovou as alternativas recomendadas para iniciar o desenvolvimento:
+repositório Git local, provas isoladas em `provas/`, cópia do pacote versionada no gdados e metas de
+desempenho registradas antes das provas. Os registros estão na D01, na D02, na D03 e no
+[plano](../PLANO.md), E3.
+
 ## D01 — Estrutura da aplicação
 
 **Estado:** decisão por prova local autorizada em 14/11/2026 (resposta central §3, A2); framework
@@ -34,6 +39,10 @@ busca, acessibilidade e build antes de optar pela menor quantidade de ferramenta
 `eb11709`. Até 17/11/2026 a prova seria contra o exemplo, porque o pacote ainda não estava
 fixado. A escolha é independente do protótipo da etapa 2.3 do `bi-como-codigo`, porque são dois
 portais (D05).
+
+**Onde fazer a prova (17/11/2026):** em `provas/`, uma subpasta por candidata. As dependências
+instaladas ali servem só à prova e não são adoção; o código das provas é versionado, as dependências
+instaladas não. As medições usam as metas do [plano](../PLANO.md), E3, item 9.
 
 **Pendente:** executar a prova, registrar as medições e a escolha.
 
@@ -69,6 +78,8 @@ Fontes primárias consultadas em 10/11/2026:
 - [Acessibilidade do Mermaid](https://mermaid.js.org/config/accessibility).
 - [Documentação do Cytoscape.js](https://js.cytoscape.org/index.html).
 
+**Onde fazer a prova (17/11/2026):** em `provas/`, como na D01, com as mesmas metas.
+
 **Pendente:** executar a prova; confirmar a combinação ou registrar alternativa que cumpra os
 mesmos critérios.
 
@@ -102,7 +113,9 @@ formato. Trocar o commit fixado é decisão registrada aqui, depois de validar o
 
 **Distribuição (A4):** cópia para o gdados por **comando local explícito**, que lê o commit fixado
 com `git show` e registra ao lado o commit e o SHA-256 de cada arquivo. Copiam-se o pacote e o
-esquema; o exemplo, se servir aos testes. Ficam descartados a leitura do checkout da origem durante
+esquema; o exemplo, se servir aos testes. Desde 17/11/2026, por aprovação do Owner, a cópia e o
+registro ficam **versionados no Git do gdados**, em `origem/`, para que a build funcione num clone
+limpo sem o checkout da origem. O comando é `scripts/copiar_pacote.sh`. Ficam descartados a leitura do checkout da origem durante
 o build, a leitura de `dbt/target/` e o artefato de release com hash.
 
 **Pacote incompleto ou desatualizado (A6):** regras do formato (especificação §2) que o portal aplica:
