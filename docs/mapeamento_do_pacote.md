@@ -79,7 +79,8 @@ O pacote aponta para arquivos da origem que ele não carrega:
 | `tests.*.declared_in` e `checks.*.module` | `dbt/models/analytics/_analytics__models.yml`, `tests/test_acesso.py` |
 | Decisões já tomadas, como a D66 | `docs/adr/0053-…`, `docs/pendencias.md` |
 
-Como esses textos chegam ao portal ainda não está decidido; ver §5.
+Esses textos chegam ao portal pela cópia da D03, em `origem/arquivos/`, a partir de
+`scripts/arquivos_da_origem.txt`.
 
 ## 4. Lacunas do formato para as páginas
 
@@ -92,9 +93,6 @@ Não são lacunas a pedir, porque o formato as declara: `data_type` fora de `ana
 
 ## 5. Em aberto no gdados
 
-- **Textos lidos por commit (§3).** Proposta: estender o comando da D03 para copiar também os
-  arquivos referenciados, no mesmo commit, com SHA-256 em `origem/procedencia.json`, a partir de uma
-  lista declarada no gdados e sem arquivos de estado, credenciais ou dados. Alternativa: só exibir o
-  caminho e o commit, sem o texto.
+- **Textos lidos por commit (§3):** decidido em 17/11/2026 na D03, cópia por lista.
 - **Inventário de termos e lacunas editoriais** e **formato da camada editorial**: próximos
   entregáveis da E1 independentes da stack.

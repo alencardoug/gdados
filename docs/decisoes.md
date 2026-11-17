@@ -42,7 +42,8 @@ portais (D05).
 
 **Onde fazer a prova (17/11/2026):** em `provas/`, uma subpasta por candidata. As dependências
 instaladas ali servem só à prova e não são adoção; o código das provas é versionado, as dependências
-instaladas não. As medições usam as metas do [plano](../PLANO.md), E3, item 9.
+instaladas não. As medições usam as metas do [plano](../PLANO.md), E3, item 9, e são feitas com
+Playwright e Chromium instalados também só em `provas/` (aprovação do Owner em 17/11/2026).
 
 **Pendente:** executar a prova, registrar as medições e a escolha.
 
@@ -115,7 +116,16 @@ formato. Trocar o commit fixado é decisão registrada aqui, depois de validar o
 com `git show` e registra ao lado o commit e o SHA-256 de cada arquivo. Copiam-se o pacote e o
 esquema; o exemplo, se servir aos testes. Desde 17/11/2026, por aprovação do Owner, a cópia e o
 registro ficam **versionados no Git do gdados**, em `origem/`, para que a build funcione num clone
-limpo sem o checkout da origem. O comando é `scripts/copiar_pacote.sh`. Ficam descartados a leitura do checkout da origem durante
+limpo sem o checkout da origem. O comando é `scripts/copiar_pacote.sh`.
+
+**Textos lidos por commit (17/11/2026, aprovação do Owner):** o mesmo comando copia, no mesmo
+commit, os arquivos da origem que o portal lê fora do pacote, listados em
+`scripts/arquivos_da_origem.txt`, para `origem/arquivos/`, com o SHA-256 de cada um em
+`origem/procedencia.json`. A lista é declarada no gdados a partir das referências do pacote
+([mapeamento §3](mapeamento_do_pacote.md#3-o-que-o-portal-lê-por-commit-fora-do-pacote)). O comando
+recusa `.env`, estados e variáveis do Terraform, chaves, credenciais e endereços de e-mail fora dos
+domínios reservados para exemplo. Os identificadores dos projetos GCP já excluídos aparecem no
+Registro da fase GCP; sua exposição é revista na E3 (item 10) e na D04, antes de publicar. Ficam descartados a leitura do checkout da origem durante
 o build, a leitura de `dbt/target/` e o artefato de release com hash.
 
 **Pacote incompleto ou desatualizado (A6):** regras do formato (especificação §2) que o portal aplica:

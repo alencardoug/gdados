@@ -3,8 +3,9 @@
   "ref": "v2.1.0",
   "commit": "eb117098e2b73370cf8ce027da1ffefa6acf01a7",
   "commit_date": "2026-11-17T03:42:55-03:00",
-  "copied_at": "2026-11-17T17:35:08+00:00",
+  "copied_at": "2026-11-17T17:42:45+00:00",
   "decision": "D03 em docs/decisoes.md",
+  "list": "scripts/arquivos_da_origem.txt",
   "files": [
     {
       "path": "pacote_de_metadados.json",
@@ -23,6 +24,540 @@
       "source_path": "docs/pacote_de_metadados.exemplo.json",
       "sha256": "0b70bf3808f7066294e0b5d7cd8d016c5f0cf366885808293479ad36af92b3f8",
       "bytes": 21986
+    },
+    {
+      "path": "arquivos/airbyte/streams.yml",
+      "source_path": "airbyte/streams.yml",
+      "sha256": "a015f4df3550d2925a6bcb5dca06bc2346420ccc9b7cd7890094296d31911179",
+      "bytes": 11755
+    },
+    {
+      "path": "arquivos/docker/docker-compose.airflow.yml",
+      "source_path": "docker/docker-compose.airflow.yml",
+      "sha256": "289db6c0a7919548a338a3bd453c6fdca7ec1aee61421475bf679fb783a68ad9",
+      "bytes": 7283
+    },
+    {
+      "path": "arquivos/docker/docker-compose.streaming.yml",
+      "source_path": "docker/docker-compose.streaming.yml",
+      "sha256": "d5d99fb2be09f1dba8323d59ef562a95fcf4c896ec194c37f99c31fc9e89bd31",
+      "bytes": 4746
+    },
+    {
+      "path": "arquivos/docker/docker-compose.yml",
+      "source_path": "docker/docker-compose.yml",
+      "sha256": "7d2197f068a806d01a84a0a0dda1638694f3e09ea0f9c49072796cc1f5c003ec",
+      "bytes": 5444
+    },
+    {
+      "path": "arquivos/docs/adr/0030-cmv-do-livro-de-estoque.md",
+      "source_path": "docs/adr/0030-cmv-do-livro-de-estoque.md",
+      "sha256": "56a8a66ade1cd92968e97db43815f588a0885ff347057066c712f308f37d3ed3",
+      "bytes": 5585
+    },
+    {
+      "path": "arquivos/docs/adr/0036-recompra-ancorada-no-pedido.md",
+      "source_path": "docs/adr/0036-recompra-ancorada-no-pedido.md",
+      "sha256": "4dff96eb95ca9f06b8d37aa5dc9fc901e5065e483c3c90bb40143bc324b10a0b",
+      "bytes": 5517
+    },
+    {
+      "path": "arquivos/docs/adr/0053-fato-no-grao-da-remessa.md",
+      "source_path": "docs/adr/0053-fato-no-grao-da-remessa.md",
+      "sha256": "ecee018358d1075fa213b3b8015b8082f2b8e0a68f3b177ab33de9e6234900c1",
+      "bytes": 3856
+    },
+    {
+      "path": "arquivos/docs/arquitetura.md",
+      "source_path": "docs/arquitetura.md",
+      "sha256": "7f9a52dbd11a1db84211d90ce74fb7243d0f3024329a3831f2abce3d191429fd",
+      "bytes": 21713
+    },
+    {
+      "path": "arquivos/docs/capacidade_e_recuperacao.md",
+      "source_path": "docs/capacidade_e_recuperacao.md",
+      "sha256": "f763957c71bcf72937975c313d18d155882bdd7be342b421e95f5701f61e18e2",
+      "bytes": 51929
+    },
+    {
+      "path": "arquivos/docs/dicionario_de_dados.md",
+      "source_path": "docs/dicionario_de_dados.md",
+      "sha256": "a21b131d3cb0dfebfb61859bb1a1536b4c61547dc8d04778b5710fb4621ac051",
+      "bytes": 82365
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/README.md",
+      "source_path": "docs/glossario_de_negocio/README.md",
+      "sha256": "d8485805adbf8d5cb39104a7ca14fa6aa8a3d77c8b12cc00ad6a96c601807e8d",
+      "bytes": 7704
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/carrinho_abandonado.md",
+      "source_path": "docs/glossario_de_negocio/carrinho_abandonado.md",
+      "sha256": "f2771ee3128cc11f7d45af977a570459a94a29efd2435ac3920e65499971dd98",
+      "bytes": 1440
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/churn.md",
+      "source_path": "docs/glossario_de_negocio/churn.md",
+      "sha256": "13de64fe31b44793fcce0a4b6563a136eef660763aaa0dd4d5afded5f97576d4",
+      "bytes": 1444
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/ciclo_de_entrega.md",
+      "source_path": "docs/glossario_de_negocio/ciclo_de_entrega.md",
+      "sha256": "f094270524a38698e55a212f9aa88c9b847640d2b190ab29d09a284f4ca2b83e",
+      "bytes": 2809
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/cliente_ativo.md",
+      "source_path": "docs/glossario_de_negocio/cliente_ativo.md",
+      "sha256": "b549c012dea24ee4e18c18958891d83884809d538dd248e720dd278a54740077",
+      "bytes": 914
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/cobertura_de_estoque.md",
+      "source_path": "docs/glossario_de_negocio/cobertura_de_estoque.md",
+      "sha256": "54a87825d10db42ad6884672be84bb53326306adaaf0356416edc4057835e28d",
+      "bytes": 1459
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/custo_do_produto_vendido.md",
+      "source_path": "docs/glossario_de_negocio/custo_do_produto_vendido.md",
+      "sha256": "f3d68a925456c7b845d2e2b1b3fd97160a325f6c1ebf3a6c143324f39f759617",
+      "bytes": 1651
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/dominios.yml",
+      "source_path": "docs/glossario_de_negocio/dominios.yml",
+      "sha256": "04a1c293007dfc5fe829967d57c97f3e759f2a4290f3030a3ac902be7500ad29",
+      "bytes": 27888
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/entrega_no_prazo.md",
+      "source_path": "docs/glossario_de_negocio/entrega_no_prazo.md",
+      "sha256": "47f5f02928161c4077b26a33dd05db4d9f37822f0c85619608e560eaeecff212",
+      "bytes": 4036
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/giro_de_estoque.md",
+      "source_path": "docs/glossario_de_negocio/giro_de_estoque.md",
+      "sha256": "d5ba86c606bb94d4de154e3c2852d298150b24e99bc7de26e1fdbde297fc9bef",
+      "bytes": 2094
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/lucro_bruto.md",
+      "source_path": "docs/glossario_de_negocio/lucro_bruto.md",
+      "sha256": "ddfef4d4af745422f75f68dd0896bd117bf40d88a549f898f7601c504b68df96",
+      "bytes": 2003
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/metricas.yml",
+      "source_path": "docs/glossario_de_negocio/metricas.yml",
+      "sha256": "0edb0b03388362d141d61f84e34d5438616bbccaa69dba19a7ae259deb227280",
+      "bytes": 28969
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/perguntas_de_negocio.md",
+      "source_path": "docs/glossario_de_negocio/perguntas_de_negocio.md",
+      "sha256": "bb01d9143d7eb064dfc6d39e89213597162d5139b7f42ee2c2f8fd8031684f90",
+      "bytes": 29423
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/receita_liquida.md",
+      "source_path": "docs/glossario_de_negocio/receita_liquida.md",
+      "sha256": "53316c8073c62ee953d2beddc7efe69e69ddf44a7e7763c69414d450ad537fc3",
+      "bytes": 2463
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/recompra_pos_pedido.md",
+      "source_path": "docs/glossario_de_negocio/recompra_pos_pedido.md",
+      "sha256": "25d5bd92c1e601bc8d3c86913acf107487402b4e87b4215e3a2ff7ac8a984826",
+      "bytes": 1911
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/recorrencia_de_compra.md",
+      "source_path": "docs/glossario_de_negocio/recorrencia_de_compra.md",
+      "sha256": "a38f0d5cf37540778999ca92d4c807d3f348836f43e0eb966706cef1148b3973",
+      "bytes": 918
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/ruptura_de_estoque.md",
+      "source_path": "docs/glossario_de_negocio/ruptura_de_estoque.md",
+      "sha256": "2b866498a364177b2134eb892988431f4950d4ae447a54e2b7441ac1ba39db38",
+      "bytes": 1517
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/taxa_de_conversao.md",
+      "source_path": "docs/glossario_de_negocio/taxa_de_conversao.md",
+      "sha256": "8a330fd3fa8ce24ac782c75cd88378dfa7518cca1855142e44ffc28e1042ed82",
+      "bytes": 1944
+    },
+    {
+      "path": "arquivos/docs/glossario_de_negocio/ticket_medio.md",
+      "source_path": "docs/glossario_de_negocio/ticket_medio.md",
+      "sha256": "d3c9a415c93869aba80fc61f0d0285e1e6650f0d070bc84e3c7f6c8ce3c554db",
+      "bytes": 1667
+    },
+    {
+      "path": "arquivos/docs/governanca_de_dados.md",
+      "source_path": "docs/governanca_de_dados.md",
+      "sha256": "7459a09b74f66790ff7f20e666143d09b8a40556a45b2e042e62557e0d2cf8c3",
+      "bytes": 37432
+    },
+    {
+      "path": "arquivos/docs/modelo_de_dados.md",
+      "source_path": "docs/modelo_de_dados.md",
+      "sha256": "8ed76f67db29c1caaa616526d795f8c34e36517577d012cc2cacd3e0dced049f",
+      "bytes": 38919
+    },
+    {
+      "path": "arquivos/docs/pendencias.md",
+      "source_path": "docs/pendencias.md",
+      "sha256": "d540dbc54bd2cc6321fc07beaa84cbbc0e4db4611f98f230e8336ff3cd12f312",
+      "bytes": 98606
+    },
+    {
+      "path": "arquivos/docs/registro_fase_gcp.md",
+      "source_path": "docs/registro_fase_gcp.md",
+      "sha256": "d1e776e7d6a381e219dc9e7cf323f5df9d3840e60161e09e365a25cdae60fb38",
+      "bytes": 239903
+    },
+    {
+      "path": "arquivos/streaming/fluxo.yml",
+      "source_path": "streaming/fluxo.yml",
+      "sha256": "503ecbcbda7608fb2a42ff285e4d9d570b9a248265255959365d8f3f7f121e15",
+      "bytes": 7393
+    },
+    {
+      "path": "arquivos/terraform/.terraform.lock.hcl",
+      "source_path": "terraform/.terraform.lock.hcl",
+      "sha256": "a8c679ab22a1240bcd75dc775f6627c9e02d134e9de9e32f3b4405307cf84837",
+      "bytes": 3487
+    },
+    {
+      "path": "arquivos/terraform/acesso.auto.tfvars.json",
+      "source_path": "terraform/acesso.auto.tfvars.json",
+      "sha256": "b178f188ab6af79aace2d842af8c91c4b13fee6f93678c13b702061fafef4d6b",
+      "bytes": 1851
+    },
+    {
+      "path": "arquivos/terraform/aplicacoes_gke.tf",
+      "source_path": "terraform/aplicacoes_gke.tf",
+      "sha256": "bb469baec3c3edc8470d16c7fba9969ce6c35c6bba2b2dae1ebb3d9cec3dfb5f",
+      "bytes": 7705
+    },
+    {
+      "path": "arquivos/terraform/armazenamento.tf",
+      "source_path": "terraform/armazenamento.tf",
+      "sha256": "d6a428a0e78a22bbf57183c2a4d306dcc5c88cfc79a9d1de404d460d097bf17f",
+      "bytes": 6399
+    },
+    {
+      "path": "arquivos/terraform/bigquery.tf",
+      "source_path": "terraform/bigquery.tf",
+      "sha256": "fa03b91792b0cba32e2cda357020ffa861fc60f2f99ccb9b0152431bb7a5c5aa",
+      "bytes": 1675
+    },
+    {
+      "path": "arquivos/terraform/charts/debezium-server/Chart.yaml",
+      "source_path": "terraform/charts/debezium-server/Chart.yaml",
+      "sha256": "501ca7c2b055db2b0fb6ef70e32e6e844bc16718769f5a9bae06f23c772001ea",
+      "bytes": 213
+    },
+    {
+      "path": "arquivos/terraform/charts/debezium-server/templates/configuracao.yaml",
+      "source_path": "terraform/charts/debezium-server/templates/configuracao.yaml",
+      "sha256": "0cfcb510e1c0c42bcc79017a4d6a234579b1b0e3d67f6de9c23598a879216139",
+      "bytes": 333
+    },
+    {
+      "path": "arquivos/terraform/charts/debezium-server/templates/conta.yaml",
+      "source_path": "terraform/charts/debezium-server/templates/conta.yaml",
+      "sha256": "55ff8b1d0a37fee409eed2483395e9826ae7c97cb16a2017a1da1cb259da7d92",
+      "bytes": 180
+    },
+    {
+      "path": "arquivos/terraform/charts/debezium-server/templates/disco.yaml",
+      "source_path": "terraform/charts/debezium-server/templates/disco.yaml",
+      "sha256": "99081c4827cda472237d453548794a814608acdb89c906db0525b207adfaf102",
+      "bytes": 186
+    },
+    {
+      "path": "arquivos/terraform/charts/debezium-server/templates/implantacao.yaml",
+      "source_path": "terraform/charts/debezium-server/templates/implantacao.yaml",
+      "sha256": "16e81af622c87ff06f14e77d0a0de599fcc70d4cf885219b86e3613175493b3c",
+      "bytes": 2234
+    },
+    {
+      "path": "arquivos/terraform/charts/debezium-server/values.yaml",
+      "source_path": "terraform/charts/debezium-server/values.yaml",
+      "sha256": "c91732af1dc0e14c7460adcc2adf8790ea47fff77d95aa21727c9c658b54c69b",
+      "bytes": 1089
+    },
+    {
+      "path": "arquivos/terraform/cloud_sql.tf",
+      "source_path": "terraform/cloud_sql.tf",
+      "sha256": "150a024805d7a05b1b70cc79f0f5021cc79d1310b21bdfe16caa9207ceefab49",
+      "bytes": 5131
+    },
+    {
+      "path": "arquivos/terraform/composer.tf",
+      "source_path": "terraform/composer.tf",
+      "sha256": "6b2138e4a9baaab69101e10f83f52e3b25f45b08b78370618838bfe684ad6dcf",
+      "bytes": 11730
+    },
+    {
+      "path": "arquivos/terraform/dataflow.tf",
+      "source_path": "terraform/dataflow.tf",
+      "sha256": "8739743599ebfc24d4cf701304ebbc4cd185bd2bdb42bf33cb4b2092e11e625e",
+      "bytes": 5195
+    },
+    {
+      "path": "arquivos/terraform/fundacao.tf",
+      "source_path": "terraform/fundacao.tf",
+      "sha256": "47fd2602e884a952bc2f70cb41cdf4faddc842a8a9ac916220dee81c93080776",
+      "bytes": 2095
+    },
+    {
+      "path": "arquivos/terraform/gke.tf",
+      "source_path": "terraform/gke.tf",
+      "sha256": "319f24e695d44b9523e872d7727b40e91f6072093244b07e812468272fac098c",
+      "bytes": 5299
+    },
+    {
+      "path": "arquivos/terraform/helm/airbyte_gke.yaml",
+      "source_path": "terraform/helm/airbyte_gke.yaml",
+      "sha256": "b084c7c56fb2b454f0786fa1e688f74bfd3112a16fede13472c038e05c6fff2e",
+      "bytes": 1662
+    },
+    {
+      "path": "arquivos/terraform/iam.tf",
+      "source_path": "terraform/iam.tf",
+      "sha256": "5ab874fbb59399beb8499462f407a99a413090ae04546f2b7902965ad970f2f3",
+      "bytes": 1890
+    },
+    {
+      "path": "arquivos/terraform/papeis.tf",
+      "source_path": "terraform/papeis.tf",
+      "sha256": "1221ef68420840aceb9c53bf5c18836d8476d8d6a42b3e37d76a4a50faa71239",
+      "bytes": 3120
+    },
+    {
+      "path": "arquivos/terraform/politicas.tf",
+      "source_path": "terraform/politicas.tf",
+      "sha256": "83dbc9cdb08ef91847fc0123c14157ebf482bacd1ba9a28a2371e1a7eb1b945e",
+      "bytes": 8950
+    },
+    {
+      "path": "arquivos/terraform/rede.tf",
+      "source_path": "terraform/rede.tf",
+      "sha256": "3d7838cf2699e1366fdc235324737c49f211f2c7985febbc2f8602beec85b3b4",
+      "bytes": 2491
+    },
+    {
+      "path": "arquivos/terraform/terraform.tfvars.example",
+      "source_path": "terraform/terraform.tfvars.example",
+      "sha256": "1db0586a5b594408173f9ed84b0e3d514751351a8485624bfc902f5abfabe588",
+      "bytes": 743
+    },
+    {
+      "path": "arquivos/terraform/variables.tf",
+      "source_path": "terraform/variables.tf",
+      "sha256": "95e7e4ce53e4cebafae189c8305d27e5f6c21cf30d87725cb1b67ec5e2a275dd",
+      "bytes": 2917
+    },
+    {
+      "path": "arquivos/terraform/versions.tf",
+      "source_path": "terraform/versions.tf",
+      "sha256": "a419cd5e49cf876e38e99b16b7210fa1b2fb11721d2492914838cd1d290a8821",
+      "bytes": 1584
+    },
+    {
+      "path": "arquivos/tests/auditoria/average_order_value_by_channel_and_segment.sql",
+      "source_path": "tests/auditoria/average_order_value_by_channel_and_segment.sql",
+      "sha256": "3fb7b491af1b2961df6715b613e860653e8c723857d479bc59939cfb08e071e4",
+      "bytes": 955
+    },
+    {
+      "path": "arquivos/tests/auditoria/cart_conversion_rate_by_channel.sql",
+      "source_path": "tests/auditoria/cart_conversion_rate_by_channel.sql",
+      "sha256": "93cd58700a8dc7a9dc5e56b2bf788b8b187a03372dba95993172f388941cc3e3",
+      "bytes": 869
+    },
+    {
+      "path": "arquivos/tests/auditoria/contraprova/aud_new_and_repeat_customers_by_month_f4ab54a.sql",
+      "source_path": "tests/auditoria/contraprova/aud_new_and_repeat_customers_by_month_f4ab54a.sql",
+      "sha256": "f4c6796f4c6b30ec920ab9c5e6184693b4d30c17c79b8f72c75dc193db9a8469",
+      "bytes": 3389
+    },
+    {
+      "path": "arquivos/tests/auditoria/contraprova/aud_order_to_delivery_time_by_region_f4ab54a.sql",
+      "source_path": "tests/auditoria/contraprova/aud_order_to_delivery_time_by_region_f4ab54a.sql",
+      "sha256": "d3dbdf84c4faab2aa0dadc33f7bad77b3fb8a5a88aa3d8863321aa1931943702",
+      "bytes": 2997
+    },
+    {
+      "path": "arquivos/tests/auditoria/contraprova/f1_support_tickets_per_hundred_orders_32397cc.sql",
+      "source_path": "tests/auditoria/contraprova/f1_support_tickets_per_hundred_orders_32397cc.sql",
+      "sha256": "44c35088207ba7ed02687bfd800e7f01404d37d5e15c9dd5355a3fd2704d24a7",
+      "bytes": 5502
+    },
+    {
+      "path": "arquivos/tests/auditoria/contraprova/f2_inventory_turnover_by_sku_and_warehouse_32397cc.sql",
+      "source_path": "tests/auditoria/contraprova/f2_inventory_turnover_by_sku_and_warehouse_32397cc.sql",
+      "sha256": "f2b429ae959d6b266340ba59ff5ed27647e2c992ea81a639f0e2dafd0390a21f",
+      "bytes": 4448
+    },
+    {
+      "path": "arquivos/tests/auditoria/discount_share_by_channel.sql",
+      "source_path": "tests/auditoria/discount_share_by_channel.sql",
+      "sha256": "a4ab52eeaf7ce91ca985c75b12a8cc1728b62f544e6972b2550302684a946de9",
+      "bytes": 1141
+    },
+    {
+      "path": "arquivos/tests/auditoria/gross_margin_by_category.sql",
+      "source_path": "tests/auditoria/gross_margin_by_category.sql",
+      "sha256": "0dc23590043f1ce4fd19c11bc517c5af3592323c039e797ce92056a103687953",
+      "bytes": 2102
+    },
+    {
+      "path": "arquivos/tests/auditoria/inventory_turnover_by_sku_and_warehouse.sql",
+      "source_path": "tests/auditoria/inventory_turnover_by_sku_and_warehouse.sql",
+      "sha256": "86e9c97e32df4ddd3b9ac8ae80b8adf1c79e7f5a4e9638bc2faa6c813dc3c1d9",
+      "bytes": 3839
+    },
+    {
+      "path": "arquivos/tests/auditoria/monthly_revenue_by_channel_and_category.sql",
+      "source_path": "tests/auditoria/monthly_revenue_by_channel_and_category.sql",
+      "sha256": "e9d18f11aacd777595eddb32d9f83cacb78ac13b4877246c2dfce50ec66ba1c3",
+      "bytes": 1286
+    },
+    {
+      "path": "arquivos/tests/auditoria/new_and_repeat_customers_by_month.sql",
+      "source_path": "tests/auditoria/new_and_repeat_customers_by_month.sql",
+      "sha256": "e4fa62897ab92403bda4bca8107b1dc32aa07679986fd12e9842dedba2cb894a",
+      "bytes": 1746
+    },
+    {
+      "path": "arquivos/tests/auditoria/on_time_delivery_rate_by_carrier.sql",
+      "source_path": "tests/auditoria/on_time_delivery_rate_by_carrier.sql",
+      "sha256": "cbf0a63bc3742ba57af82b13c00030cfdc160230ffe0a5c1f1b24572dffce52c",
+      "bytes": 1143
+    },
+    {
+      "path": "arquivos/tests/auditoria/order_to_delivery_time_by_region.sql",
+      "source_path": "tests/auditoria/order_to_delivery_time_by_region.sql",
+      "sha256": "ee1047e51466dbdc4ff48b1b3d0078524990325f702175f26530c326dc380e64",
+      "bytes": 1441
+    },
+    {
+      "path": "arquivos/tests/auditoria/payment_approval_rate_by_method.sql",
+      "source_path": "tests/auditoria/payment_approval_rate_by_method.sql",
+      "sha256": "0a12953f5cce6c4019bea1db3eb72b68c76f7ceb79cfe8d6ef2b344db1977966",
+      "bytes": 1777
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p01_receita_dos_pedidos_realizados.sql",
+      "source_path": "tests/auditoria/populacao/p01_receita_dos_pedidos_realizados.sql",
+      "sha256": "d7c0b54338cde174c34b7333bd1b844270ed2b61fdd7f3e710652b8b9fac83f0",
+      "bytes": 730
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p02_pedidos.sql",
+      "source_path": "tests/auditoria/populacao/p02_pedidos.sql",
+      "sha256": "1bef1c01438d2e2e367fafaa581390ef1499a17c948bf65ad7e2f955accfa3a2",
+      "bytes": 1160
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p04_estreias.sql",
+      "source_path": "tests/auditoria/populacao/p04_estreias.sql",
+      "sha256": "d7ee703881efb8c67b8bbfce9e56471afed54b0581b119f7039c2514447327fe",
+      "bytes": 836
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p07_carrinhos.sql",
+      "source_path": "tests/auditoria/populacao/p07_carrinhos.sql",
+      "sha256": "4ad2b28cfc375949dbad035ab8b0bd45f40c6cf29fd298d4d53512ed5a44ce60",
+      "bytes": 717
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p09_tentativas_de_autorizacao.sql",
+      "source_path": "tests/auditoria/populacao/p09_tentativas_de_autorizacao.sql",
+      "sha256": "e7b77a723d800c56112b6b89345c6964e17d2c82fa6a52b64ce75a836b620b23",
+      "bytes": 570
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p10_reembolsos.sql",
+      "source_path": "tests/auditoria/populacao/p10_reembolsos.sql",
+      "sha256": "e62cd59608962542d50ae13a66ff26fbbe2d185ceac0e7bfe06c8c0089dc8b20",
+      "bytes": 806
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p14_pedidos_com_ciclo_fechado.sql",
+      "source_path": "tests/auditoria/populacao/p14_pedidos_com_ciclo_fechado.sql",
+      "sha256": "4e63e75637c424a5b5ec2dae53f4265a16b8918641b11eaa4fde1d47dee2dc08",
+      "bytes": 553
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p15_chamados.sql",
+      "source_path": "tests/auditoria/populacao/p15_chamados.sql",
+      "sha256": "d587e2152ff81f5bd0e61744d4ebb83bcce65ecfa5b2f7e26bf22db8ad0fa8d0",
+      "bytes": 508
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p15_denominador.sql",
+      "source_path": "tests/auditoria/populacao/p15_denominador.sql",
+      "sha256": "4d113278bd6a0f2f96514dd1d327ce28cb6bba875b41cf00e751008ee52541b1",
+      "bytes": 1099
+    },
+    {
+      "path": "arquivos/tests/auditoria/populacao/p16_pedidos_sem_chamado.sql",
+      "source_path": "tests/auditoria/populacao/p16_pedidos_sem_chamado.sql",
+      "sha256": "f2f01b0fab3d6e0208e934ebd81ac9005db49ea8a3288f47c750d5a149f864c8",
+      "bytes": 949
+    },
+    {
+      "path": "arquivos/tests/auditoria/refund_rate_by_reason.sql",
+      "source_path": "tests/auditoria/refund_rate_by_reason.sql",
+      "sha256": "0592c847896e0d6bd3a5b91bbdd7bcd0eb8e4396edd2d6c439a41c98474b58bf",
+      "bytes": 1355
+    },
+    {
+      "path": "arquivos/tests/auditoria/repeat_purchase_rate_after_support.sql",
+      "source_path": "tests/auditoria/repeat_purchase_rate_after_support.sql",
+      "sha256": "b1910eb18960df6ee34dccf09171696c21806cf9458199a5a6096bd09a79cd90",
+      "bytes": 1786
+    },
+    {
+      "path": "arquivos/tests/auditoria/resultado.yml",
+      "source_path": "tests/auditoria/resultado.yml",
+      "sha256": "0f79f4cc2cba3046141e2d43216f33519d2c45f383120a7271a38768fadf76bb",
+      "bytes": 3693
+    },
+    {
+      "path": "arquivos/tests/auditoria/revenue_by_delivery_region.sql",
+      "source_path": "tests/auditoria/revenue_by_delivery_region.sql",
+      "sha256": "f95ecf72d225ad94b24371be2299281f664769289be89c8e69607eead01c2dd3",
+      "bytes": 861
+    },
+    {
+      "path": "arquivos/tests/auditoria/skus_below_reorder_point.sql",
+      "source_path": "tests/auditoria/skus_below_reorder_point.sql",
+      "sha256": "0828256acf98306f6e3b26910e58b888dc0e5b58bda422b55c51a61f72272bb3",
+      "bytes": 3449
+    },
+    {
+      "path": "arquivos/tests/auditoria/support_tickets_per_hundred_orders.sql",
+      "source_path": "tests/auditoria/support_tickets_per_hundred_orders.sql",
+      "sha256": "507cf3f151b14a3408dc163762f833621fc9c3d8bd9b0a001d27b9c29410a63b",
+      "bytes": 2052
+    },
+    {
+      "path": "arquivos/tests/auditoria/top_skus_by_revenue.sql",
+      "source_path": "tests/auditoria/top_skus_by_revenue.sql",
+      "sha256": "a51e4f1c38b160a5a76089aa0fd0a63e572cb11ef28d1e98e708144583bbb959",
+      "bytes": 2372
     }
   ]
 }

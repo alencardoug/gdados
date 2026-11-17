@@ -1,0 +1,36 @@
+# Arquivos da origem que o portal lê por commit, fora do pacote (D03; mapeamento §3).
+# Um caminho por linha, relativo à raiz do mvp_eng_dados_2; pasta termina em "/" e é copiada inteira.
+# Copiados para origem/arquivos/, no mesmo commit do pacote, com SHA-256 em origem/procedencia.json.
+# O comando recusa .env, estados e variáveis do Terraform, chaves e credenciais.
+
+# environments do pacote (read_by_commit)
+docker/docker-compose.yml
+docker/docker-compose.airflow.yml
+docker/docker-compose.streaming.yml
+terraform/
+docs/arquitetura.md
+docs/modelo_de_dados.md
+docs/registro_fase_gcp.md
+
+# custo da fase GCP (Consumidores §7; F33)
+docs/capacidade_e_recuperacao.md
+
+# glossário: conceitos de filters.*.concept, perguntas e métricas
+docs/glossario_de_negocio/
+
+# open_items.*.anchor e decisões já tomadas
+docs/pendencias.md
+docs/adr/0053-fato-no-grao-da-remessa.md
+
+# links relativos nos textos do pacote
+docs/adr/0030-cmv-do-livro-de-estoque.md
+docs/adr/0036-recompra-ancorada-no-pedido.md
+airbyte/streams.yml
+streaming/fluxo.yml
+
+# regras de governança e catálogo citadas pelas páginas
+docs/governanca_de_dados.md
+docs/dicionario_de_dados.md
+
+# view_audits.*.reference
+tests/auditoria/
