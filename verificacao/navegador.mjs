@@ -1,0 +1,233 @@
+// Verificações da E3 no navegador (Chrome do sistema, via Playwright): desempenho contra as metas do
+// PLANO, E3, item 9, e os itens funcionais 7, 8 e 12. Serve portal/dist com gzip, cache desligado.
+import { chromium } from "playwright";
+import { servir } from "./servidor.mjs";
+
+const PORTA = 4321;
+const BASE = `http://127.0.0.1:${PORTA}`;
+const mediana = (xs) => {
+  const v = xs.filter((x) => x != null).sort((a, b) => a - b);
+  return v.length ? v[Math.floor((v.length - 1) / 2)] : null;
+};
+
+async function abrir(nav, rota, { cpu = 1, pronto = null, viewport = { width: 1280, height: 800 }, cache = false } = {}) {
+  const contexto = await nav.newContext({ viewport });
+  const pagina = await contexto.newPage();
+  const erros = [];
+  pagina.on("console", (m) => { if (m.type() === "error" || m.type() === "warning") erros.push(m.text()); });
+  pagina.on("pageerror", (e) => erros.push(e.message));
+  const cdp = await contexto.newCDPSession(pagina);
+  await cdp.send("Network.setCacheDisabled", { cacheDisabled: !cache });
+  if (cpu > 1) await cdp.send("Emulation.setCPUThrottlingRate", { rate: cpu });
+  await pagina.goto(BASE + rota, { waitUntil: "load" });
+  if (pronto) await pagina.waitForSelector(pronto, { timeout: 60000 });
+  await pagina.waitForFunction(() => performance.getEntriesByName("first-contentful-paint").length > 0, null, { timeout: 30000 });
+  const m = await pagina.evaluate(() => {
+    const nav = performance.getEntriesByType("navigation")[0];
+    const bytes = (nav?.encodedBodySize ?? 0) + performance.getEntriesByType("resource").reduce((s, r) => s + (r.encodedBodySize ?? 0), 0);
+    const marca = (n) => performance.getEntriesByName(n).at(-1)?.startTime ?? null;
+    return {
+      fcp_ms: performance.getEntriesByName("first-contentful-paint")[0]?.startTime ?? null,
+      bytes_comprimidos: bytes,
+      linhagem_pronta_ms: marca("linhagem:pronto"),
+      travessias_prontas_ms: marca("travessias:pronto"),
+    };
+  });
+  return { contexto, pagina, m, erros };
+}
+
+// Zoom 4×, deslocamento e ajuste à área, 700 ms cada; o maior intervalo entre quadros.
+const animar = (pagina) =>
+  pagina.evaluate(() => new Promise((ok) => {
+    const cy = document.getElementById("linhagem").cy;
+    const deltas = [];
+    let anterior = performance.now(), ativo = true;
+    const laco = (t) => { deltas.push(t - anterior); anterior = t; if (ativo) requestAnimationFrame(laco); };
+    requestAnimationFrame((t) => { anterior = t; requestAnimationFrame(laco); });
+    const centro = { x: cy.width() / 2, y: cy.height() / 2 };
+    cy.animate({ zoom: { level: cy.zoom() * 4, renderedPosition: centro }, duration: 700 })
+      .animate({ panBy: { x: 400, y: 200 }, duration: 700 })
+      .animate({ fit: { padding: 20 }, duration: 700, complete: () => { ativo = false; ok({ nos: cy.nodes().length, quadro_max_ms: Math.max(...deltas.slice(2)) }); } });
+  }));
+
+async function rodadaDeDesempenho(nav, cpu, { view, expandir, maiorPermitido }) {
+  const r = {};
+  {
+    const { contexto, pagina, m } = await abrir(nav, "/governanca/", { cpu, pronto: "html[data-busca-pronta]" });
+    await pagina.locator("#busca").pressSequentially("receita liquida", { delay: 80 });
+    await pagina.waitForTimeout(400);
+    const buscas = await pagina.evaluate(() => performance.getEntriesByName("busca").map((e) => e.duration));
+    r.catalogo = { ...m, busca_max_ms: Math.max(...buscas), medidas_de_busca: buscas.length };
+    await contexto.close();
+  }
+  {
+    const { contexto, m } = await abrir(nav, `/governanca/relacao/${view}/`, { cpu });
+    r.relacao = m;
+    await contexto.close();
+  }
+  {
+    const { contexto, pagina, m } = await abrir(nav, `/governanca/linhagem/?modo=relacao&r=${view}`, { cpu, pronto: "#linhagem[data-pronto]" });
+    const exp = await pagina.evaluate(async (id) => {
+      const raiz = document.getElementById("linhagem");
+      const antes = raiz.cy.nodes().length;
+      await raiz.expandir(id);
+      return { expandir_ms: performance.getEntriesByName("linhagem:expandir").at(-1)?.duration ?? null, nos_antes: antes, nos_depois: raiz.cy.nodes().length };
+    }, expandir);
+    r.linhagem_relacao = { ...m, ...exp };
+    await contexto.close();
+  }
+  {
+    const { contexto, pagina, m } = await abrir(nav, "/governanca/linhagem/?modo=tudo", { cpu, pronto: "#linhagem[data-pronto]" });
+    r.linhagem_tudo = { ...m, ...(await animar(pagina)) };
+    await contexto.close();
+  }
+  {
+    const { contexto, pagina, m } = await abrir(nav, `/governanca/linhagem/?modo=coluna&r=${maiorPermitido.id}`, { cpu, pronto: "#linhagem[data-pronto]" });
+    r.linhagem_coluna = { ...m, relacao: maiorPermitido.id, ...(await animar(pagina)) };
+    await contexto.close();
+  }
+  {
+    const { contexto, m } = await abrir(nav, "/estrutura/", { cpu, pronto: "#diagrama[data-pronto]" });
+    r.estrutura = m;
+    await contexto.close();
+  }
+  {
+    const { contexto, m } = await abrir(nav, "/conceitos/", { cpu });
+    r.conceitos = m;
+    await contexto.close();
+  }
+  return r;
+}
+
+const METAS = [
+  ["catalogo.fcp_ms", "Governança: primeira renderização com conteúdo", 1500, "ms"],
+  ["catalogo.bytes_comprimidos", "Governança: dados transferidos", 1_000_000, "B"],
+  ["catalogo.busca_max_ms", "Busca: maior tempo por tecla", 150, "ms"],
+  ["relacao.bytes_comprimidos", "Relação: dados transferidos", 1_000_000, "B"],
+  ["linhagem_relacao.linhagem_pronta_ms", "Linhagem por relação: recorte inicial desenhado", 1000, "ms"],
+  ["linhagem_relacao.expandir_ms", "Linhagem: expandir um nível", 500, "ms"],
+  ["linhagem_tudo.linhagem_pronta_ms", "Grafo inteiro desenhado com layout", 3000, "ms"],
+  ["linhagem_tudo.quadro_max_ms", "Zoom e deslocamento no grafo inteiro: maior quadro", 50, "ms"],
+  ["linhagem_coluna.quadro_max_ms", "Zoom e deslocamento no maior recorte por coluna permitido: maior quadro", 50, "ms"],
+  ["estrutura.bytes_comprimidos", "Estrutura (com Mermaid): dados transferidos", 1_000_000, "B"],
+  ["conceitos.bytes_comprimidos", "Conceitos: dados transferidos", 1_000_000, "B"],
+];
+const pegar = (o, c) => c.split(".").reduce((x, k) => x?.[k], o);
+
+async function funcionais(nav, { view, pacote }) {
+  const res = [];
+  const add = (item, nome, ok, detalhe) => res.push({ item, nome, ok, detalhe });
+  const errosDeConsole = [];
+
+  // 7. Busca, filtros, histórico e links diretos.
+  {
+    const { contexto, pagina, erros } = await abrir(nav, "/governanca/", { pronto: "html[data-busca-pronta]", cache: true });
+    const consultas = {};
+    for (const q of ["P13", "grain", "sensibilidade", "fact_shipment", "receita liquida", "PII"]) {
+      await pagina.fill("#busca", q);
+      await pagina.waitForTimeout(100);
+      consultas[q] = (await pagina.locator("#busca-resultados li").first().textContent())?.trim().slice(0, 80) ?? null;
+    }
+    await pagina.fill("#busca", "");
+    await pagina.selectOption("select[name=camada]", "analytics");
+    const filtrado = await pagina.textContent("#catalogo-situacao");
+    await pagina.click("#relacoes tbody tr:not([hidden]) a >> nth=0");
+    await pagina.waitForLoadState();
+    await pagina.goBack();
+    await pagina.waitForSelector("html[data-busca-pronta]");
+    const voltou = { url: pagina.url().replace(BASE, ""), situacao: await pagina.textContent("#catalogo-situacao") };
+    add(7, "Busca encontra perguntas, conceitos, relações e termos em inglês", Object.values(consultas).every(Boolean), consultas);
+    add(7, "Filtro fica na URL e é restaurado ao voltar no histórico", voltou.url.includes("camada=analytics") && voltou.situacao === filtrado, { filtrado, voltou });
+    errosDeConsole.push(...erros);
+    await contexto.close();
+  }
+  {
+    const coluna = "net_revenue_amount";
+    const { contexto, pagina, erros } = await abrir(nav, `/governanca/relacao/${view}/#coluna-${coluna}`, { cache: true });
+    const alvo = await pagina.evaluate(() => document.querySelector(":target")?.id ?? null);
+    const lin = await abrir(nav, `/governanca/linhagem/?modo=relacao&r=${view}&e=analytics.fact_sales_order_item`, { pronto: "#linhagem[data-pronto]", cache: true });
+    const recorte = await lin.pagina.evaluate(() => ({ nos: document.getElementById("linhagem").cy.nodes().length, linhas: document.querySelectorAll("#ligacoes tr").length, arestas: document.getElementById("linhagem").cy.edges().length }));
+    add(7, "Links diretos abrem a coluna e o recorte expandido da linhagem", alvo === `coluna-${coluna}` && recorte.nos > 5, { alvo, recorte });
+    add(8, "Alternativa em tabela: uma linha por ligação do recorte", recorte.linhas === recorte.arestas, recorte);
+    errosDeConsole.push(...erros, ...lin.erros);
+    await contexto.close(); await lin.contexto.close();
+  }
+
+  // 8. Teclado: o primeiro Tab é o atalho para o conteúdo; foco visível na navegação.
+  {
+    const { contexto, pagina, erros } = await abrir(nav, "/governanca/", { pronto: "html[data-busca-pronta]", cache: true });
+    await pagina.keyboard.press("Tab");
+    const primeiro = await pagina.evaluate(() => ({ texto: document.activeElement?.textContent?.trim(), href: document.activeElement?.getAttribute("href") }));
+    await pagina.keyboard.press("Tab"); await pagina.keyboard.press("Tab");
+    const foco = await pagina.evaluate(() => { const e = document.activeElement; const s = getComputedStyle(e); return { texto: e.textContent.trim(), outline: s.outlineStyle, largura: s.outlineWidth }; });
+    add(8, "Navegação por teclado: atalho para o conteúdo e foco visível", primeiro.href === "#conteudo" && foco.outline !== "none", { primeiro, foco });
+    errosDeConsole.push(...erros);
+    await contexto.close();
+  }
+
+  // 8. Telas menores: nenhuma rolagem horizontal da página a 390 px.
+  {
+    const rotas = ["/", "/governanca/", `/governanca/relacao/${view}/`, "/governanca/pergunta/P01/", "/governanca/metricas/", "/governanca/linhagem/",
+      "/governanca/evidencias/", "/estrutura/", "/conceitos/", "/conceitos/grao/", "/conceitos/limitacoes/", "/procedencia/", "/origem/docs/arquitetura.md/"];
+    const larguras = {};
+    for (const r of rotas) {
+      const { contexto, pagina, erros } = await abrir(nav, r, { viewport: { width: 390, height: 844 }, cache: true });
+      await pagina.waitForTimeout(r.includes("linhagem") || r.includes("estrutura") || r.includes("arquitetura") ? 1500 : 100);
+      larguras[r] = await pagina.evaluate(() => document.documentElement.scrollWidth);
+      errosDeConsole.push(...erros);
+      await contexto.close();
+    }
+    add(8, "Telas de 390 px sem rolagem horizontal da página", Object.values(larguras).every((w) => w <= 390), larguras);
+  }
+
+  // 12. Ida e volta: do recorte da linhagem à explicação e de volta ao mesmo recorte.
+  {
+    const { contexto, pagina, erros } = await abrir(nav, `/governanca/linhagem/?modo=relacao&r=${view}&e=analytics.fact_sales_order_item`, { pronto: "#linhagem[data-pronto]", cache: true });
+    const antes = pagina.url();
+    await pagina.click("a[data-conceito][href*='/conceitos/linhagem/']");
+    await pagina.waitForLoadState();
+    const noConceito = pagina.url();
+    await pagina.click("#retorno a");
+    await pagina.waitForSelector("#linhagem[data-pronto]");
+    const depois = pagina.url();
+    const nos = await pagina.evaluate(() => document.getElementById("linhagem").cy.nodes().length);
+    add(12, "Da explicação de volta ao mesmo recorte da linhagem", depois === antes && nos > 5, { antes: antes.replace(BASE, ""), conceito: noConceito.replace(BASE, ""), depois: depois.replace(BASE, ""), nos });
+    errosDeConsole.push(...erros);
+    await contexto.close();
+  }
+  add(7, "Nenhum erro ou aviso no console nas verificações funcionais", errosDeConsole.length === 0, { erros: errosDeConsole.slice(0, 20) });
+  return res;
+}
+
+export async function verificarNoNavegador({ dist, pacote, repeticoes = 5 }) {
+  const servidor = await servir(dist, PORTA);
+  const nav = await chromium.launch({ channel: "chrome" });
+  try {
+    const view = pacote.questions.P01.view;
+    const expandir = pacote.questions.P01.facts[0];
+    // Maior recorte por coluna dentro do limite de 300 nós (colunas e insumos imediatos).
+    let maiorPermitido = { id: null, nos: 0 };
+    for (const [id, r] of Object.entries(pacote.lineage.relations)) {
+      const nos = new Set();
+      for (const [c, x] of Object.entries(r.columns)) { nos.add(`${id}.${c}`); for (const f of x.leaves) nos.add(f); }
+      if (nos.size > maiorPermitido.nos && nos.size <= 300) maiorPermitido = { id, nos: nos.size };
+    }
+    const desempenho = { navegador: nav.version(), repeticoes, maior_recorte_por_coluna_permitido: maiorPermitido, cpu: {} };
+    for (const cpu of [1, 4]) {
+      const rodadas = [];
+      for (let i = 0; i < repeticoes; i++) rodadas.push(await rodadaDeDesempenho(nav, cpu, { view, expandir, maiorPermitido }));
+      desempenho.cpu[cpu] = Object.fromEntries(METAS.map(([c]) => [c, mediana(rodadas.map((r) => pegar(r, c)))]));
+      desempenho.cpu[cpu].rodadas = rodadas;
+    }
+    const resultados = METAS.map(([c, nome, meta, un]) => ({
+      item: 9, nome: `${nome} (meta ${un === "B" ? `${meta / 1e6} MB` : `${meta} ms`})`,
+      ok: desempenho.cpu[1][c] != null && desempenho.cpu[1][c] <= meta,
+      detalhe: { cpu_1x: desempenho.cpu[1][c], cpu_4x: desempenho.cpu[4][c], unidade: un, meta, mede_em: "CPU 1×; 4× registrado como margem" },
+    }));
+    resultados.push(...(await funcionais(nav, { view, pacote })));
+    return { desempenho, resultados };
+  } finally {
+    await nav.close();
+    servidor.close();
+  }
+}
