@@ -94,11 +94,11 @@ td code { white-space: nowrap; }
 td.md p:first-child { margin-top: 0; }
 td.md p:last-child { margin-bottom: 0; }
 
-dl.ficha { display: grid; grid-template-columns: minmax(9rem, max-content) 1fr; gap: 0.35rem 1rem; }
+dl.ficha { display: grid; grid-template-columns: minmax(9rem, max-content) minmax(0, 1fr); gap: 0.35rem 1rem; }
 dl.ficha dt { color: var(--suave); }
-dl.ficha dd { margin: 0; }
+dl.ficha dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 @media (max-width: 40rem) {
-  dl.ficha { grid-template-columns: 1fr; }
+  dl.ficha { grid-template-columns: minmax(0, 1fr); }
   dl.ficha dd { margin-bottom: 0.5rem; }
 }
 
@@ -117,7 +117,8 @@ button { font: inherit; padding: 0.3rem 0.7rem; border: 1px solid var(--borda); 
 .resultados p { margin: 0.15rem 0 0; font-size: 0.9rem; color: var(--suave); }
 
 .md { max-width: 52rem; }
-.md table { font-size: 0.9rem; }
+/* Tabelas dos textos da origem rolam dentro do próprio bloco em telas estreitas. */
+.md table { font-size: 0.9rem; display: block; overflow-x: auto; max-width: 100%; }
 .documento { max-width: 52rem; }
 
 #grafo { width: 100%; height: min(70vh, 40rem); border: 1px solid var(--borda); border-radius: 6px; background: var(--superficie); }

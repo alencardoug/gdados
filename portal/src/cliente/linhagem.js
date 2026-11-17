@@ -62,7 +62,12 @@ export async function iniciarLinhagem(raiz) {
     { selector: "node:selected", style: { "border-width": 3, "border-color": "#f59e0b" } },
     { selector: "edge.caminho", style: { width: 2.5, "line-color": "#f59e0b", "target-arrow-color": "#f59e0b" } },
   ];
-  const cy = cytoscape({ container: $("#grafo"), style: estilo, minZoom: 0.05, maxZoom: 4, boxSelectionEnabled: false });
+  // Na visão geral, durante zoom e deslocamento o núcleo desenha uma textura e esconde as ligações
+  // (opções do Cytoscape.js, sem extensão), para manter os quadros curtos com o grafo inteiro.
+  const cy = cytoscape({
+    container: $("#grafo"), style: estilo, minZoom: 0.05, maxZoom: 4, boxSelectionEnabled: false,
+    ...(modo === "tudo" ? { textureOnViewport: true, hideEdgesOnViewport: true } : {}),
+  });
 
   const no = (id, tipo) => ({
     group: "nodes",
