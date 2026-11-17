@@ -32,6 +32,7 @@ Cada assunto tem um dono; os demais documentos apontam para ele.
 | [Página de conceitos](docs/pagina_de_conceitos.md) | Objetivos de aprendizagem, organização e critérios do conteúdo explicativo |
 | [Verificação de viabilidade](docs/verificacao_de_viabilidade.md) | Evidências coletadas, lacunas e limites da avaliação |
 | [Decisões](docs/decisoes.md) | Decisões de aplicação, diagramas, metadados, publicação e relação com o BI |
+| [Mapeamento do pacote](docs/mapeamento_do_pacote.md) | De onde cada página tira cada informação do pacote e as lacunas do formato |
 | [Alinhamento entre projetos](docs/alinhamento_entre_projetos.md) | Índice das pendências que envolvem a origem, o BI e o Owner |
 
 ## Fronteira com o projeto de dados
@@ -52,8 +53,9 @@ válidas como fotografias datadas daqueles commits
 
 ## Desenvolvimento e publicação
 
-Não há aplicação, dependências ou comando de execução definidos nesta etapa. As configurações
-básicas de edição e de exclusão do Git não representam aprovação de stack.
+Não há aplicação, dependências ou comando de execução da interface definidos nesta etapa. As
+configurações básicas de edição e de exclusão do Git não representam aprovação de stack. As provas
+da D01 e da D02 ficam em `provas/`, isoladas.
 
 O destino indicado em 10/11/2026 foi **GitHub → Firebase Hosting**, seguindo o padrão do Linkedia.
 Em 14/11/2026 o Owner proibiu recursos novos no GCP, e um projeto Firebase é um deles; a hospedagem
@@ -67,11 +69,11 @@ Abra a sessão com `/home/doug/Projetos/gdados` como diretório de trabalho. O a
 `AGENTS.md` e os documentos apontados ali, além da especificação da página de conceitos.
 O histórico desta conversa não é necessário para compreender o escopo documentado.
 
-O contexto está preparado; ainda não existem aplicação, dependências instaladas, comando de cópia
-do pacote ou validação da interface. São entregas a construir, não pré-requisitos já atendidos.
-A validação do pacote de 17/11/2026 foi avulsa, e sua cópia em `.cache/` não é versionada nem
-substitui o comando da E1. A primeira execução deverá conferir novamente a disponibilidade e a
-versão dos insumos locais.
+Desde 17/11/2026 a pasta é um repositório Git local, e o pacote da origem está copiado e
+versionado em `origem/` por `scripts/copiar_pacote.sh` (D03); `scripts/copiar_pacote.sh --verificar`
+confere os SHA-256 da cópia. Ainda não existem aplicação, dependências adotadas, validação no build
+ou validação da interface. A validação do pacote de 17/11/2026 foi avulsa e não escolheu a
+ferramenta.
 
 O Owner fechou a E0 em 14/11/2026, pela resposta central registrada em
 [Decisões](docs/decisoes.md). Estão autorizadas as provas locais da D01 e da D02, a E1 reescrita

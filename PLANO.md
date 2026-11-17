@@ -108,8 +108,10 @@ nova validação, e o código não fixa contagens nem identificadores do pacote 
    Mermaid com Cytoscape.js, medidas com a linhagem real do pacote. Registrar medições e escolhas
    antes de adotar qualquer dependência.
 2. **E1 sem dependência de stack, em paralelo às provas:** mapeamento dos campos do pacote para as
-   três páginas, inventário de termos e lacunas e formato da camada editorial.
-3. **E1 na stack escolhida:** comando de cópia e validação, e tratamento de ausência e estado.
+   três páginas ([feito em 17/11/2026](docs/mapeamento_do_pacote.md)), inventário de termos e
+   lacunas e formato da camada editorial. O comando de cópia, que não depende da stack, também
+   foi feito nesse dia (D03); a validação no build fica para o passo 3.
+3. **E1 na stack escolhida:** validação no build e tratamento de ausência e estado.
 4. **E2 e E3** sobre o pacote fixado, com todas as verificações da E3 medindo fidelidade a ele.
 5. **Na tag nova da origem**, quando anunciada: refixar e revalidar pela D03, sem esperar por ela
    nas etapas anteriores. As mudanças previstas são aditivas no formato 1.
