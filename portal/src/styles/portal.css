@@ -140,3 +140,4 @@ footer.procedencia p { margin: 0.25rem 0; }
 .termos-busca { font-size: 0.9rem; color: var(--suave); }
 .indice-alfabetico { columns: 16rem; padding-left: 1.2rem; }
 .bloco > .rotulo code, .bloco > .rotulo a { text-transform: none; letter-spacing: 0; }
+.legenda .amostra.losango { background: #475569; border-radius: 0; transform: rotate(45deg) scale(0.8); }

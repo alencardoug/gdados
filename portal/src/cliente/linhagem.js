@@ -22,6 +22,11 @@ export async function iniciarLinhagem(raiz) {
   const nos = new Map(grafo.nodes.map((n) => [n.id, n]));
   const indiceDaCamada = new Map(grafo.camadas.map((c, i) => [c, i]));
   const foco = nos.has(params.get("r")) ? params.get("r") : raiz.dataset.padrao;
+  // Travessias fora do dbt: nó próprio, ligado às relações por destino exato ou por camada.
+  const travessias = new Map((grafo.travessias ?? []).map((t) => [t.id, t]));
+  const travessiaDe = new Map();
+  for (const t of travessias.values()) for (const r of t.relacoes) travessiaDe.set(r, t);
+  const ehTravessia = (id) => travessias.has(id);
   const expandidos = new Set((params.get("e") ?? "").split(",").filter(Boolean));
 
   const entradas = new Map(), saidas = new Map();
@@ -38,19 +43,21 @@ export async function iniciarLinhagem(raiz) {
     return colunasCarregadas.get(id);
   };
 
-  const camadaDoNo = (id) => nos.get(relacaoDaColuna(id))?.camada ?? id.split(".")[0];
+  const camadaDoNo = (id) => (ehTravessia(id) ? "travessia" : nos.get(relacaoDaColuna(id))?.camada ?? id.split(".")[0]);
   const estilo = [
     { selector: "node", style: {
       label: "data(rotulo)", "font-size": 10, "text-valign": "center", "text-halign": "right", "text-margin-x": 5,
       "background-color": (n) => corDaCamada(indiceDaCamada.get(n.data("camada")) ?? 0), width: 14, height: 14,
       color: css("--texto") || "#111", "text-wrap": "ellipsis", "text-max-width": 190,
     } },
+    { selector: 'node[tipo = "travessia"]', style: { shape: "diamond", "background-color": "#475569", width: 16, height: 16 } },
     { selector: "node.foco", style: { width: 22, height: 22, "border-width": 3, "border-color": css("--texto") || "#111" } },
     { selector: "node.expandido", style: { shape: "round-rectangle" } },
     { selector: "edge", style: {
       width: 1, "line-color": "#9ca3af", "target-arrow-color": "#9ca3af",
       "target-arrow-shape": "triangle", "curve-style": "bezier", "arrow-scale": 0.7,
     } },
+    { selector: 'edge[tipo = "travessia"]', style: { "line-style": "dashed", "line-color": "#64748b", "target-arrow-color": "#64748b" } },
     { selector: ".apagado", style: { opacity: 0.18 } },
     { selector: "node:selected", style: { "border-width": 3, "border-color": "#f59e0b" } },
     { selector: "edge.caminho", style: { width: 2.5, "line-color": "#f59e0b", "target-arrow-color": "#f59e0b" } },
@@ -59,9 +66,16 @@ export async function iniciarLinhagem(raiz) {
 
   const no = (id, tipo) => ({
     group: "nodes",
-    data: { id, tipo, camada: camadaDoNo(id), rotulo: tipo === "coluna" ? id.split(".").slice(1).join(".") : id },
+    data: {
+      id, tipo, camada: camadaDoNo(id),
+      rotulo: tipo === "travessia" ? `${travessias.get(id).origem} · ${travessias.get(id).mecanismo}` : tipo === "coluna" ? id.split(".").slice(1).join(".") : id,
+    },
   });
   const aresta = (source, target, n = 1) => ({ group: "edges", data: { id: `${source}→${target}`, source, target, n } });
+  const arestaDeTravessia = (t, relacao) => ({
+    group: "edges",
+    data: { id: `${t.id}→${relacao}`, source: t.id, target: relacao, tipo: "travessia", n: t.tipo === "camada" ? `travessia declarada para a camada ${t.destino}` : "travessia declarada para esta relação" },
+  });
 
   const aviso = $("#aviso");
   const adicionar = (elementos) => {
@@ -77,7 +91,15 @@ export async function iniciarLinhagem(raiz) {
     return true;
   };
 
-  const vizinhosDaRelacao = (id) => [
+  const vizinhosDaRelacao = (id) => {
+    if (ehTravessia(id)) {
+      const t = travessias.get(id);
+      return [no(id, "travessia"), ...t.relacoes.flatMap((r) => [no(r, "relacao"), arestaDeTravessia(t, r)])];
+    }
+    const t = travessiaDe.get(id);
+    return [...(t ? [no(t.id, "travessia"), arestaDeTravessia(t, id)] : []), ...vizinhosDaRelacaoNoDbt(id)];
+  };
+  const vizinhosDaRelacaoNoDbt = (id) => [
     no(id, "relacao"),
     ...(entradas.get(id) ?? []).flatMap((e) => [no(e.source, "relacao"), aresta(e.source, id, e.n)]),
     ...(saidas.get(id) ?? []).flatMap((e) => [no(e.target, "relacao"), aresta(id, e.target, e.n)]),
@@ -90,7 +112,7 @@ export async function iniciarLinhagem(raiz) {
   const expandirUm = async (id) => (modo === "coluna" ? adicionar(await insumosDaColuna(id)) : adicionar(vizinhosDaRelacao(id)));
 
   // Posições: x pela camada global (caminho mais longo) da relação; y pela camada e pelo nome.
-  const rankDe = (id) => nos.get(relacaoDaColuna(id))?.rank ?? 0;
+  const rankDe = (id) => (ehTravessia(id) ? -1 : nos.get(relacaoDaColuna(id))?.rank ?? 0);
   const ordem = (a, b) =>
     (indiceDaCamada.get(camadaDoNo(a)) ?? 0) - (indiceDaCamada.get(camadaDoNo(b)) ?? 0) || a.localeCompare(b);
   const desenhar = () => {
@@ -113,6 +135,7 @@ export async function iniciarLinhagem(raiz) {
   };
 
   const linkDoNo = (id) => {
+    if (ehTravessia(id)) return raiz.dataset.rotaTravessias;
     const rel = relacaoDaColuna(id);
     if (!nos.has(rel)) return null;
     return `${rotaRelacao}${rel}/${id === rel ? "" : `#coluna-${id.split(".").slice(2).join(".")}`}`;
@@ -134,7 +157,8 @@ export async function iniciarLinhagem(raiz) {
       const tr = document.createElement("tr");
       const n = document.createElement("td");
       n.textContent = String(e.data("n"));
-      tr.append(celula(e.data("source"), linkDoNo(e.data("source"))), celula(e.data("target"), linkDoNo(e.data("target"))), n);
+      const rotuloDe = (id) => (ehTravessia(id) ? cy.getElementById(id).data("rotulo") : id);
+      tr.append(celula(rotuloDe(e.data("source")), linkDoNo(e.data("source"))), celula(rotuloDe(e.data("target")), linkDoNo(e.data("target"))), n);
       return tr;
     });
     $("#ligacoes").replaceChildren(...linhas);
@@ -152,7 +176,7 @@ export async function iniciarLinhagem(raiz) {
       const alvo = document.createElement(href ? "a" : "span");
       if (href) alvo.href = href;
       const code = document.createElement("code");
-      code.textContent = n.id();
+      code.textContent = n.data("rotulo") === n.id() || n.data("tipo") === "coluna" ? n.id() : n.data("rotulo");
       alvo.append(code);
       li.append(b, " ", alvo);
       return li;
@@ -201,6 +225,10 @@ export async function iniciarLinhagem(raiz) {
   if (modo === "tudo") {
     cy.add(grafo.nodes.map((n) => no(n.id, "relacao")));
     cy.add(grafo.edges.map((e) => aresta(e.source, e.target, e.n)));
+    for (const t of travessias.values()) {
+      cy.add(no(t.id, "travessia"));
+      cy.add(t.relacoes.filter((r) => cy.getElementById(r).nonempty()).map((r) => arestaDeTravessia(t, r)));
+    }
     $("#nos-bloco").hidden = true;
   } else if (modo === "coluna") {
     const cols = await colunasDe(foco);
