@@ -23,6 +23,12 @@ test("HTML bruto vira texto, nunca elemento", async () => {
   assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
 });
 
+test("comentário HTML é descartado; HTML com comentário e mais coisa continua texto", async () => {
+  const html = await renderizar("<!-- gerado; não editar -->\n\nTexto.\n\n<!-- a --><b>x</b>");
+  assert.doesNotMatch(html, /gerado; não editar/);
+  assert.match(html, /&lt;b&gt;x&lt;\/b&gt;/);
+});
+
 test("links: âncora e http(s) ficam; outros esquemas perdem o destino", async () => {
   const html = await renderizar("[a](#secao) [b](https://exemplo.com/x) [c](javascript:alert(1)) [d](data:text/html,x) [e](mailto:x@example.com)");
   assert.match(html, /href="#secao"/);

@@ -2,7 +2,7 @@
 //
 // Processador: o satteri do Astro 7 (@astrojs/markdown-satteri), com um plugin HAST próprio
 // (decisão do Owner de 17/11/2026). O conteúdo da origem é tratado como texto e dados:
-// - HTML bruto no Markdown vira texto visível, nunca elemento;
+// - HTML bruto no Markdown vira texto visível, nunca elemento; comentário HTML é descartado;
 // - só ficam elementos que o próprio Markdown gera; qualquer outro vira o seu texto;
 // - atributos de evento e estilo são retirados;
 // - links: âncora interna e http(s) ficam; caminho relativo é resolvido no repositório da origem e
@@ -41,6 +41,8 @@ function plugin({ arquivoCopiado, rotaDoArquivo }) {
     return {
       name: "gdados-saneador",
       raw(no) {
+        // Comentário HTML não é conteúdo: sai. Qualquer outro HTML bruto vira texto visível.
+        if (/^\s*<!--[\s\S]*?-->\s*$/.test(no.value)) return { type: "text", value: "" };
         return { type: "text", value: no.value };
       },
       element: [
