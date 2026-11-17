@@ -45,14 +45,15 @@ Diagramas, esquemas e ilustrações devem ser definidos por código ou dados dec
 figuras estáticas como fonte de verdade. Derivar relações dos artefatos responsáveis e oferecer
 uma alternativa textual ou tabular à visualização interativa.
 
-As bibliotecas propostas constam em `docs/decisoes.md`; a prova está autorizada, mas nenhuma foi
-adotada ainda.
+Em 17/11/2026 o Owner adotou Astro (D01) e Mermaid com Cytoscape.js (D02), com as condições
+registradas em `docs/decisoes.md`. Outras bibliotecas e extensões continuam dependendo de decisão.
 
 ## Mudanças e validação
 
 - Não adicionar dependências ou provisionar serviços antes das decisões pertinentes do Owner.
-  Exceção aprovada em 17/11/2026: as provas da D01 e da D02 instalam suas candidatas só dentro de
-  `provas/`, sem que isso seja adoção.
+  Astro, Mermaid e Cytoscape.js estão adotados (D01, D02); as provas instalam candidatas só dentro
+  de `provas/`, sem que isso seja adoção.
+- Caches, temporários e downloads de ferramentas ficam em `.cache/` (variáveis em `provas/README.md`).
 - Validar a aplicação localmente antes de propor a publicação.
 - Não publicar, criar projetos cloud ou configurar IAM antes da E5 e da decisão da D04.
 - Cada assunto tem um dono documental; não manter a mesma regra em vários arquivos.

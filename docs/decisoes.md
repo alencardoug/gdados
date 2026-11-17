@@ -15,14 +15,15 @@ mesmo commit e passar o portal a ler `on_zero_denominator`, a partir do aviso
 `mvp_eng_dados_2/data/medicoes/base_consumidores/avisos/aviso_gdados_20261117.md` (fora do Git).
 Os efeitos estão na D01, na D02 e na D03.
 
-Ainda em 17/11/2026, o Owner aprovou as alternativas recomendadas para iniciar o desenvolvimento:
+Ainda em 17/11/2026, o Owner aprovou as alternativas recomendadas para iniciar o desenvolvimento e,
+depois das provas, adotou Astro (D01) e Mermaid com Cytoscape.js (D02). As alternativas aprovadas:
 repositório Git local, provas isoladas em `provas/`, cópia do pacote versionada no gdados e metas de
 desempenho registradas antes das provas. Os registros estão na D01, na D02, na D03 e no
 [plano](../PLANO.md), E3.
 
 ## D01 — Estrutura da aplicação
 
-**Estado:** prova feita em 17/11/2026; recomendação: Astro. A adoção aguarda a confirmação do Owner.
+**Estado:** **decidida em 17/11/2026:** Astro 7, adotado pelo Owner a partir da prova abaixo.
 
 **Requisito:** aplicação navegável que gere artefatos estáticos, com dados preparados antes da
 execução no navegador. O destino de hospedagem depende da D04.
@@ -79,12 +80,16 @@ página de conceitos e para os textos lidos por commit, não foi medido nesta pr
 **Recomendação:** Astro 7, com a versão fixada no lockfile. Custo aceito: mais dependências e
 build de alguns segundos.
 
-**Pendente:** confirmação do Owner para adotar.
+**Decisão (17/11/2026):** o Owner confirmou a recomendação. O portal é construído com Astro 7, com
+versão fixada no lockfile.
+
+**Pendente:** nada nesta decisão. As versões seguem a regra da prova: a mais recente publicada há pelo
+menos duas semanas, fixada no lockfile.
 
 ## D02 — Diagramas e grafos
 
-**Estado:** prova feita em 17/11/2026; recomendação: adotar Mermaid com Cytoscape.js, com as
-condições abaixo. A adoção aguarda a confirmação do Owner.
+**Estado:** **decidida em 17/11/2026:** Mermaid com Cytoscape.js, adotados pelo Owner a partir da
+prova abaixo, com as três condições da recomendação.
 
 **Requisito do Owner:** recursos suficientes de diagramação, ilustração e esquemas via código,
 evitando figuras estáticas.
@@ -147,7 +152,10 @@ sem extensão. Medições em `provas/medicao/resultados/2026-11-17T18-03-17-484Z
    antes de ser adotada;
 3. o Mermaid só é carregado nas páginas que têm diagrama, por causa do peso.
 
-**Pendente:** confirmação do Owner para adotar; avaliação do layout em camadas na E2.
+**Decisão (17/11/2026):** o Owner confirmou a recomendação, com as três condições.
+
+**Pendente:** avaliar na E2 o layout em camadas (posição por camada ou extensão `cytoscape-dagre` ou
+`cytoscape-elk`); extensão só entra depois de avaliada e registrada aqui.
 
 ## D03 — Pacote e atualização de metadados
 
@@ -232,8 +240,9 @@ tag nova, sem data, com mudanças aditivas no formato 1: `description_gaps` sem 
 (F32); entrada nova em `environments` para a Capacidade §2.14 e nota de `registro_fase_gcp`
 atualizada (F33); `view_audits` com os ids das verificações em `checks`; na especificação, a chave
 de uma view como a união das colunas `grain` e `identity` de `view_rules`, com
-`relations.*.grain` nulo nas views; e `open_items` com outra composição (saem D63, D64, V5, V6 e
-V7; entra a D93). Quando a tag for anunciada em Consumidores §6, o gdados refixa por este comando e
+`relations.*.grain` nulo nas views; `open_items` com outra composição, em que cada item só sai com
+evidência e aceite (a V6 pode continuar aberta); e as chaves de `analytics` e o destino dos testes
+`relationships` (F34; `resposta_gdados_20261117b.md`), com nomes finais na especificação da tag. Quando a tag for anunciada em Consumidores §6, o gdados refixa por este comando e
 valida contra o esquema do mesmo commit. Até lá, o commit fixado continua `eb11709`.
 
 **Leitura que não precisa ser refeita (resposta da origem, §3):**

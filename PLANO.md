@@ -102,17 +102,23 @@ dia, a origem aceitou os itens do gdados, abriu uma fase curta de correções qu
 nova, sem data, e liberou a E1 à E3 contra a `v2.1.0` sem espera
 ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O portal
 trabalha com o pacote como está; um pacote novo só entra pela troca do commit fixado na D03, com
-nova validação, e o código não fixa contagens nem identificadores do pacote atual.
+nova validação, e o código não fixa contagens nem identificadores do pacote atual. Campos que a
+tag nova trará, como as chaves de `analytics` (F34), aparecem como "não declarados na `v2.1.0`" até lá.
 
-1. **Provas da D01 e da D02 contra o pacote fixado.** Feitas em 17/11/2026; resultados e
-   recomendações na D01 e na D02 (Astro; Mermaid com Cytoscape.js, com condições). A adoção
-   aguarda a confirmação do Owner.
-2. **E1 sem dependência de stack, em paralelo às provas:** mapeamento dos campos do pacote para as
-   três páginas ([feito em 17/11/2026](docs/mapeamento_do_pacote.md)), inventário de termos e
-   lacunas e formato da camada editorial. O comando de cópia, que não depende da stack, também
-   foi feito nesse dia (D03); a validação no build fica para o passo 3.
-3. **E1 na stack escolhida:** validação no build e tratamento de ausência e estado.
-4. **E2 e E3** sobre o pacote fixado, com todas as verificações da E3 medindo fidelidade a ele.
+1. **Provas da D01 e da D02.** **Feitas** em 17/11/2026; o Owner adotou Astro e Mermaid com
+   Cytoscape.js no mesmo dia ([D01](docs/decisoes.md#d01--estrutura-da-aplicação),
+   [D02](docs/decisoes.md#d02--diagramas-e-grafos)).
+2. **E1 sem dependência de stack.** **Feitos** em 17/11/2026: comando de cópia (D03) e
+   [mapeamento](docs/mapeamento_do_pacote.md). **A fazer:** inventário de termos e lacunas e formato
+   da camada editorial ([página de conceitos](docs/pagina_de_conceitos.md)).
+3. **Próximo: início da E2 com a E1 na stack.** Criar a aplicação Astro (proposta: pasta `portal/`,
+   com `package.json` próprio, lendo `origem/` no build), partindo do que as provas validaram em
+   `provas/` sem copiar suas dependências de medição. Na mesma etapa: validação do pacote contra o
+   esquema no build, recusando `format` diferente de 1; tratamento de ausência e estado (D03);
+   Markdown saneado para os textos de `origem/arquivos/`; e as três condições da D02, a começar pelo
+   layout em camadas.
+4. **E2 e E3** sobre o pacote fixado, com todas as verificações da E3 medindo fidelidade a ele. A
+   E3 inclui um teste que preserva `_` nos identificadores (achado da prova da D02).
 5. **Na tag nova da origem**, quando anunciada: refixar e revalidar pela D03, sem esperar por ela
    nas etapas anteriores. As mudanças previstas são aditivas no formato 1.
 6. **E4**, avaliação pelo Owner; **E5** só depois dela, com a D04 decidida à luz da Q14.

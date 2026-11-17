@@ -69,11 +69,27 @@ Abra a sessão com `/home/doug/Projetos/gdados` como diretório de trabalho. O a
 `AGENTS.md` e os documentos apontados ali, além da especificação da página de conceitos.
 O histórico desta conversa não é necessário para compreender o escopo documentado.
 
-Desde 17/11/2026 a pasta é um repositório Git local, e o pacote da origem está copiado e
-versionado em `origem/` por `scripts/copiar_pacote.sh` (D03); `scripts/copiar_pacote.sh --verificar`
-confere os SHA-256 da cópia. Ainda não existem aplicação, dependências adotadas, validação no build
-ou validação da interface. A validação do pacote de 17/11/2026 foi avulsa e não escolheu a
-ferramenta.
+**Estado em 17/11/2026, ao fim da sessão:**
+
+- a pasta é um repositório Git local, sem remoto (o remoto depende da D04). Commits em Conventional
+  Commits, em português;
+- o pacote da origem está fixado na `v2.1.0` (`eb11709`), copiado e versionado em `origem/` por
+  `scripts/copiar_pacote.sh`, com os textos lidos por commit em `origem/arquivos/`;
+  `scripts/copiar_pacote.sh --verificar` confere os SHA-256 (D03);
+- o [mapeamento do pacote](docs/mapeamento_do_pacote.md) está feito;
+- as provas da D01 e da D02 estão em `provas/`, com resultados na D01 e na D02. O Owner adotou
+  **Astro** e **Mermaid com Cytoscape.js**;
+- ainda não existem a aplicação do portal, a validação do pacote no build nem a validação da
+  interface. A validação de 17/11/2026 foi avulsa, com `jsonschema` em ambiente temporário;
+- a origem prepara uma tag nova, sem data, com F32, F33, F34 e outras mudanças aditivas
+  ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
+  não espera por ela; quando for anunciada, refixar e revalidar pela D03.
+
+**Próximo passo:** o passo 3 da sequência do [plano](PLANO.md), §5: criar a aplicação Astro e fazer
+a E1 na stack. Em paralelo, o inventário de termos e o formato da camada editorial.
+
+Os caches e temporários de npm, `uv` e Playwright ficam em `.cache/` (variáveis em
+`provas/README.md`). Na origem, só leitura de arquivos e `git show`/`git log`.
 
 O Owner fechou a E0 em 14/11/2026, pela resposta central registrada em
 [Decisões](docs/decisoes.md). Estão autorizadas as provas locais da D01 e da D02, a E1 reescrita

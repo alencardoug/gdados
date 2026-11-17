@@ -86,7 +86,7 @@ Esses textos chegam ao portal pela cópia da D03, em `origem/arquivos/`, a parti
 
 | # | Lacuna | Efeito | Encaminhamento |
 |---|---|---|---|
-| L1 | O pacote não traz o destino das chaves estrangeiras: os testes `relationships` (76) informam a relação e a coluna testadas, mas não a relação e a coluna referenciadas; as PKs e FKs declaradas em `analytics` (ADR-0056 da origem) também não constam | Sem isso, o diagrama entidade-relacionamento da página de estrutura teria de inferir a ligação pelo nome do teste, o que o portal não faz | Pedido à origem pelo [alinhamento](alinhamento_entre_projetos.md), §7 |
+| L1 | O pacote não traz o destino das chaves estrangeiras: os testes `relationships` (76) informam a relação e a coluna testadas, mas não a relação e a coluna referenciadas; as PKs e FKs declaradas em `analytics` (ADR-0056 da origem) também não constam | Sem isso, o diagrama entidade-relacionamento da página de estrutura teria de inferir a ligação pelo nome do teste, o que o portal não faz | **Aceito pela origem como F34** (17/11/2026), para a tag seguinte à `v2.1.0`. Até lá, a página mostra entidades e grãos e marca os relacionamentos como "não declarados na `v2.1.0`"; quando os campos existirem, passa a lê-los sem mudar a regra de não inferir |
 
 Não são lacunas a pedir, porque o formato as declara: `data_type` fora de `analytics` e `consumption`,
 `open_items.*.objects`, `checks.*.layer`, evidências do GCP e domínio e dono das *sources*.
