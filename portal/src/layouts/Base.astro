@@ -28,7 +28,7 @@ const itens = [
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:,">
 </head>
-<body>
+<body data-base={rota()}>
 <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 <header class="topo">
   <div class="faixa">
@@ -59,9 +59,14 @@ const itens = [
         : <> — {w.reason ?? <span class="ausente">motivo ausente</span>}</>}
     </p>
     <p>
-      O portal lê o pacote como está e não consulta bancos. <a href={rota("procedencia/")}>Detalhes da procedência</a>.
+      O portal lê o pacote como está e não consulta bancos. <a href={rota("procedencia/")}>Detalhes da procedência</a>{" · "}
+      <a href={rota("conceitos/procedencia/")} data-conceito>o que é procedência</a>{" · "}
+      <a href={rota("conceitos/limitacoes/")}>limitações conhecidas</a>.
     </p>
   </div>
 </footer>
+<script>
+import "../cliente/retorno.js";
+</script>
 </body>
 </html>

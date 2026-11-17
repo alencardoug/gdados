@@ -1,0 +1,21 @@
+# Grupos da página de conceitos, na ordem da especificação (docs/pagina_de_conceitos.md §4).
+- id: governanca
+  titulo: Governança e responsabilidades
+- id: controles
+  titulo: Classificação e controles
+- id: modelagem
+  titulo: Perspectivas de modelagem
+- id: dimensional
+  titulo: Análise dimensional e métricas
+- id: fluxo
+  titulo: Fluxo e camadas
+- id: linhagem
+  titulo: Linhagem e procedência
+- id: streaming
+  titulo: Streaming
+- id: artefatos
+  titulo: Artefatos e execução
+- id: ambientes
+  titulo: Ambientes e infraestrutura
+- id: evidencia
+  titulo: Evidência e decisões

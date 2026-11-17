@@ -1,6 +1,7 @@
 // Índice da busca, gerado no build. Cada entrada já traz o endereço; o cliente não monta rotas.
 import { pacote, relacoes, rotaDaRelacao, rotaDaColuna, rotaDaPergunta, rotaDaMetrica, rotaDoFiltro, rotaDaReferencia } from "../../lib/portal.mjs";
 import { semMarcacao } from "../../lib/markdown.mjs";
+import { termos } from "../../lib/editorial.mjs";
 
 const resumo = (t, n = 120) => {
   if (t == null) return null;
@@ -24,6 +25,9 @@ export function GET() {
   }
   for (const [nome, f] of Object.entries(pacote.filters)) {
     e.push({ k: "filtro", id: nome, rotulo: nome, texto: resumo(f.label), href: rotaDoFiltro(nome) });
+  }
+  for (const t of termos) {
+    e.push({ k: "conceito", id: t.id, rotulo: t.titulo, texto: [t.termos.join(", "), t.escrito ? null : "explicação pendente"].filter(Boolean).join(" · "), href: t.href });
   }
   for (const i of pacote.open_items) {
     const href = rotaDaReferencia(i.anchor);

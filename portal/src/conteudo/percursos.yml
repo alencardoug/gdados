@@ -1,0 +1,69 @@
+# Percursos de leitura da página de conceitos (docs/pagina_de_conceitos.md §5). São sugestões de
+# navegação: cada passo aponta para termos do inventário, e a prática, para objetos reais do pacote
+# ou páginas do portal, conferidos na build como os exemplos das explicações.
+
+- id: governanca
+  titulo: Entender a governança que está sendo visualizada
+  objetivo: >-
+    Abrir um objeto real e localizar o significado, a classificação, o responsável e a definição de
+    acesso, distinguindo esses atributos e reconhecendo o que a fonte não informa.
+  passos:
+    - { rotulo: Dados e metadados, termos: [metadado] }
+    - { rotulo: Catálogo, dicionário e glossário, termos: [catalogo, dicionario-de-dados, glossario] }
+    - { rotulo: Responsáveis e políticas, termos: [governanca-de-dados, responsavel, dominio] }
+    - { rotulo: Classificação, permissões e retenção, termos: [sensibilidade, acesso-por-papel, retencao] }
+    - { rotulo: Qualidade, auditoria e evidência, termos: [qualidade-de-dados, auditoria, tipos-de-evidencia] }
+  pratica:
+    - { tipo: relacao, ref: analytics.dim_customer, nota: "compare a sensibilidade das colunas com os papéis com leitura e o responsável" }
+    - { tipo: relacao, ref: raw.customers, nota: "uma source: veja o que ela não declara" }
+
+- id: pergunta
+  titulo: Acompanhar uma pergunta de negócio até as fontes
+  objetivo: >-
+    Partir da receita líquida e percorrer o caminho real até as origens, e ver, num caso decidido
+    na origem, por que nome, linhagem e população não bastam isolados para interpretar uma métrica.
+  passos:
+    - { rotulo: Pergunta, métrica e população, termos: [medida-e-metrica, populacao] }
+    - { rotulo: Grão, termos: [grao] }
+    - { rotulo: View, termos: [view] }
+    - { rotulo: Fatos e dimensões, termos: [fato, dimensao, aditividade] }
+    - { rotulo: Transformações, termos: [camada, linhagem] }
+    - { rotulo: Fontes e travessias, termos: [origem-terminal, travessia] }
+  pratica:
+    - { tipo: pergunta, ref: P01, nota: "a receita líquida por mês, canal e categoria" }
+    - { tipo: coluna, ref: consumption.monthly_revenue_by_channel_and_category.net_revenue_amount, nota: "siga as origens terminais" }
+    - { tipo: pagina, ref: "governanca/linhagem/?modo=relacao&r=consumption.monthly_revenue_by_channel_and_category", nota: "o mesmo caminho no grafo" }
+    - { tipo: pergunta, ref: P13, nota: "entregas no prazo" }
+    - { tipo: filtro, ref: delivered_shipment, nota: "a população da P13, que cita a decisão da origem" }
+    - { tipo: arquivo, ref: docs/adr/0053-fato-no-grao-da-remessa.md, nota: "a decisão como a origem a registra (ADR-0053, D66)" }
+
+- id: perspectivas
+  titulo: Comparar as perspectivas e os ambientes
+  objetivo: >-
+    Acompanhar uma camada nos dois ambientes, identificando o que mantém o significado e o que muda
+    na implementação, e separar namespace, banco e instância.
+  passos:
+    - { rotulo: Conceito e modelo lógico, termos: [perspectivas-de-modelagem, entidade-e-relacionamento, chave] }
+    - { rotulo: Materialização física, termos: [materializacao, camada, schema-e-dataset] }
+    - { rotulo: Infraestrutura, termos: [conteiner, terraform, paridade] }
+    - { rotulo: Artefatos de código, termos: [projeto-dbt, contrato] }
+  pratica:
+    - { tipo: pagina, ref: "estrutura/#fisica", nota: "as camadas e as materializações" }
+    - { tipo: arquivo, ref: "docs/arquitetura.md#5-mapa-de-paridade-local--gcp", nota: "o mapa de paridade da origem" }
+    - { tipo: pagina, ref: "estrutura/#ambientes", nota: "o que é declaração e o que é registro datado" }
+
+- id: fluxo-continuo
+  titulo: Compreender um fluxo contínuo
+  objetivo: >-
+    Percorrer o estoque com as evidências disponíveis, respeitando a diferença entre ligação por
+    camada e por coluna e entre configuração e execução medida.
+  passos:
+    - { rotulo: Evento de negócio e transporte, termos: [evento-e-topico] }
+    - { rotulo: Captura de mudança, termos: [cdc] }
+    - { rotulo: Processamento por tempo de evento, termos: [tempo-de-evento, garantia-de-entrega] }
+    - { rotulo: Reconciliação com o caminho batch, termos: [batch-e-streaming, reconciliacao] }
+  pratica:
+    - { tipo: relacao, ref: raw.inventory_movements_stream, nota: "o destino do streaming" }
+    - { tipo: pagina, ref: "governanca/linhagem/?modo=relacao&r=raw.inventory_movements_stream", nota: "a travessia e o caminho até analytics" }
+    - { tipo: arquivo, ref: streaming/fluxo.yml, nota: "a declaração do fluxo na origem" }
+    - { tipo: relacao, ref: analytics.fact_inventory_movement }

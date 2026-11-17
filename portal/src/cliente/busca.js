@@ -1,7 +1,7 @@
 // Busca local sobre o índice gerado no build (dados/busca.json). O conteúdo do pacote entra no
 // DOM só como texto (textContent): nada do pacote é interpretado como HTML aqui.
 const normalizar = (s) => (s ?? "").normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
-const ROTULO = { relacao: "relação", coluna: "coluna", pergunta: "pergunta", metrica: "métrica", filtro: "filtro", item: "item em aberto" };
+const ROTULO = { conceito: "conceito", relacao: "relação", coluna: "coluna", pergunta: "pergunta", metrica: "métrica", filtro: "filtro", item: "item em aberto" };
 const LIMITE = 50;
 
 export async function iniciarBusca(entrada, lista, situacao) {

@@ -1,0 +1,97 @@
+---
+// Página de um termo (página de conceitos §2 e §3). Cada bloco diz o que é: definição da origem,
+// explicação do portal, aplicação real ou exemplo didático.
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Md from "../../components/Md.astro";
+import { termos, termoPorId, gruposComTermos } from "../../lib/editorial.mjs";
+import { procedencia, commitCurto, rota, data } from "../../lib/portal.mjs";
+
+export function getStaticPaths() {
+  return termos.map((t) => ({ params: { id: t.id } }));
+}
+const t = termoPorId.get(Astro.params.id);
+const grupo = gruposComTermos.find((g) => g.id === t.grupo);
+const { Content } = t.entrada ? await render(t.entrada) : { Content: null };
+const d = t.entrada?.data;
+const TIPO = { relacao: "relação", coluna: "coluna", pergunta: "pergunta", metrica: "métrica", filtro: "filtro", arquivo: "arquivo da origem", pagina: "página do portal" };
+const prereq = t.prerequisitos.map((p) => termoPorId.get(p));
+const vizinhos = grupo.termos.filter((x) => x.id !== t.id);
+---
+<Base titulo={t.titulo} secao="conceitos" descricao={d?.resumo}>
+<p id="retorno" hidden></p>
+<p class="migalhas"><a href={rota("conceitos/")}>Conceitos e artefatos</a> › <a href={rota(`conceitos/#grupo-${grupo.id}`)}>{grupo.titulo}</a></p>
+<h1>{t.titulo}</h1>
+{t.termos.length > 0 && <p class="termos-busca">Também: {t.termos.join(" · ")}</p>}
+{prereq.length > 0 && <p>Ajuda ler antes: {prereq.map((p) => <a href={p.href}>{p.titulo}</a>).reduce((a, b) => [a, ", ", b])}.</p>}
+
+{t.escrito ? (
+  <div class="bloco portal"><span class="rotulo">O que é · explicação do portal</span><p>{d.resumo}</p></div>
+) : (
+  <p><span class="ausente">Explicação do portal pendente.</span> Por enquanto, veja abaixo como a origem define o termo e onde ele aparece.</p>
+)}
+
+{t.definicoes.length > 0 && <>
+<h2>Definição da origem</h2>
+{t.definicoes.map((def) => (
+  <div class="bloco origem">
+    <span class="rotulo">{def.href ? <a href={def.href}><code>{def.arquivo}</code></a> : <code>{def.arquivo}</code>}, em <code>{commitCurto(procedencia.commit)}</code> ({procedencia.ref})</span>
+    {def.html == null ? <span class="ausente">verbete "{def.termo}" não encontrado no commit fixado</span> : <Md html={def.html} />}
+  </div>
+))}
+<p class="suave">Texto da origem, copiado sem alteração. A origem é a responsável por ele.</p>
+</>}
+
+{t.divergencias.length > 0 && <>
+<h2>Divergência entre fontes da origem</h2>
+{t.divergencias.map((dv) => (
+  <div class="bloco divergencia">
+    <span class="rotulo">Divergência · o portal aponta e não escolhe</span>
+    <Md html={dv.html} />
+    <p>Fontes: {dv.fontes.map((f) => f.href ? <a href={f.href}><code>{f.caminho}</code></a> : <code>{f.caminho}</code>).reduce((a, b) => [a, ", ", b])}.</p>
+    <p class="suave">{dv.encaminhamento}</p>
+  </div>
+))}
+</>}
+
+{Content && <div class="md documento"><Content /></div>}
+
+{t.exemplos.length > 0 && <>
+<h2>Explore na prática</h2>
+<p class="suave">Aplicações reais, no pacote do commit <code>{commitCurto(procedencia.commit)}</code>.</p>
+<ul>
+  {t.exemplos.map((e) => (
+    <li>
+      <span class="etiqueta">{TIPO[e.tipo]}</span>{" "}
+      {e.existe ? <a href={e.href}><code>{e.ref}</code></a> : <><code>{e.ref}</code> <span class="ausente">não encontrado no pacote fixado</span></>}
+      {e.nota && <span class="suave"> — {e.nota}</span>}
+    </li>
+  ))}
+</ul>
+</>}
+
+{d?.didaticos?.length > 0 && <>
+<h2>Exemplo didático</h2>
+{d.didaticos.map((x) => (
+  <div class="bloco didatico">
+    <span class="rotulo">Exemplo didático · simplificação, não é dado do projeto</span>
+    <p><strong>{x.titulo}.</strong> {x.texto}</p>
+  </div>
+))}
+</>}
+
+{(t.leituras.length > 0 || d?.fontes?.length > 0) && <>
+<h2>Fontes e aprofundamento</h2>
+<ul>
+  {t.leituras.map((l) => <li>Na origem: {l.href ? <a href={l.href}><code>{l.ref}</code></a> : <code>{l.ref}</code>}</li>)}
+  {d?.fontes?.map((f) => <li>{f.url ? <a href={f.url} rel="noopener noreferrer external">{f.titulo}</a> : f.titulo}</li>)}
+</ul>
+</>}
+
+{t.escrito && <p class="suave">Explicação revisada em {data(d.revisado_em)}. Ela organiza e explica; não altera definições nem decisões da origem.</p>}
+
+{vizinhos.length > 0 && <>
+<h2>No mesmo assunto</h2>
+<ul>{vizinhos.map((v) => <li><a href={v.href}>{v.titulo}</a>{!v.escrito && <span class="suave"> (explicação pendente)</span>}</li>)}</ul>
+</>}
+</Base>

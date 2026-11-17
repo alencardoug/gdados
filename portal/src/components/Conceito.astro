@@ -1,0 +1,8 @@
+---
+// Link contextual para uma explicação. O endereço de volta (?de=) é acrescentado no clique por
+// cliente/retorno.js, para que a explicação devolva ao mesmo objeto, filtro e recorte.
+import { rotaDoConceito } from "../lib/editorial.mjs";
+interface Props { id: string; titulo?: string }
+const { id, titulo } = Astro.props;
+---
+<a href={rotaDoConceito(id)} data-conceito title={titulo ?? "Abrir a explicação deste termo"}><slot /></a>

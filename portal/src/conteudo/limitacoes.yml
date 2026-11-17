@@ -1,0 +1,127 @@
+# Limitações e lacunas conhecidas que a interface exibe (E1; docs/pagina_de_conceitos.md §9).
+# Texto editorial do gdados. Ele descreve a limitação e não a resolve: quem corrige é o responsável.
+# "onde" usa caminhos do portal sem a base de publicação (ex.: governanca/linhagem/).
+# "situacao" registra o estado no pacote fixado; ao refixar (D03), revisar esta lista.
+
+- id: chaves-estrangeiras
+  titulo: Relacionamentos entre tabelas não declarados
+  descricao: >-
+    O pacote não traz o destino das chaves estrangeiras. Os testes `relationships` informam a
+    relação e a coluna testadas, mas não a relação e a coluna referenciadas, e as chaves primárias
+    e estrangeiras declaradas em `analytics` também não constam. Por isso o portal ainda não
+    desenha o diagrama entidade-relacionamento e não deduz as ligações pelo nome dos testes.
+  onde:
+    - { rotulo: Entidades e grãos, pagina: "estrutura/#logica" }
+  responsavel: origem
+  situacao: Aceito pela origem como F34 em 17/11/2026, para a versão seguinte do pacote.
+
+- id: relacoes-sem-descricao
+  titulo: Relações sem descrição
+  descricao: >-
+    Parte das relações declaradas não tem descrição. O pacote registra essa falta em
+    `description_gaps`, e o catálogo a mostra como "sem descrição declarada". É a falta
+    declarada pela origem, não um inventário feito pelo portal no banco.
+  onde:
+    - { rotulo: Catálogo, pagina: "governanca/#catalogo" }
+  responsavel: origem
+  situacao: Aceito pela origem como F32 em 17/11/2026, com descrição das relações e teste com teto zero.
+
+- id: tipo-das-colunas
+  titulo: Tipo das colunas só em analytics e consumption
+  descricao: >-
+    O tipo de dado de uma coluna só vem declarado nas camadas `analytics` e `consumption`. Nas
+    demais, o portal mostra "não declarado no pacote" e não tenta adivinhar o tipo.
+  onde:
+    - { rotulo: Páginas das relações, pagina: "governanca/#catalogo" }
+  responsavel: origem
+  situacao: Comportamento declarado pelo formato 1 do pacote; não é uma falta a pedir.
+
+- id: objetos-dos-itens-em-aberto
+  titulo: Itens em aberto sem os objetos afetados
+  descricao: >-
+    O pacote não diz quais relações ou colunas cada item em aberto afeta. O portal mostra
+    "não declarados" e não faz essa ligação por conta própria.
+  onde:
+    - { rotulo: Itens em aberto, pagina: "governanca/evidencias/#itens" }
+  responsavel: origem
+  situacao: Comportamento declarado pelo formato 1 do pacote.
+
+- id: verificacoes-sem-camada-e-sem-causa
+  titulo: Verificações sem camada e pulos sem causa
+  descricao: >-
+    As verificações do `pytest` não declaram a camada que verificam, e uma verificação pulada
+    (`skipped`) não traz o motivo. O portal mostra as duas coisas como estão.
+  onde:
+    - { rotulo: Verificações, pagina: "governanca/evidencias/#verificacoes" }
+  responsavel: origem
+  situacao: Comportamento declarado pelo formato 1 do pacote.
+
+- id: evidencias-gcp
+  titulo: Evidências coletadas no GCP indisponíveis
+  descricao: >-
+    As evidências coletadas no GCP antes do desmonte não estão no pacote. Se entram, e como
+    seriam sanitizadas, ainda é decisão da origem. Por isso, do lado GCP, a comparação de
+    ambientes usa a declaração e o registro datado da fase GCP.
+  onde:
+    - { rotulo: Ambientes e documentos, pagina: "estrutura/#ambientes" }
+  responsavel: origem
+  situacao: Pendência da origem (L10).
+
+- id: nota-do-custo-gcp
+  titulo: Nota desatualizada sobre o custo do GCP
+  descricao: >-
+    A nota do Registro da fase GCP no pacote ainda diz que o custo real entra quando o faturamento
+    fechar. O custo já foi lido e está no documento de Capacidade e Recuperação, §2.14. O portal
+    mostra a nota como o pacote a traz.
+  onde:
+    - { rotulo: Ambientes e documentos, pagina: "estrutura/#ambientes" }
+  responsavel: origem
+  situacao: Aceito pela origem como F33 em 17/11/2026, para a versão seguinte do pacote.
+
+- id: resultados-de-uma-execucao
+  titulo: Resultados de uma execução, não do estado atual
+  descricao: >-
+    Os resultados de testes, verificações e a procedência do armazém valem para a execução
+    registrada no pacote, com a data que o rodapé mostra. Eles não descrevem o banco de agora, e
+    o ambiente GCP já foi desmontado.
+  onde:
+    - { rotulo: Estado e evidência, pagina: "governanca/evidencias/" }
+    - { rotulo: Procedência, pagina: "procedencia/" }
+  responsavel: gdados
+  situacao: Limite do portal, que lê o pacote e não consulta bancos.
+
+- id: linhagem-por-valor
+  titulo: A linhagem mostra a origem do valor, não toda dependência
+  descricao: >-
+    Uma ligação da linhagem diz de onde vem o valor de uma coluna. Uma junção ou um filtro de que
+    a relação também depende pode não aparecer como ligação.
+  onde:
+    - { rotulo: Linhagem, pagina: "governanca/linhagem/" }
+  responsavel: origem
+  situacao: Semântica da linhagem gerada pela origem; o portal não a altera.
+
+- id: travessias-por-camada
+  titulo: Travessias sem precisão por coluna
+  descricao: >-
+    As travessias feitas fora do dbt (ingestão em lote, streaming e captura do legado) são
+    declaradas por camada de destino ou por relação, nunca por coluna. Na linhagem, uma travessia
+    declarada para uma camada aparece ligada às sources dessa camada que não têm travessia própria,
+    com a ligação marcada como "por camada"; o grafo por coluna não as mostra.
+  onde:
+    - { rotulo: Travessias, pagina: "estrutura/#travessias" }
+    - { rotulo: Linhagem, pagina: "governanca/linhagem/?modo=tudo" }
+  responsavel: origem
+  situacao: Comportamento declarado pelo formato 1 do pacote.
+
+- id: divergencias-nos-glossarios
+  titulo: Definições divergentes entre documentos da origem
+  descricao: >-
+    O Glossário Técnico da origem diverge de outros documentos dela em três pontos: o sentido de
+    "seed", o papel da classificação de sensibilidade na exposição e o número de tabelas fato.
+    As páginas desses termos mostram as duas versões e não escolhem uma delas.
+  onde:
+    - { rotulo: Seed, pagina: "conceitos/seed/" }
+    - { rotulo: Classificação de sensibilidade, pagina: "conceitos/sensibilidade/" }
+    - { rotulo: Fato, pagina: "conceitos/fato/" }
+  responsavel: origem
+  situacao: Encaminhado à origem pelo gdados em 17/11/2026.

@@ -52,6 +52,8 @@ export const mdDoPacote = (texto) => md.renderizar(texto, BASE_DOS_LINKS);
 export const mdDoPacoteEmLinha = (texto) => md.emLinha(texto, BASE_DOS_LINKS);
 /** Texto de um arquivo da origem; links relativos ao próprio arquivo. */
 export const mdDoArquivo = (caminho) => md.renderizar(lerArquivo(caminho), caminho);
+/** Trecho Markdown com links relativos a `base` (arquivo ou pasta da origem). */
+export const renderizarDaOrigem = (texto, base) => md.renderizar(texto, base);
 
 // ---------- relações ----------
 const relacaoDaColuna = (c) => c.split(".").slice(0, 2).join(".");

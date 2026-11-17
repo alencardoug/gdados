@@ -128,3 +128,15 @@ button { font: inherit; padding: 0.3rem 0.7rem; border: 1px solid var(--borda); 
 footer.procedencia { border-top: 1px solid var(--borda); background: var(--superficie); font-size: 0.85rem; color: var(--suave); }
 footer.procedencia .faixa { padding-block: 1rem 1.5rem; }
 footer.procedencia p { margin: 0.25rem 0; }
+
+/* Camada editorial: a natureza de cada bloco fica explícita (página de conceitos §7). */
+.bloco { border: 1px solid var(--borda); border-left-width: 4px; border-radius: 4px; padding: 0.5rem 1rem; margin: 1rem 0; background: var(--superficie); max-width: 52rem; }
+.bloco > .rotulo { display: block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--suave); margin-bottom: 0.25rem; }
+.bloco.origem { border-left-color: var(--realce); }
+.bloco.didatico { border-left-color: var(--ausente); }
+.bloco.divergencia { border-left-color: var(--alerta); }
+.bloco.portal { border-left-color: var(--ok); }
+#retorno { margin: 0 0 0.5rem; }
+.termos-busca { font-size: 0.9rem; color: var(--suave); }
+.indice-alfabetico { columns: 16rem; padding-left: 1.2rem; }
+.bloco > .rotulo code, .bloco > .rotulo a { text-transform: none; letter-spacing: 0; }

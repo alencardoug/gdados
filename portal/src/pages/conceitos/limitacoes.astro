@@ -1,0 +1,29 @@
+---
+// Limitações e lacunas conhecidas que a interface exibe (E1): o que falta e quem é o responsável.
+import Base from "../../layouts/Base.astro";
+import Md from "../../components/Md.astro";
+import { limitacoes } from "../../lib/editorial.mjs";
+import { rota, renderizarDaOrigem } from "../../lib/portal.mjs";
+const itens = await Promise.all(limitacoes.map(async (l) => ({ ...l, html: await renderizarDaOrigem(l.descricao, "") })));
+const RESP = { origem: "projeto de dados (origem)", gdados: "portal (gdados)" };
+---
+<Base titulo="Limitações conhecidas" secao="conceitos">
+<p id="retorno" hidden></p>
+<p class="migalhas"><a href={rota("conceitos/")}>Conceitos e artefatos</a></p>
+<h1>Limitações conhecidas</h1>
+<p class="lead">
+  O que o portal não mostra, ou mostra com ressalva, e por quê. O portal descreve cada limitação e não a corrige por conta própria:
+  a correção cabe ao responsável indicado.
+</p>
+{itens.map((l) => (
+  <section id={l.id}>
+    <h2>{l.titulo}</h2>
+    <Md html={l.html} />
+    <dl class="ficha">
+      <dt>Onde aparece</dt><dd>{l.onde.map((o) => o.existe ? <a href={o.href}>{o.rotulo}</a> : <span>{o.rotulo}</span>).reduce((a, b) => [a, ", ", b])}</dd>
+      <dt>Responsável</dt><dd>{RESP[l.responsavel]}</dd>
+      <dt>Situação</dt><dd>{l.situacao}</dd>
+    </dl>
+  </section>
+))}
+</Base>

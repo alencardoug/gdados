@@ -1,0 +1,359 @@
+# Inventário dos termos e artefatos que a interface expõe (E1; docs/pagina_de_conceitos.md §9).
+#
+# Cada item tem um identificador estável (o endereço /conceitos/<id>/), o grupo, os termos de busca
+# (português, identificador em inglês, sigla, sinônimo) e onde a origem o define:
+#   definicoes: trecho de um glossário da origem, exibido literalmente, com o commit fixado.
+#               "termo" é o texto em negrito que abre o verbete ("**Grão** — …") ou a primeira
+#               célula da linha de uma tabela ("| **dbt** | … |").
+#   leituras:   documentos da origem que tratam do termo (caminho#âncora), só como link.
+# A explicação do portal, quando existe, está em conceitos/<id>.md. Sem ela, a página do termo
+# mostra as definições da origem e marca a explicação do portal como pendente.
+# Nenhuma contagem ou identificador do pacote é fixado aqui (D03).
+
+# --- Governança e responsabilidades ---
+- id: governanca-de-dados
+  titulo: Governança de dados
+  grupo: governanca
+  termos: [data governance, política de governança]
+  leituras: ["docs/governanca_de_dados.md#1-propósito"]
+- id: metadado
+  titulo: Metadado
+  grupo: governanca
+  termos: [metadata, meta, pacote de metadados]
+- id: catalogo
+  titulo: Catálogo
+  grupo: governanca
+  termos: [catalog, data catalog]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Catálogo" }]
+  leituras: ["docs/governanca_de_dados.md#5-catálogo-como-código"]
+- id: dicionario-de-dados
+  titulo: Dicionário de dados
+  grupo: governanca
+  termos: [data dictionary]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Dicionário de dados" }]
+  leituras: ["docs/dicionario_de_dados.md#1-como-este-catálogo-é-mantido"]
+- id: glossario
+  titulo: Glossário de negócio e glossário técnico
+  grupo: governanca
+  termos: [glossary, business glossary, docs block]
+  leituras: ["docs/glossario_de_negocio/README.md", "docs/glossario.md"]
+- id: catalogo-como-codigo
+  titulo: Catálogo como código
+  grupo: governanca
+  termos: [catalog as code]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Catálogo como código" }]
+  leituras: ["docs/governanca_de_dados.md#5-catálogo-como-código"]
+- id: dominio
+  titulo: Domínio
+  grupo: governanca
+  termos: [domain, meta.domain, value_domain, domínio de valores]
+  leituras: ["docs/governanca_de_dados.md#51-padrão-de-metadados"]
+- id: responsavel
+  titulo: Responsável e papéis de custódia
+  grupo: governanca
+  termos: [owner, meta.owner, data_custodian, writers]
+  leituras: ["docs/governanca_de_dados.md#51-padrão-de-metadados"]
+
+# --- Classificação e controles ---
+- id: sensibilidade
+  titulo: Classificação de sensibilidade
+  grupo: controles
+  termos: [sensitivity, public, internal, confidential, personal, classificação]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Classificação de sensibilidade" }]
+  leituras: ["docs/governanca_de_dados.md#4-classificação-de-sensibilidade"]
+- id: pii
+  titulo: Dado pessoal identificável
+  grupo: controles
+  termos: [PII, personal, dado pessoal]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "PII" }]
+- id: acesso-por-papel
+  titulo: Acesso por papel
+  grupo: controles
+  termos: [grants, grants_select, role, papel, permissão, exposição]
+  leituras: ["docs/governanca_de_dados.md#7-regras-de-acesso-por-camada"]
+- id: policy-tag
+  titulo: Policy tag
+  grupo: controles
+  termos: [policy tag, BigQuery, IAM]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Policy tag" }]
+  leituras: ["docs/governanca_de_dados.md#52-materialização-da-governança-na-fase-gcp"]
+- id: retencao
+  titulo: Retenção
+  grupo: controles
+  termos: [retention, meta.retention, permanent, rebuildable]
+  leituras: ["docs/governanca_de_dados.md#8-retenção"]
+- id: auditoria
+  titulo: Auditoria
+  grupo: controles
+  termos: [audit, view_audits, auditor]
+- id: qualidade-de-dados
+  titulo: Qualidade de dados
+  grupo: controles
+  termos: [data quality, teste de dados, data_test]
+  leituras: ["docs/governanca_de_dados.md#6-controles-obrigatórios"]
+
+# --- Perspectivas de modelagem ---
+- id: perspectivas-de-modelagem
+  titulo: Modelo conceitual, lógico e físico
+  grupo: modelagem
+  termos: [conceptual model, logical model, physical model]
+- id: entidade-e-relacionamento
+  titulo: Entidade, relacionamento e cardinalidade
+  grupo: modelagem
+  termos: [entity, relationship, cardinality, diagrama entidade-relacionamento, ER]
+  leituras: ["docs/modelo_de_dados.md#211-diagrama-entidade-relacionamento"]
+- id: chave
+  titulo: Chave natural, chave substituta, chave primária e estrangeira
+  grupo: modelagem
+  termos: [natural key, surrogate key, primary key, foreign key, PK, FK, relationships]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Chave substituta" }]
+- id: normalizacao
+  titulo: Normalização
+  grupo: modelagem
+  termos: [normalization, 3FN, 3NF, terceira forma normal]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Normalização / 3FN" }]
+  leituras: ["docs/modelo_de_dados.md#210-desvios-deliberados-da-3fn"]
+- id: integridade
+  titulo: Integridade e invariante
+  grupo: modelagem
+  termos: [integrity, invariant, constraint]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Invariante" }]
+  leituras: ["docs/modelo_de_dados.md#4-invariantes-de-negócio"]
+
+# --- Análise dimensional e métricas ---
+- id: fato
+  titulo: Fato
+  grupo: dimensional
+  termos: [fact, fact table, tabela fato, fato transacional]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Fato transacional" }]
+  leituras: ["docs/modelo_de_dados.md#31-tabelas-fato--11"]
+- id: dimensao
+  titulo: Dimensão
+  grupo: dimensional
+  termos: [dimension, dimensão conformada, dimensão degenerada, conformed dimension]
+  definicoes:
+    - { arquivo: docs/glossario.md, termo: "Dimensão conformada" }
+    - { arquivo: docs/glossario.md, termo: "Dimensão degenerada" }
+  leituras: ["docs/modelo_de_dados.md#32-dimensões--15"]
+- id: esquema-estrela
+  titulo: Esquema estrela
+  grupo: dimensional
+  termos: [star schema]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Esquema estrela" }]
+- id: grao
+  titulo: Grão
+  grupo: dimensional
+  termos: [grain, granularidade]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Grão" }]
+  leituras: ["docs/modelo_de_dados.md#31-tabelas-fato--11"]
+- id: medida-e-metrica
+  titulo: Medida e métrica
+  grupo: dimensional
+  termos: [measure, metric, metrics, ratio, difference, razão, diferença]
+  leituras: ["docs/glossario_de_negocio/README.md"]
+- id: aditividade
+  titulo: Aditividade
+  grupo: dimensional
+  termos: [additivity, additive, semi_additive, non_additive, aditiva, semiaditiva, não aditiva]
+  leituras: ["docs/modelo_de_dados.md#31-tabelas-fato--11"]
+- id: denominador-zero
+  titulo: Razão e denominador zero
+  grupo: dimensional
+  termos: [on_zero_denominator, returns_null, divisão por zero, ratio]
+- id: populacao
+  titulo: População de um indicador
+  grupo: dimensional
+  termos: [population, filtro, filters, where]
+- id: scd
+  titulo: Dimensão que muda devagar (SCD)
+  grupo: dimensional
+  termos: [SCD, slowly changing dimension, tipo 2, snapshot, vigência]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "SCD (Slowly Changing Dimension)" }]
+
+# --- Fluxo e camadas ---
+- id: camada
+  titulo: Camada
+  grupo: fluxo
+  termos: [layer, schema, raw, raw_legacy, staging, trusted, analytics, consumption, quarantine, governance, snapshots]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Camada" }]
+  leituras: ["docs/arquitetura.md#2-camadas-de-dados"]
+- id: materializacao
+  titulo: Materialização
+  grupo: fluxo
+  termos: [materialization, table, view, incremental, ephemeral]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Materialização" }]
+- id: ingestao
+  titulo: Ingestão
+  grupo: fluxo
+  termos: [ingestion, Airbyte, extração, carga]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Airbyte" }]
+- id: batch-e-streaming
+  titulo: Batch e streaming
+  grupo: fluxo
+  termos: [batch, streaming, lote, arquitetura Lambda, arquitetura Kappa]
+  definicoes:
+    - { arquivo: docs/glossario.md, termo: "Arquitetura Lambda" }
+    - { arquivo: docs/glossario.md, termo: "Arquitetura Kappa" }
+- id: quarentena
+  titulo: Quarentena
+  grupo: fluxo
+  termos: [quarantine, rejeitado]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Quarentena" }]
+- id: idempotencia
+  titulo: Idempotência
+  grupo: fluxo
+  termos: [idempotency, reexecução]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Idempotência" }]
+- id: reconciliacao
+  titulo: Reconciliação
+  grupo: fluxo
+  termos: [reconciliation]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Reconciliação" }]
+- id: origem-legada
+  titulo: Origem legada
+  grupo: fluxo
+  termos: [legacy, raw_legacy, legado, schema-on-read]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Schema-on-write / schema-on-read" }]
+
+# --- Linhagem e procedência ---
+- id: linhagem
+  titulo: Linhagem
+  grupo: linhagem
+  termos: [lineage, data lineage, leaves, insumo imediato]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Linhagem" }]
+  leituras: ["docs/dicionario_de_dados.md#3-linhagem"]
+- id: origem-terminal
+  titulo: Origem terminal
+  grupo: linhagem
+  termos: [origins, source, seed, generated, valor gerado, coluna gerada]
+  leituras: ["docs/dicionario_de_dados.md#32-linhagem-por-coluna--totais"]
+  prerequisitos: [linhagem]
+- id: seed
+  titulo: Seed
+  grupo: linhagem
+  termos: [seed, dbt seed, tabela de referência, semente]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Seed" }]
+  leituras: ["docs/dicionario_de_dados.md#32-linhagem-por-coluna--totais"]
+  prerequisitos: [origem-terminal]
+- id: travessia
+  titulo: Travessia
+  grupo: linhagem
+  termos: [crossings, travessia fora do dbt]
+  leituras: ["docs/dicionario_de_dados.md#31-travessias-fora-do-dbt"]
+  prerequisitos: [linhagem, ingestao]
+- id: procedencia
+  titulo: Procedência
+  grupo: linhagem
+  termos: [provenance, source_system, procedência do armazém, warehouse]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Procedência" }]
+- id: dependencia-de-juncao-e-filtro
+  titulo: Dependência por junção ou filtro
+  grupo: linhagem
+  termos: [join, filter, dependência]
+  prerequisitos: [linhagem]
+
+# --- Streaming ---
+- id: cdc
+  titulo: Captura de mudanças (CDC)
+  grupo: streaming
+  termos: [CDC, change data capture, Debezium, WAL, LSN]
+  definicoes:
+    - { arquivo: docs/glossario.md, termo: "CDC (Change Data Capture)" }
+    - { arquivo: docs/glossario.md, termo: "WAL" }
+    - { arquivo: docs/glossario.md, termo: "LSN (Log Sequence Number)" }
+- id: evento-e-topico
+  titulo: Evento e tópico
+  grupo: streaming
+  termos: [event, topic, Redpanda, Pub/Sub, Kafka]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Redpanda" }]
+  leituras: ["docs/modelo_de_dados.md#5-contrato-do-evento-de-estoque"]
+- id: tempo-de-evento
+  titulo: Tempo de evento, janela e watermark
+  grupo: streaming
+  termos: [event time, processing time, window, watermark, allowed lateness]
+  definicoes:
+    - { arquivo: docs/glossario.md, termo: "Tempo de evento × tempo de processamento" }
+    - { arquivo: docs/glossario.md, termo: "Janela" }
+    - { arquivo: docs/glossario.md, termo: "Watermark" }
+- id: garantia-de-entrega
+  titulo: Garantia de entrega e deduplicação
+  grupo: streaming
+  termos: [at least once, exactly once, deduplicação, idempotency_key]
+  definicoes:
+    - { arquivo: docs/glossario.md, termo: "At least once / exactly once" }
+    - { arquivo: docs/glossario.md, termo: "Deduplicação" }
+
+# --- Artefatos e execução ---
+- id: projeto-dbt
+  titulo: Projeto dbt, modelo, source e ref
+  grupo: artefatos
+  termos: [dbt, model, source, ref, YAML, modelo SQL]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "dbt" }]
+- id: snapshot-dbt
+  titulo: Snapshot do dbt
+  grupo: artefatos
+  termos: [dbt snapshot, snapshots]
+  prerequisitos: [scd]
+- id: manifest-e-run-results
+  titulo: Manifest e run_results
+  grupo: artefatos
+  termos: [manifest.json, run_results.json, catalog.json, invocation_id]
+- id: teste
+  titulo: Teste de dados, teste de unidade e verificação
+  grupo: artefatos
+  termos: [data_test, unit_test, pytest, checks, tests]
+- id: contrato
+  titulo: Contrato
+  grupo: artefatos
+  termos: [contract, contrato de consumo, contrato do evento]
+  leituras: ["docs/modelo_de_dados.md#5-contrato-do-evento-de-estoque"]
+- id: orquestracao
+  titulo: Orquestração e DAG
+  grupo: artefatos
+  termos: [DAG, Airflow, orchestration]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Airflow" }]
+- id: certificado-de-captura
+  titulo: Certificado de captura
+  grupo: artefatos
+  termos: [legacy_captures, captura do legado]
+  leituras: ["docs/governanca_de_dados.md#6-controles-obrigatórios"]
+
+# --- Ambientes e infraestrutura ---
+- id: schema-e-dataset
+  titulo: Banco, schema e dataset
+  grupo: ambientes
+  termos: [database, schema, dataset, namespace]
+- id: view
+  titulo: View
+  grupo: ambientes
+  termos: [view, authorized view, view de consumo]
+- id: conteiner
+  titulo: Contêiner e serviço gerenciado
+  grupo: ambientes
+  termos: [container, Docker, compose, Cloud SQL, managed service]
+- id: terraform
+  titulo: Terraform e infraestrutura como código
+  grupo: ambientes
+  termos: [Terraform, IaC, infrastructure as code]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "Terraform" }]
+- id: paridade
+  titulo: Paridade local ↔ GCP
+  grupo: ambientes
+  termos: [parity, mapa de paridade, GCP, local]
+  leituras: ["docs/arquitetura.md#5-mapa-de-paridade-local--gcp"]
+
+# --- Evidência e decisões ---
+- id: tipos-de-evidencia
+  titulo: Proposta, declaração, medição e verificação
+  grupo: evidencia
+  termos: [declarado, medido, verificado, evidência]
+- id: adr
+  titulo: ADR
+  grupo: evidencia
+  termos: [architecture decision record, decisão de arquitetura]
+  definicoes: [{ arquivo: docs/glossario.md, termo: "ADR" }]
+- id: pendencia
+  titulo: Pendência e item em aberto
+  grupo: evidencia
+  termos: [open_items, pendência, verificação adiada]
+  leituras: ["docs/pendencias.md"]
