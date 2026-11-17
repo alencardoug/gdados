@@ -1,0 +1,23 @@
+{
+  "name": "gdados-portal",
+  "private": true,
+  "type": "module",
+  "description": "Portal de engenharia e governança de dados do gdados (D01: Astro; D02: Mermaid e Cytoscape.js).",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "validar": "node scripts/validar_pacote.mjs",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.6",
+    "ajv": "8.20.0",
+    "astro": "7.4.5",
+    "cytoscape": "3.34.4",
+    "mermaid": "12.2.0"
+  }
+}
