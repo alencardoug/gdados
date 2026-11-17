@@ -187,10 +187,14 @@ export async function iniciarLinhagem(raiz) {
   const expandir = async (id) => {
     if (expandidos.has(id)) return;
     aviso.textContent = "";
+    performance.mark("linhagem:expandir:inicio");
     if (await expandirUm(id)) {
       expandidos.add(id);
       desenhar();
     }
+    // Medida "linhagem:expandir" (E3, item 9): até o quadro seguinte ao desenho.
+    await new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok)));
+    performance.measure("linhagem:expandir", "linhagem:expandir:inicio");
   };
 
   // Destaque do caminho do nó selecionado dentro do recorte: insumos e consumidores transitivos.
@@ -247,5 +251,11 @@ export async function iniciarLinhagem(raiz) {
     for (const id of expandidos) if (cy.getElementById(id).nonempty()) await expandirUm(id);
   }
   desenhar();
+  // Marca "linhagem:pronto" (E3, item 9) no quadro seguinte ao primeiro desenho. O grafo fica
+  // acessível pelo próprio elemento, só para a medição de zoom e deslocamento.
+  await new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok)));
+  performance.mark("linhagem:pronto");
+  raiz.cy = cy;
+  raiz.expandir = expandir;
   raiz.dataset.pronto = "1";
 }

@@ -10,6 +10,8 @@ export async function iniciarBusca(entrada, lista, situacao) {
   const params = new URLSearchParams(location.search);
 
   const buscar = () => {
+    // Medida "busca" (E3, item 9): da digitação até o quadro seguinte ao desenho dos resultados.
+    performance.mark("busca:inicio");
     const termos = normalizar(entrada.value).split(/\s+/).filter(Boolean);
     const achados = termos.length ? indice.filter((i) => termos.every((t) => i.alvo.includes(t))) : [];
     // Nome exato ou começo do nome primeiro.
@@ -42,10 +44,12 @@ export async function iniciarBusca(entrada, lista, situacao) {
     if (entrada.value) url.searchParams.set("q", entrada.value);
     else url.searchParams.delete("q");
     history.replaceState(history.state, "", url);
+    requestAnimationFrame(() => requestAnimationFrame(() => performance.measure("busca", "busca:inicio")));
   };
 
   entrada.addEventListener("input", buscar);
   entrada.disabled = false;
+  document.documentElement.dataset.buscaPronta = "1";
   entrada.placeholder = "Ex.: receita, fact_shipment, P13, sensibilidade";
   if (params.get("q")) {
     entrada.value = params.get("q");

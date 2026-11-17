@@ -150,6 +150,7 @@ const escuro = matchMedia("(prefers-color-scheme: dark)").matches;
 mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: escuro ? "dark" : "neutral" });
 mermaid.render("travessias-svg", alvo.dataset.definicao).then(({ svg }) => {
   alvo.innerHTML = svg;
+  performance.mark("travessias:pronto");
   alvo.dataset.pronto = "1";
 }).catch((e) => {
   alvo.textContent = `O diagrama não pôde ser desenhado (${e.message}). As travessias estão na tabela abaixo.`;
