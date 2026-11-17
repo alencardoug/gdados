@@ -22,8 +22,7 @@ desempenho registradas antes das provas. Os registros estão na D01, na D02, na 
 
 ## D01 — Estrutura da aplicação
 
-**Estado:** decisão por prova local autorizada em 14/11/2026 (resposta central §3, A2); framework
-ainda não escolhido.
+**Estado:** prova feita em 17/11/2026; recomendação: Astro. A adoção aguarda a confirmação do Owner.
 
 **Requisito:** aplicação navegável que gere artefatos estáticos, com dados preparados antes da
 execução no navegador. O destino de hospedagem depende da D04.
@@ -45,12 +44,47 @@ instaladas ali servem só à prova e não são adoção; o código das provas é
 instaladas não. As medições usam as metas do [plano](../PLANO.md), E3, item 9, e são feitas com
 Playwright e Chromium instalados também só em `provas/` (aprovação do Owner em 17/11/2026).
 
-**Pendente:** executar a prova, registrar as medições e a escolha.
+**Resultado da prova (17/11/2026).** As duas candidatas geram as mesmas 284 páginas (catálogo,
+281 relações, linhagem e travessias) a partir do pacote de `eb11709`, com os mesmos módulos de
+cliente. Medição em `provas/medicao/resultados/2026-11-17T18-03-17-484Z.json`: Chrome 156 nesta máquina, cinco repetições, mediana, cache desligado;
+builds repetidas três vezes. São medições locais de 17/11/2026, não desempenho publicado.
+
+| Medida (meta do plano) | Sem framework, CPU 1× / 4× | Astro, CPU 1× / 4× |
+|---|---|---|
+| Build completa (até 60 s) | 0,84 s | 5,74 s |
+| Catálogo: primeira renderização (até 1,5 s) | 188 / 388 ms | 192 / 288 ms |
+| Catálogo: dados comprimidos (até 1 MB) | 104 KB | 104 KB |
+| Busca: maior tempo por tecla (até 150 ms) | 53 / 84 ms | 41 / 73 ms |
+| Linhagem: recorte inicial (até 1 s) | 275 / 800 ms | 320 / 710 ms |
+| Linhagem: expandir um nível (até 500 ms) | 52 / 194 ms | 47 / 159 ms |
+| Travessias: dados comprimidos (até 1 MB) | 729 KB | 634 KB |
+
+| Estrutura | Sem framework | Astro |
+|---|---|---|
+| Pacotes instalados (com transitivos) | 118 (`cytoscape`, `mermaid`) | 304 (`astro`, `cytoscape`, `mermaid`) |
+| Tamanho de `node_modules` | 200 MB | 367 MB |
+| Código próprio da candidata | 161 linhas | 152 linhas |
+| Escape do conteúdo do pacote | Manual: cada interpolação passa por `esc()` | Automático nas expressões |
+| Bibliotecas no navegador | Cópia manual dos módulos e dos *chunks* do Mermaid | Empacotadas pelo Vite, com divisão e *hash* |
+
+**Análise.** O desempenho no navegador não distingue as candidatas: o código de cliente é o
+mesmo, e as diferenças ficam na variação entre rodadas. As duas cumprem as metas da D01 com
+folga. A diferença está na manutenção. Sem framework, a ferramenta é menor e a build é mais
+rápida, mas cada valor do pacote precisa ser escapado à mão: esquecer um `esc()` passa HTML da
+origem para a página, contra a regra de tratar o conteúdo como texto. O Astro escapa por padrão,
+oferece componentes e rotas por dados (`getStaticPaths`), empacota o Mermaid com menos dados
+transferidos e é o padrão de processo do Linkedia. O suporte do Astro a Markdown, útil para a
+página de conceitos e para os textos lidos por commit, não foi medido nesta prova.
+
+**Recomendação:** Astro 7, com a versão fixada no lockfile. Custo aceito: mais dependências e
+build de alguns segundos.
+
+**Pendente:** confirmação do Owner para adotar.
 
 ## D02 — Diagramas e grafos
 
-**Estado:** prova de Mermaid com Cytoscape.js autorizada em 14/11/2026 (resposta central §3, A3);
-nenhuma biblioteca adotada ainda.
+**Estado:** prova feita em 17/11/2026; recomendação: adotar Mermaid com Cytoscape.js, com as
+condições abaixo. A adoção aguarda a confirmação do Owner.
 
 **Requisito do Owner:** recursos suficientes de diagramação, ilustração e esquemas via código,
 evitando figuras estáticas.
@@ -81,8 +115,39 @@ Fontes primárias consultadas em 10/11/2026:
 
 **Onde fazer a prova (17/11/2026):** em `provas/`, como na D01, com as mesmas metas.
 
-**Pendente:** executar a prova; confirmar a combinação ou registrar alternativa que cumpra os
-mesmos critérios.
+**Resultado da prova (17/11/2026).** Versões: `cytoscape` 3.34.4 e `mermaid` 12.2.0, só o núcleo,
+sem extensão. Medições em `provas/medicao/resultados/2026-11-17T18-03-17-484Z.json`; legibilidade avaliada por capturas de tela
+(`provas/medicao/capturar.mjs`).
+
+| Verificação | Resultado |
+|---|---|
+| Recorte por relação (P01, relação e vizinhos) | Legível; desenhado em 275 a 320 ms (1×) e 710 a 800 ms (4×) |
+| Expandir um nível | 47 a 52 ms (1×); 159 a 194 ms (4×) |
+| Linhagem por coluna | Legível com camadas da esquerda para a direita e rótulos ao lado; maior recorte de um nível dentro do limite: `analytics.fact_shipment_item`, 78 nós |
+| Recorte acima de 300 nós | `trusted.legacy_records` daria 665 nós; a interface mostra só as colunas e avisa |
+| Grafo inteiro (281 relações, 465 ligações) | Desenhado em 747 a 789 ms (1×) e 2,2 a 2,6 s (4×), dentro da meta de 3 s; **ilegível** sem zoom |
+| Zoom e deslocamento | Recorte de 78 nós: maior intervalo de 17 a 33 ms (1×), dentro da meta; 100 a 117 ms (4×). Grafo inteiro: 50 ms (Astro) e 67 ms (sem framework) em 1×; 250 a 283 ms em 4×. Numa rodada anterior com o mesmo layout, não registrada, foi 50 ms nas duas. **A meta de 50 ms não é cumprida de forma estável no grafo inteiro** |
+| Alternativa em tabela | As mesmas ligações, em tabela, nas duas visões |
+| Mermaid, travessias | Legível; título acessível presente no SVG (`accTitle`); texto do pacote como rótulo escapado, `securityLevel: "strict"`; pronto em 0,87 a 1,11 s (1×); 634 a 729 KB comprimidos |
+
+**Achados da prova:**
+
+- o layout `breadthfirst` do núcleo posiciona cada nó pela menor distância a uma raiz. Como
+  `dim_date` não tem insumo, views de `consumption` aparecem ao lado de `staging`, sugerindo uma
+  ordem do pipeline que não existe. A visão por camadas exige posição por camada ou um layout em
+  camadas por caminho mais longo (extensões `cytoscape-dagre` ou `cytoscape-elk`, a avaliar);
+- a limpeza de Markdown da primeira versão removia `_` dos identificadores (`raw_legacy` virava
+  `rawlegacy`); foi corrigida antes da medição final, e o caso fica como teste obrigatório na E3.
+
+**Recomendação:** adotar a combinação, com três condições para a E2:
+
+1. a abertura da linhagem é sempre um recorte. O grafo inteiro fica como visão geral, com
+   agrupamento por camada e zoom, e não como entrada;
+2. as camadas do grafo seguem a ordem do pipeline, por posição declarada ou por extensão avaliada
+   antes de ser adotada;
+3. o Mermaid só é carregado nas páginas que têm diagrama, por causa do peso.
+
+**Pendente:** confirmação do Owner para adotar; avaliação do layout em camadas na E2.
 
 ## D03 — Pacote e atualização de metadados
 

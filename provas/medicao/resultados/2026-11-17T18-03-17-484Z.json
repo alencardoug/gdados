@@ -1,0 +1,1283 @@
+{
+  "instante": "2026-11-17T18:03:17.484Z",
+  "repeticoes": 5,
+  "maior_recorte_por_coluna": {
+    "id": "trusted.legacy_records",
+    "nos": 665
+  },
+  "maior_recorte_permitido": {
+    "id": "analytics.fact_shipment_item",
+    "nos": 78
+  },
+  "candidatas": {
+    "d01-html": {
+      "build": {
+        "tempos_s": [
+          0.8134572609999999,
+          0.835924966,
+          0.839674626
+        ],
+        "mediana_s": 0.835924966
+      },
+      "cpu_1x": [
+        {
+          "catalogo": {
+            "fcp_ms": 292,
+            "bytes_comprimidos": 106538,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 34.29999999888241,
+            "busca_mediana_ms": 24.800000000745058,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 128,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 112,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 286.5,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 55,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 156,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 808.4000000003725,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 33.40000000000009,
+            "quadros": 118
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 128,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 307.19999999925494,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 104,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 456.80000000074506,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 33.40000000000009
+          },
+          "travessias": {
+            "fcp_ms": 120,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 1071.199999999255,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 280,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 53.09999999962747,
+            "busca_mediana_ms": 19.09999999962747,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 128,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 136,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 274.90000000037253,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 39,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 112,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 685.2000000011176,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 50,
+            "quadros": 119
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 120,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 363.59999999962747,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 112,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 438.19999999925494,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 33.30000000000018
+          },
+          "travessias": {
+            "fcp_ms": 132,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 1038.2000000011176,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 168,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 31.300000000745058,
+            "busca_mediana_ms": 21,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 120,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 132,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 270.59999999962747,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 59.70000000111759,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 220,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 789.4000000003725,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 66.70000000000005,
+            "quadros": 117
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 112,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 263.5,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 132,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 610.9000000003725,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 33.29999999999973
+          },
+          "travessias": {
+            "fcp_ms": 108,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 1110.7999999988824,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 188,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 235.30000000074506,
+            "busca_mediana_ms": 18.5,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 164,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 124,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 251.5,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 51.90000000037253,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 88,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 751.5999999996275,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 83.30000000000007,
+            "quadros": 118
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 96,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 346.6000000014901,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 116,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 447.69999999925494,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 16.800000000000182
+          },
+          "travessias": {
+            "fcp_ms": 128,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 1178.300000000745,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 184,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 69.70000000111759,
+            "busca_mediana_ms": 16,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 160,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 108,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 399.2999999988824,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 38.5,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 144,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 798.5,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 66.60000000000014,
+            "quadros": 113
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 124,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 315.59999999962747,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 104,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 463.2999999988824,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 66.60000000000002
+          },
+          "travessias": {
+            "fcp_ms": 172,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 1135,
+            "svg_com_titulo": true
+          }
+        }
+      ],
+      "cpu_4x": [
+        {
+          "catalogo": {
+            "fcp_ms": 408,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 84.09999999962747,
+            "busca_mediana_ms": 51.79999999888241,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 252,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 228,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 764.5,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 204.7000000011176,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 164,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 2599.5999999996275,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 300,
+            "quadros": 40
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 208,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 865.3000000007451,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 208,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 1526.5,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 100.00000000000023
+          },
+          "travessias": {
+            "fcp_ms": 200,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 3492.39999999851,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 388,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 97.09999999962747,
+            "busca_mediana_ms": 53.80000000074506,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 244,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 224,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 781.5,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 191.30000000074506,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 244,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 2694.7999999988824,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 266.7000000000003,
+            "quadros": 40
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 188,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 778.0999999996275,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 216,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 1448.0999999996275,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 116.69999999999982
+          },
+          "travessias": {
+            "fcp_ms": 164,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 3522.9000000003725,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 280,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 69.30000000074506,
+            "busca_mediana_ms": 48.69999999925494,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 260,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 216,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 869.6999999992549,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 243.69999999925494,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 172,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 2568.5999999996275,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 283.1999999999998,
+            "quadros": 36
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 168,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 857.5,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 260,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 1460.4000000003725,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 133.29999999999973
+          },
+          "travessias": {
+            "fcp_ms": 260,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 3425.4000000003725,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 528,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 96.39999999850988,
+            "busca_mediana_ms": 54.19999999925494,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 252,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 200,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 800.3000000007451,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 180.09999999962747,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 244,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 2611.2999999988824,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 300,
+            "quadros": 38
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 184,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 811.5,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 224,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 1403.699999999255,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 116.70000000000027
+          },
+          "travessias": {
+            "fcp_ms": 188,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 3344.0999999996275,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 320,
+            "bytes_comprimidos": 106523,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 73.79999999888241,
+            "busca_mediana_ms": 51.59999999962747,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 232,
+            "bytes_comprimidos": 3227,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 248,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 827.0999999996275,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 193.5,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 260,
+            "bytes_comprimidos": 145350,
+            "linhagem_pronta_ms": 2692.4000000003725,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 250,
+            "quadros": 37
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 204,
+            "bytes_comprimidos": 154698,
+            "linhagem_pronta_ms": 807.4000000003725,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 192,
+            "bytes_comprimidos": 152285,
+            "linhagem_pronta_ms": 1417.5,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 133.39999999999986
+          },
+          "travessias": {
+            "fcp_ms": 216,
+            "bytes_comprimidos": 746481,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 3449.60000000149,
+            "svg_com_titulo": true
+          }
+        }
+      ]
+    },
+    "d01-astro": {
+      "build": {
+        "tempos_s": [
+          5.744852897999983,
+          6.403274020000012,
+          5.661400384000007
+        ],
+        "mediana_s": 5.744852897999983
+      },
+      "cpu_1x": [
+        {
+          "catalogo": {
+            "fcp_ms": 208,
+            "bytes_comprimidos": 106127,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 227.59999999962747,
+            "busca_mediana_ms": 16.799999998882413,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 124,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 128,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 319.6000000014901,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 55.09999999962747,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 156,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 704.2999999988824,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 49.90000000000009,
+            "quadros": 120
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 136,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 476.2000000011176,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 124,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 476.6000000014901,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 16.800000000000182
+          },
+          "travessias": {
+            "fcp_ms": 144,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 839.3999999985099,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 192,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 32.80000000074506,
+            "busca_mediana_ms": 18.59999999962747,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 140,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 116,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 246.69999999925494,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 48.09999999962747,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 104,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 746.9000000003725,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 49.89999999999998,
+            "quadros": 117
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 120,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 304.1000000014901,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 128,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 498.8999999985099,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 16.800000000000182
+          },
+          "travessias": {
+            "fcp_ms": 112,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 874.4000000003725,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 192,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 61,
+            "busca_mediana_ms": 16.899999998509884,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 140,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 104,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 301.6000000014901,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 43.5,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 88,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 718.5999999996275,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 50,
+            "quadros": 120
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 116,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 357.5,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 108,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 464.40000000037253,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 16.800000000000182
+          },
+          "travessias": {
+            "fcp_ms": 152,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 1259.2000000011176,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 236,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 28.399999998509884,
+            "busca_mediana_ms": 13.800000000745058,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 272,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 112,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 331.90000000037253,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 47.30000000074506,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 164,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 813.5,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 66.70000000000005,
+            "quadros": 106
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 92,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 257.7999999988824,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 140,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 456.5,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 33.299999999999955
+          },
+          "travessias": {
+            "fcp_ms": 140,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 1491.0999999996275,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 192,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 41.40000000037253,
+            "busca_mediana_ms": 19.09999999962747,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 144,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 160,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 337,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 43.90000000037253,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 144,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 894.6999999992549,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 50,
+            "quadros": 123
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 104,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 268.90000000037253,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 84,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 364.90000000037253,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 33.30000000000007
+          },
+          "travessias": {
+            "fcp_ms": 76,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 763.7999999988824,
+            "svg_com_titulo": true
+          }
+        }
+      ],
+      "cpu_4x": [
+        {
+          "catalogo": {
+            "fcp_ms": 408,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 70.79999999888241,
+            "busca_mediana_ms": 47.90000000037253,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 216,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 172,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 711.3000000007451,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 159.30000000074506,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 192,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 2177.800000000745,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 250,
+            "quadros": 47
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 140,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 717.4000000003725,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 172,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 1114.4000000003725,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 116.69999999999982
+          },
+          "travessias": {
+            "fcp_ms": 200,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 2041.300000000745,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 324,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 80.19999999925494,
+            "busca_mediana_ms": 40.79999999888241,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 208,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 144,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 666.7000000011176,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 149.80000000074506,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 200,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 2288,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 250.0999999999999,
+            "quadros": 40
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 172,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 660.4000000003725,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 168,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 1312.300000000745,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 83.29999999999995
+          },
+          "travessias": {
+            "fcp_ms": 156,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 2224,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 268,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 81.90000000037253,
+            "busca_mediana_ms": 47.5,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 244,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 188,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 709.9000000003725,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 142.7999999988824,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 168,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 2375.9000000003725,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 233.30000000000018,
+            "quadros": 43
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 180,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 783,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 188,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 1180.2999999988824,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 116.69999999999982
+          },
+          "travessias": {
+            "fcp_ms": 192,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 2185.7999999988824,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 276,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 73,
+            "busca_mediana_ms": 41.79999999888241,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 224,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 164,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 630.3000000007451,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 167.2999999988824,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 172,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 2128,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 283.2999999999997,
+            "quadros": 43
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 168,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 702,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 208,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 1225.4000000003725,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 100
+          },
+          "travessias": {
+            "fcp_ms": 208,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 2184.2999999988824,
+            "svg_com_titulo": true
+          }
+        },
+        {
+          "catalogo": {
+            "fcp_ms": 288,
+            "bytes_comprimidos": 106112,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null,
+            "busca_max_ms": 58.09999999962747,
+            "busca_mediana_ms": 43,
+            "resultados": 19
+          },
+          "relacao": {
+            "fcp_ms": 268,
+            "bytes_comprimidos": 3216,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": null
+          },
+          "linhagem_relacao": {
+            "fcp_ms": 204,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 711.2000000011176,
+            "travessias_prontas_ms": null,
+            "expandir_ms": 189.19999999925494,
+            "nos_antes": 5,
+            "nos_depois": 17
+          },
+          "linhagem_tudo": {
+            "fcp_ms": 180,
+            "bytes_comprimidos": 144821,
+            "linhagem_pronta_ms": 2220.2000000011176,
+            "travessias_prontas_ms": null,
+            "nos": 281,
+            "arestas": 465,
+            "quadro_max_ms": 266.5999999999999,
+            "quadros": 49
+          },
+          "linhagem_coluna": {
+            "fcp_ms": 160,
+            "bytes_comprimidos": 154169,
+            "linhagem_pronta_ms": 659.6999999992549,
+            "travessias_prontas_ms": null,
+            "relacao": "trusted.legacy_records",
+            "nos_calculados": 665,
+            "nos_exibidos": 9,
+            "aviso": "O recorte passaria de 300 nós (665). Expanda outro nó ou filtre. Mostrando só as colunas de trusted.legacy_records; expanda uma coluna por vez."
+          },
+          "linhagem_coluna_limite": {
+            "fcp_ms": 200,
+            "bytes_comprimidos": 151756,
+            "linhagem_pronta_ms": 1167.2999999988824,
+            "travessias_prontas_ms": null,
+            "relacao": "analytics.fact_shipment_item",
+            "nos_exibidos": 78,
+            "quadro_max_ms": 100.09999999999991
+          },
+          "travessias": {
+            "fcp_ms": 216,
+            "bytes_comprimidos": 648792,
+            "linhagem_pronta_ms": null,
+            "travessias_prontas_ms": 2246.199999999255,
+            "svg_com_titulo": true
+          }
+        }
+      ]
+    }
+  },
+  "navegador": "156.0.8078.79"
+}

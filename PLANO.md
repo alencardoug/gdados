@@ -104,9 +104,9 @@ nova, sem data, e liberou a E1 à E3 contra a `v2.1.0` sem espera
 trabalha com o pacote como está; um pacote novo só entra pela troca do commit fixado na D03, com
 nova validação, e o código não fixa contagens nem identificadores do pacote atual.
 
-1. **Provas da D01 e da D02 contra o pacote fixado.** As duas estruturas candidatas e a combinação
-   Mermaid com Cytoscape.js, medidas com a linhagem real do pacote. Registrar medições e escolhas
-   antes de adotar qualquer dependência.
+1. **Provas da D01 e da D02 contra o pacote fixado.** Feitas em 17/11/2026; resultados e
+   recomendações na D01 e na D02 (Astro; Mermaid com Cytoscape.js, com condições). A adoção
+   aguarda a confirmação do Owner.
 2. **E1 sem dependência de stack, em paralelo às provas:** mapeamento dos campos do pacote para as
    três páginas ([feito em 17/11/2026](docs/mapeamento_do_pacote.md)), inventário de termos e
    lacunas e formato da camada editorial. O comando de cópia, que não depende da stack, também
