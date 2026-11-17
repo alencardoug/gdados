@@ -355,5 +355,5 @@
 - id: pendencia
   titulo: Pendência e item em aberto
   grupo: evidencia
-  termos: [open_items, pendência, verificação adiada]
-  leituras: ["docs/pendencias.md"]
+  termos: [open_items, pendência, verificação adiada, D66]
+  leituras: ["docs/pendencias.md", "docs/pendencias.md#d66--a-p13-passa-a-ler-uma-fato-no-grão-da-remessa-decidida-em-14112026"]
