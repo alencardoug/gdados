@@ -187,6 +187,13 @@ documentos lidos por commit, como os diagramas entidade-relacionamento do modelo
 (Modelo de Dados §2.11), são desenhados no navegador com `securityLevel: "strict"`. A definição
 continua visível como texto, e o Mermaid só é carregado nas páginas que têm esses blocos (condição 3).
 
+**Zoom no grafo inteiro (E3, 17/11/2026):** na visão geral, o núcleo do Cytoscape.js passa a
+desenhar textura durante o zoom e o deslocamento, esconder as ligações enquanto a área se move e não
+desenhar rótulos abaixo de 8 px na tela (`textureOnViewport`, `hideEdgesOnViewport`,
+`min-zoomed-font-size`), sem extensão. A mediana do maior quadro caiu de 83 ms para 33 ms com CPU
+normal, mas duas de cinco rodadas passaram de 50 ms ([relatório da E3](relatorio_e3.md), §3). A meta
+volta ao Owner na E4.
+
 **Pendente:** nada nesta decisão. `cytoscape-dagre` e `cytoscape-elk` não foram adotados; se a E3 ou
 a E4 mostrarem que o layout próprio não basta, a extensão é avaliada e registrada aqui antes de entrar.
 
@@ -314,6 +321,12 @@ permissões do workflow e forma de aceite para publicar. O usuário citar o Link
 reutilizar suas contas, seus recursos ou seus vínculos IAM.
 
 A escolha entre acesso público e restrito afeta a solução de publicação; não assumir uma audiência.
+
+**Insumo da E3 (17/11/2026):** os textos da origem copiados por commit, e por isso presentes em
+`dist/`, citam identificadores de projetos GCP do Owner, inclusive três sem relação com o projeto de
+dados, e o prefixo truncado de uma conta de faturamento ([relatório da E3](relatorio_e3.md), §5).
+Antes de publicar, decidir entre publicar como está, retirar esses documentos da lista de cópia ou
+pedir à origem uma versão sanitizada.
 
 ## D05 — Relação com o portal da etapa 2.7 do `bi-como-codigo`
 

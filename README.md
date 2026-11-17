@@ -36,6 +36,7 @@ Cada assunto tem um dono; os demais documentos apontam para ele.
 | [Decisões](docs/decisoes.md) | Decisões de aplicação, diagramas, metadados, publicação e relação com o BI |
 | [Mapeamento do pacote](docs/mapeamento_do_pacote.md) | De onde cada página tira cada informação do pacote e as lacunas do formato |
 | [Alinhamento entre projetos](docs/alinhamento_entre_projetos.md) | Índice das pendências que envolvem a origem, o BI e o Owner |
+| [Relatório da E3](docs/relatorio_e3.md) | Resultado datado da verificação local, com a versão avaliada e os limites |
 
 ## Fronteira com o projeto de dados
 
@@ -114,8 +115,13 @@ O histórico desta conversa não é necessário para compreender o escopo docume
   termos do inventário, as travessias ligadas ao grafo de linhagem e os diagramas Mermaid dos
   documentos da origem desenhados no portal ([D02](docs/decisoes.md#d02--diagramas-e-grafos));
 
-**Próximo passo:** a E3, verificação local com relatório ([plano](PLANO.md), §5, passo 4). A
-revisão conceitual das explicações pelo Owner fica para a E4.
+- a E3 foi feita em 17/11/2026 com a verificação em `verificacao/` (Playwright fora das dependências
+  do portal, aprovado pelo Owner): 38 verificações automáticas passaram, com ressalvas e achados no
+  [relatório](docs/relatorio_e3.md);
+
+**Próximo passo:** a E4, avaliação local pelo Owner ([plano](PLANO.md), E4): a revisão conceitual das
+explicações, os percursos, a ressalva do zoom no grafo inteiro e os identificadores GCP nos textos da
+origem (relatório, §3 e §5). Para avaliar: `cd portal && npm run build && npm run preview`.
 
 Os caches e temporários de npm, `uv` e Playwright ficam em `.cache/` (variáveis em
 `provas/README.md`). Na origem, só leitura de arquivos e `git show`/`git log`.

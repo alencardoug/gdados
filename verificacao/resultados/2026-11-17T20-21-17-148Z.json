@@ -1,0 +1,1111 @@
+{
+  "instante": "2026-11-17T20:21:17.148Z",
+  "gdados": {
+    "commit": "9f335463cd4511d10ddadbe094a65e96913399c4",
+    "arvore_limpa": true
+  },
+  "origem": {
+    "repository": "mvp_eng_dados_2",
+    "ref": "v2.1.0",
+    "commit": "eb117098e2b73370cf8ce027da1ffefa6acf01a7",
+    "copied_at": "2026-11-17T19:26:50+00:00"
+  },
+  "node": "v24.18.0",
+  "resultados": [
+    {
+      "item": 1,
+      "nome": "Cópia da origem confere os SHA-256 e o pacote é válido contra o esquema do mesmo commit",
+      "ok": true,
+      "detalhe": "pacote válido: formato 1, mvp_eng_dados_2 v2.1.0 (eb11709), 93 arquivos conferidos"
+    },
+    {
+      "item": 1,
+      "nome": "Testes de unidade do portal",
+      "ok": true,
+      "detalhe": [
+        "ℹ tests 28",
+        "ℹ pass 28",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "item": 1,
+      "nome": "Links internos e âncoras de dist/ resolvem",
+      "ok": true,
+      "detalhe": {
+        "links_conferidos": 26253,
+        "quebrados": [],
+        "total_quebrados": 0
+      }
+    },
+    {
+      "item": 1,
+      "nome": "Toda relação do pacote tem página",
+      "ok": true,
+      "detalhe": {
+        "relacoes": 281,
+        "sem_pagina": []
+      }
+    },
+    {
+      "item": 1,
+      "nome": "Toda pergunta do pacote tem página",
+      "ok": true,
+      "detalhe": {
+        "perguntas": 16,
+        "sem_pagina": []
+      }
+    },
+    {
+      "item": 2,
+      "nome": "Nenhuma ligação fabricada no grafo por relação",
+      "ok": true,
+      "detalhe": {
+        "arestas": 465,
+        "a_mais": [],
+        "a_menos": [],
+        "contagem_diferente": []
+      }
+    },
+    {
+      "item": 2,
+      "nome": "Receita líquida da P01 chega a raw e raw_legacy pelo caminho das folhas, igual às origens declaradas",
+      "ok": true,
+      "detalhe": {
+        "coluna": "consumption.monthly_revenue_by_channel_and_category.net_revenue_amount",
+        "origens_pelo_caminho": [
+          "raw.order_items.discount_amount",
+          "raw.order_items.quantity",
+          "raw.order_items.unit_price",
+          "raw_legacy.order_items.discount_amount",
+          "raw_legacy.order_items.quantity",
+          "raw_legacy.order_items.unit_price"
+        ],
+        "origens_declaradas": [
+          "raw.order_items.discount_amount",
+          "raw.order_items.quantity",
+          "raw.order_items.unit_price",
+          "raw_legacy.order_items.discount_amount",
+          "raw_legacy.order_items.quantity",
+          "raw_legacy.order_items.unit_price"
+        ],
+        "camadas": [
+          "raw",
+          "raw_legacy"
+        ]
+      }
+    },
+    {
+      "item": 3,
+      "nome": "Estoque chega ao lote, ao streaming e ao legado; travessias sem precisão por coluna",
+      "ok": true,
+      "detalhe": {
+        "origens_da_fato": [
+          "analytics.dim_date",
+          "raw.inventory_movements",
+          "raw.inventory_movements_stream",
+          "raw.product_variants",
+          "raw.warehouses",
+          "raw_legacy.inventory_movements",
+          "raw_legacy.product_variants",
+          "raw_legacy.warehouses",
+          "snapshots.scd_product",
+          "trusted.inventory_movements",
+          "trusted.product_skus",
+          "trusted.warehouses"
+        ],
+        "travessia_streaming": {
+          "id": "travessia:1",
+          "origem": "oltp.inventory_movements",
+          "destino": "raw.inventory_movements_stream",
+          "tipo": "relacao",
+          "mecanismo": "Debezium",
+          "relacoes": [
+            "raw.inventory_movements_stream"
+          ]
+        },
+        "travessia_raw": {
+          "id": "travessia:0",
+          "origem": "oltp — 36 tabelas",
+          "destino": "raw",
+          "tipo": "camada",
+          "mecanismo": "Airbyte",
+          "relacoes": 36
+        }
+      }
+    },
+    {
+      "item": 4,
+      "nome": "Seed e valor gerado aparecem como origem terminal, sem marca de ausência",
+      "ok": true,
+      "detalhe": {
+        "seed": "analytics.dim_geography.region: e entrega principal aterrissa aqui, em vez de sair do recorte por região. Nordeste Região Nordeste. Norte Região Norte. Sudeste Região Sudeste. Sul Região Sul. trusted.brazilian_states.region seed <tr",
+        "gerada": "analytics.dim_brand.source_system: co legado, tratado e empilhado aos dados principais. retail A origem transacional, o banco do marketplace. Airbyte e Beam transportam o mesmo `retail`. trusted.product_skus.source_system valor gerado "
+      }
+    },
+    {
+      "item": 5,
+      "nome": "Todos os itens de open_items com o estado do pacote; D66 lida no documento responsável",
+      "ok": true,
+      "detalhe": {
+        "itens": [
+          "D63 pending",
+          "D64 pending",
+          "D43 deferred",
+          "V1 deferred",
+          "V2 deferred",
+          "V3 deferred",
+          "V5 deferred",
+          "V6 deferred",
+          "V7 deferred"
+        ],
+        "faltando": [],
+        "d66_ligada": true
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Contagens da página inicial iguais às do pacote",
+      "ok": true,
+      "detalhe": {
+        "contagens": {
+          "relations": 281,
+          "lineage": 200,
+          "questions": 16,
+          "metrics": 44,
+          "tests": 873,
+          "checks": 1753,
+          "open_items": 9,
+          "environments": 9
+        },
+        "divergentes": []
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Regras das métricas fiéis ao pacote; denominador zero lido de on_zero_denominator",
+      "ok": true,
+      "detalhe": {
+        "metricas": 44,
+        "razoes": 7,
+        "erros": [],
+        "cita_zero_denominator": false
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Comparação de infraestrutura: toda entrada de environments, com o estado de entrega",
+      "ok": true,
+      "detalhe": {
+        "entradas": 9,
+        "faltando": [],
+        "indisponivel_marcado": true
+      }
+    },
+    {
+      "item": 7,
+      "nome": "Busca encontra perguntas, conceitos, relações e termos em inglês",
+      "ok": true,
+      "detalhe": {
+        "P13": "pergunta P13 — Qual a fração de entregas dentro do prazo prometido, por transpor",
+        "grain": "conceito Grãograin, granularidade",
+        "sensibilidade": "conceito Classificação de sensibilidadesensitivity, public, internal, confidenti",
+        "fact_shipment": "relação analytics.fact_shipmentGrão: uma remessa. Toda remessa de trusted.shipme",
+        "receita liquida": "coluna analytics.dim_customer.lifetime_net_revenue_amountAditiva entre clientes,",
+        "PII": "conceito Dado pessoal identificávelPII, personal, dado pessoal"
+      }
+    },
+    {
+      "item": 7,
+      "nome": "Filtro fica na URL e é restaurado ao voltar no histórico",
+      "ok": true,
+      "detalhe": {
+        "filtrado": "26 de 281 relações.",
+        "voltou": {
+          "url": "/governanca/?camada=analytics",
+          "situacao": "26 de 281 relações."
+        }
+      }
+    },
+    {
+      "item": 7,
+      "nome": "Links diretos abrem a coluna e o recorte expandido da linhagem",
+      "ok": true,
+      "detalhe": {
+        "alvo": "coluna-net_revenue_amount",
+        "recorte": {
+          "nos": 17,
+          "linhas": 19,
+          "arestas": 19
+        }
+      }
+    },
+    {
+      "item": 7,
+      "nome": "Nenhum erro ou aviso no console nas verificações funcionais",
+      "ok": true,
+      "detalhe": {
+        "erros": []
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Alternativa em tabela: uma linha por ligação do recorte",
+      "ok": true,
+      "detalhe": {
+        "nos": 17,
+        "linhas": 19,
+        "arestas": 19
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Navegação por teclado: atalho para o conteúdo e foco visível",
+      "ok": true,
+      "detalhe": {
+        "primeiro": {
+          "texto": "Pular para o conteúdo",
+          "href": "#conteudo"
+        },
+        "foco": {
+          "texto": "Governança",
+          "outline": "solid",
+          "largura": "3px"
+        }
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Telas de 390 px sem rolagem horizontal da página",
+      "ok": true,
+      "detalhe": {
+        "/": 390,
+        "/governanca/": 390,
+        "/governanca/relacao/consumption.monthly_revenue_by_channel_and_category/": 390,
+        "/governanca/pergunta/P01/": 390,
+        "/governanca/metricas/": 390,
+        "/governanca/linhagem/": 390,
+        "/governanca/evidencias/": 390,
+        "/estrutura/": 390,
+        "/conceitos/": 390,
+        "/conceitos/grao/": 390,
+        "/conceitos/limitacoes/": 390,
+        "/procedencia/": 390,
+        "/origem/docs/arquitetura.md/": 390
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Build completa a partir da cópia do pacote (meta 60 s)",
+      "ok": true,
+      "detalhe": {
+        "tempos_s": [
+          11.53,
+          9.83,
+          7.65
+        ],
+        "mediana_s": 9.83
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Governança: primeira renderização com conteúdo (meta 1500 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 224,
+        "cpu_4x": 312,
+        "unidade": "ms",
+        "meta": 1500,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Governança: dados transferidos (meta 1 MB)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 134908,
+        "cpu_4x": 134908,
+        "unidade": "B",
+        "meta": 1000000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Busca: maior tempo por tecla (meta 150 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 38.30000000074506,
+        "cpu_4x": 177.20000000298023,
+        "unidade": "ms",
+        "meta": 150,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Relação: dados transferidos (meta 1 MB)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 6773,
+        "cpu_4x": 6773,
+        "unidade": "B",
+        "meta": 1000000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Linhagem por relação: recorte inicial desenhado (meta 1000 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 283.3999999985099,
+        "cpu_4x": 891.5999999977648,
+        "unidade": "ms",
+        "meta": 1000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Linhagem: expandir um nível (meta 500 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 47.80000000074506,
+        "cpu_4x": 177.09999999776483,
+        "unidade": "ms",
+        "meta": 500,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Grafo inteiro desenhado com layout (meta 3000 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 644.7000000029802,
+        "cpu_4x": 2278.89999999851,
+        "unidade": "ms",
+        "meta": 3000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Zoom e deslocamento no grafo inteiro: maior quadro (meta 50 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 33.39999999999998,
+        "cpu_4x": 200,
+        "unidade": "ms",
+        "meta": 50,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Zoom e deslocamento no maior recorte por coluna permitido: maior quadro (meta 50 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 16.800000000000182,
+        "cpu_4x": 99.90000000000009,
+        "unidade": "ms",
+        "meta": 50,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Estrutura (com Mermaid): dados transferidos (meta 1 MB)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 655906,
+        "cpu_4x": 655906,
+        "unidade": "B",
+        "meta": 1000000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Conceitos: dados transferidos (meta 1 MB)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 7357,
+        "cpu_4x": 7357,
+        "unidade": "B",
+        "meta": 1000000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 10,
+      "nome": "Build reproduzível: três builds com o mesmo conteúdo em dist/",
+      "ok": true,
+      "detalhe": {
+        "sha256_de_dist": [
+          "5be0916f8edadb077db5cdeaf8f6c5690027e511e1ac1de36a8f400fa9b802dc",
+          "5be0916f8edadb077db5cdeaf8f6c5690027e511e1ac1de36a8f400fa9b802dc",
+          "5be0916f8edadb077db5cdeaf8f6c5690027e511e1ac1de36a8f400fa9b802dc"
+        ]
+      }
+    },
+    {
+      "item": 10,
+      "nome": "Sem segredos, chaves, arquivos proibidos ou e-mails reais em dist/",
+      "ok": true,
+      "detalhe": {
+        "chaves": [],
+        "arquivos_proibidos": [],
+        "emails": []
+      }
+    },
+    {
+      "item": 10,
+      "nome": "Identificadores de projetos GCP presentes em dist/ (para a D04; não é falha)",
+      "ok": true,
+      "detalhe": {
+        "projetos": {
+          "mvp-ed1-gcp": [
+            "origem/docs/capacidade_e_recuperacao.md",
+            "origem/docs/registro_fase_gcp.md",
+            "origem/terraform/terraform.tfvars.example"
+          ],
+          "mvp-ed1-estudo": [
+            "origem/docs/capacidade_e_recuperacao.md",
+            "origem/docs/registro_fase_gcp.md"
+          ],
+          "analisador-de-risco": [
+            "origem/docs/registro_fase_gcp.md"
+          ],
+          "da-voz-ao-produto": [
+            "origem/docs/registro_fase_gcp.md"
+          ],
+          "customer-care-prod": [
+            "origem/docs/registro_fase_gcp.md"
+          ]
+        }
+      }
+    },
+    {
+      "item": 11,
+      "nome": "Todo termo do inventário é achado na busca pelo nome em português, pelo identificador e pelas siglas",
+      "ok": true,
+      "detalhe": {
+        "termos": 62,
+        "explicados": 62,
+        "pendentes": 0,
+        "nao_achados": []
+      }
+    },
+    {
+      "item": 12,
+      "nome": "Exemplos, definições da origem, âncoras e percursos da camada editorial resolvem",
+      "ok": true,
+      "detalhe": {
+        "commit": "eb117098e2b73370cf8ce027da1ffefa6acf01a7",
+        "percursos": [
+          "fluxo-continuo",
+          "governanca",
+          "pergunta",
+          "perspectivas"
+        ],
+        "exemplos_ausentes": [],
+        "definicoes_ausentes": [],
+        "ancoras_ausentes": []
+      }
+    },
+    {
+      "item": 12,
+      "nome": "Da explicação de volta ao mesmo recorte da linhagem",
+      "ok": true,
+      "detalhe": {
+        "antes": "/governanca/linhagem/?modo=relacao&r=consumption.monthly_revenue_by_channel_and_category&e=analytics.fact_sales_order_item",
+        "conceito": "/conceitos/linhagem/?de=%2Fgovernanca%2Flinhagem%2F%3Fmodo%3Drelacao%26r%3Dconsumption.monthly_revenue_by_channel_and_category%26e%3Danalytics.fact_sales_order_item",
+        "depois": "/governanca/linhagem/?modo=relacao&r=consumption.monthly_revenue_by_channel_and_category&e=analytics.fact_sales_order_item",
+        "nos": 17
+      }
+    }
+  ],
+  "desempenho": {
+    "navegador": "156.0.8078.79",
+    "repeticoes": 5,
+    "maior_recorte_por_coluna_permitido": {
+      "id": "analytics.fact_shipment_item",
+      "nos": 78
+    },
+    "cpu": {
+      "1": {
+        "catalogo.fcp_ms": 224,
+        "catalogo.bytes_comprimidos": 134908,
+        "catalogo.busca_max_ms": 38.30000000074506,
+        "relacao.bytes_comprimidos": 6773,
+        "linhagem_relacao.linhagem_pronta_ms": 283.3999999985099,
+        "linhagem_relacao.expandir_ms": 47.80000000074506,
+        "linhagem_tudo.linhagem_pronta_ms": 644.7000000029802,
+        "linhagem_tudo.quadro_max_ms": 33.39999999999998,
+        "linhagem_coluna.quadro_max_ms": 16.800000000000182,
+        "estrutura.bytes_comprimidos": 655906,
+        "conceitos.bytes_comprimidos": 7357,
+        "rodadas": [
+          {
+            "catalogo": {
+              "fcp_ms": 13828,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 34.5,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 144,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 108,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 348.19999999925494,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 47.80000000074506,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 128,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 644.7000000029802,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 100.09999999999991
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 100,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 447,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 16.800000000000182
+            },
+            "estrutura": {
+              "fcp_ms": 152,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 738.2000000029802
+            },
+            "conceitos": {
+              "fcp_ms": 140,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 204,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 38.30000000074506,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 104,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 112,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 264.6000000014901,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 43.5,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 212,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 680.3999999985099,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 66.5
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 112,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 430.30000000074506,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 16.800000000000182
+            },
+            "estrutura": {
+              "fcp_ms": 164,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 789.4000000022352
+            },
+            "conceitos": {
+              "fcp_ms": 136,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 224,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 34.30000000074506,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 272,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 128,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 292.80000000074506,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 48.899999998509884,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 132,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 689.5,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 33.299999999999955
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 144,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 519.7000000029802,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 16.800000000000182
+            },
+            "estrutura": {
+              "fcp_ms": 156,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 815.1999999992549
+            },
+            "conceitos": {
+              "fcp_ms": 144,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 292,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 214.39999999850988,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 108,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 72,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 240.30000000074506,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 43.29999999701977,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 84,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 574,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 33.39999999999998
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 216,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 502,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 16.800000000000182
+            },
+            "estrutura": {
+              "fcp_ms": 152,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 805.1999999992549
+            },
+            "conceitos": {
+              "fcp_ms": 128,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 220,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 58,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 128,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 84,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 283.3999999985099,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 48.79999999701977,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 128,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 621.3000000007451,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 33.30000000000007
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 104,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 402.6000000014901,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 16.800000000000182
+            },
+            "estrutura": {
+              "fcp_ms": 204,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 751.6999999992549
+            },
+            "conceitos": {
+              "fcp_ms": 152,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          }
+        ]
+      },
+      "4": {
+        "catalogo.fcp_ms": 312,
+        "catalogo.bytes_comprimidos": 134908,
+        "catalogo.busca_max_ms": 177.20000000298023,
+        "relacao.bytes_comprimidos": 6773,
+        "linhagem_relacao.linhagem_pronta_ms": 891.5999999977648,
+        "linhagem_relacao.expandir_ms": 177.09999999776483,
+        "linhagem_tudo.linhagem_pronta_ms": 2278.89999999851,
+        "linhagem_tudo.quadro_max_ms": 200,
+        "linhagem_coluna.quadro_max_ms": 99.90000000000009,
+        "estrutura.bytes_comprimidos": 655906,
+        "conceitos.bytes_comprimidos": 7357,
+        "rodadas": [
+          {
+            "catalogo": {
+              "fcp_ms": 312,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 166.40000000223517,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 312,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 208,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 893.8000000007451,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 171.20000000298023,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 252,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 2353,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 250
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 252,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 1325.5,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 66.70000000000005
+            },
+            "estrutura": {
+              "fcp_ms": 356,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2430.10000000149
+            },
+            "conceitos": {
+              "fcp_ms": 316,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 396,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 176.40000000223517,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 324,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 260,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 795.1000000014901,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 203.80000000074506,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 228,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 2242.10000000149,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 200
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 264,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 1347.300000000745,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 66.69999999999982
+            },
+            "estrutura": {
+              "fcp_ms": 428,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2598.099999997765
+            },
+            "conceitos": {
+              "fcp_ms": 340,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 280,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 229.90000000223517,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 452,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 264,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 891.5999999977648,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 177.09999999776483,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 280,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 2278.89999999851,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 233.30000000000018
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 224,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 1255.5,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 116.70000000000005
+            },
+            "estrutura": {
+              "fcp_ms": 324,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2312.10000000149
+            },
+            "conceitos": {
+              "fcp_ms": 312,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 312,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 177.20000000298023,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 312,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 216,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 956.3000000007451,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 218.09999999776483,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 200,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 2377.10000000149,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 150
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 252,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 1358.0999999977648,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 100
+            },
+            "estrutura": {
+              "fcp_ms": 376,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2376.199999999255
+            },
+            "conceitos": {
+              "fcp_ms": 356,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 340,
+              "bytes_comprimidos": 134908,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 224.5,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 364,
+              "bytes_comprimidos": 6773,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 228,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 867.8999999985099,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 172,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 304,
+              "bytes_comprimidos": 150359,
+              "linhagem_pronta_ms": 2217.199999999255,
+              "travessias_prontas_ms": null,
+              "nos": 285,
+              "quadro_max_ms": 166.69999999999982
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 268,
+              "bytes_comprimidos": 151402,
+              "linhagem_pronta_ms": 1410.6000000014901,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 99.90000000000009
+            },
+            "estrutura": {
+              "fcp_ms": 332,
+              "bytes_comprimidos": 655906,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2523.599999997765
+            },
+            "conceitos": {
+              "fcp_ms": 336,
+              "bytes_comprimidos": 7357,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          }
+        ]
+      }
+    }
+  }
+}

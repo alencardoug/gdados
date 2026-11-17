@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Estado | E0 fechada em 14/11/2026; pacote fixado na `v2.1.0` da origem em 17/11/2026; E1 e E2 autorizadas; aplicação iniciada em `portal/` em 17/11/2026; publicação pendente (D04) |
+| Estado | E0 fechada em 14/11/2026; pacote fixado na `v2.1.0` da origem em 17/11/2026; E1 e E2 autorizadas; aplicação iniciada em `portal/` e E3 feita em 17/11/2026 ([relatório](docs/relatorio_e3.md)); E4 com o Owner; publicação pendente (D04) |
 | Data | 10/11/2026; E0, E1 e E5 revistas em 14/11/2026; sequência, E1, E2 e E3 replanejadas em 17/11/2026 |
 | Base da proposta | [Verificação de viabilidade](docs/verificacao_de_viabilidade.md) |
 | Decisões | [Registro de decisões](docs/decisoes.md) |
@@ -126,6 +126,9 @@ tag nova trará, como as chaves de `analytics` (F34), aparecem como "não declar
    linhagem e os diagramas Mermaid dos documentos da origem ([D02](docs/decisoes.md#d02--diagramas-e-grafos)).
    Todas as verificações da E3 medem fidelidade ao pacote fixado. A E3 inclui um teste que preserva
    `_` nos identificadores (achado da prova da D02), já em `portal/test/markdown.test.mjs`.
+   **E3 feita** em 17/11/2026 sobre o gdados `9f33546`: 38 verificações automáticas passaram, com a
+   ressalva do zoom no grafo inteiro e o achado dos identificadores GCP para a D04
+   ([relatório](docs/relatorio_e3.md); verificação em `verificacao/`).
 5. **Na tag nova da origem**, quando anunciada: refixar e revalidar pela D03, sem esperar por ela
    nas etapas anteriores. As mudanças previstas são aditivas no formato 1.
 6. **E4**, avaliação pelo Owner; **E5** só depois dela, com a D04 decidida à luz da Q14.
@@ -234,7 +237,8 @@ para registrar a margem.
 Os itens que medem fidelidade (2 a 6, 9 e 13) medem fidelidade ao pacote do commit fixado, não ao
 estado atual do banco nem do GCP. Contra o exemplo, valeriam só como ensaio do mecanismo.
 
-**Saída:** relatório das verificações com resultados, limites e versão exata avaliada.
+**Saída:** relatório das verificações com resultados, limites e versão exata avaliada:
+[docs/relatorio_e3.md](docs/relatorio_e3.md), de 17/11/2026.
 
 ### E4 — Avaliação local pelo Owner
 
