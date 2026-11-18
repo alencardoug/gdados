@@ -343,6 +343,27 @@ mais de um site. Um site novo em um deles cabe na cota gratuita (10 GB armazenad
 transferência) sem criar projeto, mas continua sendo recurso novo no GCP: exige a decisão do Owner
 sobre a Q14 na E5. Fora do GCP: GitHub Pages (gratuito com repositório público) e o artifact acima.
 
+**Limpeza em 18/11/2026, a pedido do Owner** [medido]. Foram apagadas do Artifact Registry as três
+imagens sem *tag* e fora de uso: duas do `dcra` (`analisador-de-risco`) e uma do
+`customer-care-backend` (`customer-care-prod`). Ficaram as quatro `latest`, usadas pelas revisões
+com 100% do tráfego; voltar a uma revisão antiga desses serviços deixou de ser possível. O Secret
+Manager ficou como estava: os 12 segredos são lidos pelos serviços ativos e cada um tem uma versão.
+
+**Direção do Owner (18/11/2026): projeto "extras".** A Q14 proíbe projeto novo, mas o Owner pretende
+criar um projeto "extras" na cota gratuita para reunir o que for além dos projetos atuais.
+Avaliação:
+
+- sem conta de faturamento ligada, o projeto não tem como gerar cobrança; o Firebase fica no plano
+  Spark, que basta para um site estático (até 36 sites por projeto, mesma cota de Hosting citada
+  acima) e para a federação de identidade do deploy na E5 (IAM não cobra);
+- ligar a conta de faturamento abriria a cota gratuita de Cloud Run, BigQuery e outros, mas o excesso
+  passaria a ser cobrado, e orçamento só avisa, não bloqueia. Recomendação: manter o "extras" **sem
+  faturamento** e tratar qualquer ligação como decisão à parte;
+- os três projetos em exclusão ainda contam na cota de projetos da conta até serem removidos (cerca de
+  30 dias após o pedido), o que pode impedir a criação; a cota não foi lida;
+- é uma exceção à Q14, decidida pelo Owner: a origem registra a Q14, então a mudança deve chegar a ela
+  pelo alinhamento. A criação do projeto é ato do Owner; publicar continua dependendo da E5.
+
 **Pendente:** hospedagem, repositório GitHub, identificação do site, domínio, audiência,
 permissões do workflow e forma de aceite para publicar. O usuário citar o Linkedia não autoriza
 reutilizar suas contas, seus recursos ou seus vínculos IAM.

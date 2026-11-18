@@ -31,7 +31,7 @@ a resposta abre uma fase curta de correções na origem, que terminará numa tag
 | Portais | Dois portais, um pacote: gdados e etapa 2.7 do BI, independentes (Q12, 14/11) | [D05](decisoes.md#d05--relação-com-o-portal-da-etapa-27-do-bi-como-codigo) |
 | Contrato de dados | Formato 1 do pacote; o gdados não gera nem completa pacote (Q13, 14/11); pacote fixado e validado em 17/11 | [D03](decisoes.md#d03--pacote-e-atualização-de-metadados) |
 | E1 | Consome o pacote da origem; o gdados define só a camada editorial | [PLANO](../PLANO.md), E1 |
-| GCP | Nenhum recurso novo no GCP, em nenhum projeto (Q14, 14/11) | Consumidores §7 da origem; [D04](decisoes.md#d04--identidade-e-audiência-da-publicação) |
+| GCP | Nenhum recurso novo no GCP, em nenhum projeto (Q14, 14/11); em 18/11 o Owner pretende abrir exceção para um projeto "extras" sem faturamento, a comunicar à origem | Consumidores §7 da origem; [D04](decisoes.md#d04--identidade-e-audiência-da-publicação) |
 | Banco | O portal não lê banco | [PLANO](../PLANO.md), E1 |
 | Leitura da origem | Só arquivos e `git show`/`git log`; nenhum comando do projeto | Consumidores §2 da origem; [AGENTS](../AGENTS.md) |
 
