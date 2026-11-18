@@ -25,8 +25,10 @@ consumidora do formato da origem e a E2. Em 17/11/2026 fixou o pacote da origem 
 provas e as etapas passam a usar o pacote do commit fixado na D03. No mesmo dia, a resposta da
 origem, a pedido do Owner, liberou a E1 à E3 contra esse pacote, sem esperar a tag seguinte. Em 17/11/2026 a E3 foi
 feita e a E4 começou; os pedidos da avaliação, como o roteiro de aprendizado, que aguarda o "pode
-fazer" do Owner, estão no PLANO, E4. Publicação e hospedagem
-aguardam a D04, na E5. Não há recurso novo autorizado no GCP (Q14). Os registros estão em
+fazer" do Owner, estão no PLANO, E4. Em 18/11/2026 o Owner
+criou, como exceção à Q14, o projeto "Extras" (`extras-douglas-alencar`, sem faturamento) e o site
+vazio `governadados.web.app`; o deploy e o resto da D04 aguardam a E5. Fora isso, não há recurso
+novo autorizado no GCP (Q14), e o "Extras" não deve ser ligado a uma conta de faturamento. Os registros estão em
 [docs/decisoes.md](docs/decisoes.md).
 
 ## Fontes e evidências

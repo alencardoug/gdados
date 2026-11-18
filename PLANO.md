@@ -266,8 +266,8 @@ validado. Usar o Linkedia como referência de processo, sem copiar sua identidad
 específica de acesso.
 
 A publicação depende de decisão do Owner sobre hospedagem, repositório, site e audiência (D04), e de
-autorização para a etapa. A Q14 proíbe recursos novos no GCP, e um projeto Firebase é um deles; a
-D04 registra esse conflito para a E5. Não há provisionamento ou deploy autorizado por este plano.
+autorização para a etapa. Em 18/11/2026 o Owner decidiu a hospedagem e o site, como exceção à
+Q14: `governadados.web.app`, no projeto "Extras", sem faturamento (D04). Não há provisionamento ou deploy autorizado por este plano.
 
 ## 6. Critérios de aceite funcional
 

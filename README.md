@@ -111,7 +111,8 @@ O histórico desta conversa não é necessário para compreender o escopo docume
 - em 18/11/2026 o Owner aprovou o conteúdo e o portal para a fase atual e definiu que o roteiro
   cresce **um degrau por vez**, conforme aprende. No mesmo dia, uma leitura do GCP e as opções de
   hospedagem gratuita foram registradas na
-  [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação);
+  [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação). O Owner criou o projeto
+  "Extras", sem faturamento, e o site vazio `governadados.web.app`; o deploy fica para a E5;
 - a origem prepara uma tag nova, sem data, com F32, F33, F34 e outras mudanças aditivas
   ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
   não espera por ela; quando for anunciada, refixar e revalidar pela D03 e repetir a verificação.

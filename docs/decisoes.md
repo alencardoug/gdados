@@ -306,7 +306,7 @@ for anunciada.
 
 ## D04 — Identidade e audiência da publicação
 
-**Estado:** pendente do Owner até a E5; conflito com a Q14 registrado em 14/11/2026.
+**Estado:** hospedagem e site decididos em 18/11/2026 (`governadados.web.app`, exceção à Q14); o resto pendente do Owner até a E5.
 
 **Diretriz de 10/11/2026:** GitHub → Firebase Hosting, seguindo o padrão do Linkedia, depois das
 verificações e da avaliação locais.
@@ -363,6 +363,18 @@ Avaliação:
   30 dias após o pedido), o que pode impedir a criação; a cota não foi lida;
 - é uma exceção à Q14, decidida pelo Owner: a origem registra a Q14, então a mudança deve chegar a ela
   pelo alinhamento. A criação do projeto é ato do Owner; publicar continua dependendo da E5.
+
+**Decisão do Owner (18/11/2026): hospedagem e site.** "Vamos seguir. Projeto 'Extras', criar site
+governadados.web.app." Feito no mesmo dia [medido]:
+
+- projeto `extras-douglas-alencar`, nome "Extras", **sem conta de faturamento** (`billingEnabled:
+  False` conferido depois da criação), com Firebase no plano Spark;
+- site do Firebase Hosting `governadados`, em `https://governadados.web.app`, criado vazio (responde
+  404); o projeto tem também o site padrão `extras-douglas-alencar.web.app`, sem uso;
+- nenhum deploy, conta de serviço ou IAM configurado.
+
+Com isso, a hospedagem e a identificação do site estão decididas. Seguem pendentes para a E5: a E4.5,
+o repositório GitHub, a audiência, as permissões do workflow e a forma de aceite para publicar.
 
 **Pendente:** hospedagem, repositório GitHub, identificação do site, domínio, audiência,
 permissões do workflow e forma de aceite para publicar. O usuário citar o Linkedia não autoriza
