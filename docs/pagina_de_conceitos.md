@@ -211,7 +211,20 @@ conhecimento.
 **Avaliação (17/11/2026):** viável, sem dependência nova e dentro das decisões D01 e D02. A
 implementação **aguarda o Owner autorizar**.
 
-**Proposta:**
+**Direção do Owner (18/11/2026): um degrau por vez.** Em vez de montar o roteiro inteiro de uma
+vez, o roteiro cresce com o aprendizado: o agente propõe e implementa um degrau, o Owner estuda e
+indica o próximo. A proposta abaixo vira o alvo final, não a primeira entrega. Consequências:
+
+- cada degrau é uma entrega pequena: objetivo, os termos daquele passo (com `prerequisitos`
+  preenchidos só para eles), uma prática no catálogo e "a seguir" apontando para o degrau seguinte
+  quando ele existir;
+- a ordem registrada é a ordem em que o Owner avançou; o mapa e a lista do roteiro mostram só os
+  degraus já feitos;
+- o teste de pré-requisitos (sem ciclo, todo termo do roteiro alcançável) vale desde o primeiro
+  degrau;
+- cada degrau novo passa pelo "pode fazer" do Owner, que indica o assunto.
+
+**Proposta (alvo final):**
 
 - completar o campo `prerequisitos` do `inventario.yml` para os 62 termos (hoje poucos o têm). A
   ordem de leitura sai desse grafo, pela mesma lógica de camadas por caminho mais longo da linhagem

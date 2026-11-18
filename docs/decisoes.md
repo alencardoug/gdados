@@ -316,6 +316,12 @@ GCP**, em nenhum projeto. Um projeto Firebase é um projeto GCP. Quando a E5 che
 Owner à luz da Q14: usar um projeto que já existe, outra hospedagem ou uma exceção à Q14. Nada a
 fazer antes disso.
 
+**Opção levantada em 18/11/2026: Claude Artifacts.** O Owner perguntou se o portal cabe em um
+artifact do claude.ai. Avaliação: não cria recurso no GCP (compatível com a Q14) e nasce privado,
+mas o build de 18/11/2026 não entra como está — 789 arquivos (o limite é 511 por versão e 255 por
+envio) e links absolutos (`/conceitos/`), que exigiriam base relativa e menos arquivos (por
+exemplo, juntar os JSON). Enviar é publicar: fica para a E5, com a E4.5 resolvida antes.
+
 **Pendente:** hospedagem, repositório GitHub, identificação do site, domínio, audiência,
 permissões do workflow e forma de aceite para publicar. O usuário citar o Linkedia não autoriza
 reutilizar suas contas, seus recursos ou seus vínculos IAM.
