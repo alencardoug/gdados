@@ -382,7 +382,9 @@ depois do build, dos testes e das verificações estáticas; conta de serviço `
 `roles/firebasehosting.admin` no "Extras", federação de identidade com provider `gdados` que aceita
 só este repositório, o `main` e o push. Antes do primeiro push, a varredura do histórico inteiro não
 achou chave, arquivo proibido nem o e-mail pessoal [medido]. Fica para depois: política de segurança
-de conteúdo (CSP), que exige testar o Mermaid e o Cytoscape com ela. O usuário citar o Linkedia não autoriza
+de conteúdo (CSP), que exige testar o Mermaid e o Cytoscape com ela. Primeiro deploy em 18/11/2026, execução
+44422968517 do GitHub Actions: build, testes, verificações estáticas, deploy e teste de fumaça
+passaram; o site respondeu 200 e sem os identificadores mascarados [medido]. O usuário citar o Linkedia não autoriza
 reutilizar suas contas, seus recursos ou seus vínculos IAM.
 
 A escolha entre acesso público e restrito afeta a solução de publicação; não assumir uma audiência.
