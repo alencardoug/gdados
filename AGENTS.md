@@ -32,7 +32,8 @@ origem, a pedido do Owner, liberou a E1 à E3 contra esse pacote, sem esperar a 
 feita e a E4 começou; os pedidos da avaliação, como o roteiro de aprendizado, que aguarda o "pode
 fazer" do Owner, estão no PLANO, E4. Em 18/11/2026 o Owner
 criou, como exceção à Q14, o projeto "Extras" (`extras-douglas-alencar`, sem faturamento) e o site
-vazio `governadados.web.app`; o deploy e o resto da D04 aguardam a E5. Fora isso, não há recurso
+`governadados.web.app`. No mesmo dia autorizou a E5: repositório público `alencardoug/gdados` e
+deploy sem chave a cada push no `main`, depois do build e dos testes (D04). Fora isso, não há recurso
 novo autorizado no GCP (Q14), e o "Extras" não deve ser ligado a uma conta de faturamento. Os registros estão em
 [docs/decisoes.md](docs/decisoes.md).
 
@@ -64,6 +65,7 @@ registradas em `docs/decisoes.md`. Outras bibliotecas e extensões continuam dep
   de `provas/`, sem que isso seja adoção.
 - Caches, temporários e downloads de ferramentas ficam em `.cache/` (variáveis em `provas/README.md`).
 - Validar a aplicação localmente antes de propor a publicação.
-- Não publicar, criar projetos cloud ou configurar IAM antes da E5 e da decisão da D04.
+- Publicar só pelo workflow `.github/workflows/deploy.yml` (push no `main`). Criar projetos cloud ou
+  mudar IAM continua dependendo do Owner (D04).
 - Cada assunto tem um dono documental; não manter a mesma regra em vários arquivos.
 - Se houver commits, usar Conventional Commits com descrição em português e um assunto por commit.

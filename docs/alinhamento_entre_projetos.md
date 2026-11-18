@@ -50,7 +50,7 @@ próprio arquivo; este documento continua como índice das pendências do gdados
 | A5 | D03: esperar o pacote ou pacote provisório | **Fechada em 14/11/2026 (Q13):** nenhum dos dois; construir contra esquema e exemplo. Superada em 17/11/2026: o pacote real está fixado | [D03](decisoes.md#d03--pacote-e-atualização-de-metadados) |
 | A6 | D03: pacote incompleto ou desatualizado | **Fechada em 14/11/2026:** regras do formato registradas na D03 | [D03](decisoes.md#d03--pacote-e-atualização-de-metadados) |
 | A7 | D05: dois portais? Mesmo pacote? | **Fechada em 14/11/2026 (Q12):** dois portais, um pacote | [D05](decisoes.md#d05--relação-com-o-portal-da-etapa-27-do-bi-como-codigo) |
-| A8 | D04: hospedagem, repositório, site, domínio e audiência | Hospedagem e site decididos em 18/11 (`governadados.web.app`, projeto "Extras" sem faturamento, exceção à Q14 a comunicar à origem); o resto volta ao Owner na E5 | [D04](decisoes.md#d04--identidade-e-audiência-da-publicação) |
+| A8 | D04: hospedagem, repositório, site, domínio e audiência | Decidida em 18/11: `governadados.web.app` no projeto "Extras" sem faturamento (exceção à Q14, avisada à origem pela caixa de correio), repositório público, deploy a cada push no `main` | [D04](decisoes.md#d04--identidade-e-audiência-da-publicação) |
 | A9 | Fixar o pacote na `v2.1.0`, validá-lo e ler `on_zero_denominator` | **Instruída em 17/11/2026;** fixado e validado no mesmo dia; leitura do campo registrada para a E1 | [D03](decisoes.md#d03--pacote-e-atualização-de-metadados) |
 | A10 | D06: amostras de registros no portal | Aberta em 17/11/2026 (E4.2); se aprovada, vira pedido à origem nesta seção | [D06](decisoes.md#d06--amostras-de-registros-no-portal) |
 

@@ -117,10 +117,12 @@ O histórico desta conversa não é necessário para compreender o escopo docume
   ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
   não espera por ela; quando for anunciada, refixar e revalidar pela D03 e repetir a verificação.
 
-**Próximo passo:** continuar a E4. O primeiro trabalho proposto é o primeiro degrau do roteiro, que
-aguarda o "pode fazer" do Owner (página de conceitos §10). Depois, ou em paralelo, as decisões do
-Owner: D06 (amostras), a meta de zoom no grafo inteiro (relatório da E3, §3) e os identificadores
-GCP (D04). Para avaliar o portal localmente: `cd portal && npm run build && npm run preview`. Para
+**Publicação (E5, 18/11/2026):** o portal sai em <https://governadados.web.app> a cada push no
+`main`, pelo workflow `.github/workflows/deploy.yml`, depois do build e dos testes.
+
+**Próximo passo:** o primeiro degrau do roteiro, que aguarda o "pode fazer" do Owner (página de
+conceitos §10). Seguem pendentes do Owner a D06 (amostras) e a meta de zoom no grafo inteiro
+(relatório da E3, §3). Para avaliar o portal localmente: `cd portal && npm run build && npm run preview`. Para
 repetir a verificação: [`verificacao/README.md`](verificacao/README.md).
 
 Os caches e temporários de npm, `uv` e Playwright ficam em `.cache/` (variáveis em

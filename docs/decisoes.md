@@ -306,7 +306,7 @@ for anunciada.
 
 ## D04 — Identidade e audiência da publicação
 
-**Estado:** hospedagem e site decididos em 18/11/2026 (`governadados.web.app`, exceção à Q14); o resto pendente do Owner até a E5.
+**Estado:** decidida pelo Owner em 18/11/2026: hospedagem, site, repositório público e deploy (detalhes abaixo).
 
 **Diretriz de 10/11/2026:** GitHub → Firebase Hosting, seguindo o padrão do Linkedia, depois das
 verificações e da avaliação locais.
@@ -376,8 +376,13 @@ governadados.web.app." Feito no mesmo dia [medido]:
 Com isso, a hospedagem e a identificação do site estão decididas. Seguem pendentes para a E5: a E4.5,
 o repositório GitHub, a audiência, as permissões do workflow e a forma de aceite para publicar.
 
-**Pendente:** hospedagem, repositório GitHub, identificação do site, domínio, audiência,
-permissões do workflow e forma de aceite para publicar. O usuário citar o Linkedia não autoriza
+**Decidido em 18/11/2026:** repositório público `alencardoug/gdados`; audiência pública (o repositório
+e o site são abertos); domínio `governadados.web.app`, sem domínio próprio; aceite = push no `main`,
+depois do build, dos testes e das verificações estáticas; conta de serviço `github-deploy` só com
+`roles/firebasehosting.admin` no "Extras", federação de identidade com provider `gdados` que aceita
+só este repositório, o `main` e o push. Antes do primeiro push, a varredura do histórico inteiro não
+achou chave, arquivo proibido nem o e-mail pessoal [medido]. Fica para depois: política de segurança
+de conteúdo (CSP), que exige testar o Mermaid e o Cytoscape com ela. O usuário citar o Linkedia não autoriza
 reutilizar suas contas, seus recursos ou seus vínculos IAM.
 
 A escolha entre acesso público e restrito afeta a solução de publicação; não assumir uma audiência.

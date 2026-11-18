@@ -256,7 +256,7 @@ disponível. Pedidos e pendências da avaliação:
 | E4.2 | As cinco primeiras linhas de cada tabela, com todas as colunas | Tecnicamente viável, mas contraria o AGENTS.md (amostras), a decisão de o portal não ler banco e o formato do pacote; **aguarda decisão do Owner** | [D06](docs/decisoes.md#d06--amostras-de-registros-no-portal) |
 | E4.3 | Revisão conceitual das explicações e dos percursos | Em 18/11/2026 o Owner aprovou o conteúdo e o portal para a fase atual; a revisão continua a cada degrau do roteiro (E4.1) | [Página de conceitos §8](docs/pagina_de_conceitos.md#8-critérios-de-avaliação-local) |
 | E4.4 | Meta de zoom no grafo inteiro, cumprida na mediana e não em toda rodada | Aceitar ou ajustar a meta | [Relatório da E3](docs/relatorio_e3.md), §3; [D02](docs/decisoes.md#d02--diagramas-e-grafos) |
-| E4.5 | Identificadores de projetos GCP e prefixo de conta de faturamento nos textos copiados | Avaliado em 18/11/2026: mascarar só os três projetos sem relação e o prefixo de faturamento; aguarda o Owner | [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação); relatório da E3, §5 |
+| E4.5 | Identificadores de projetos GCP e prefixo de conta de faturamento nos textos copiados | Feito em 18/11/2026: os três projetos sem relação e o prefixo de faturamento aparecem como marcador | [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação); relatório da E3, §5 |
 
 ### E5 — Preparar a publicação
 
@@ -267,7 +267,10 @@ específica de acesso.
 
 A publicação depende de decisão do Owner sobre hospedagem, repositório, site e audiência (D04), e de
 autorização para a etapa. Em 18/11/2026 o Owner decidiu a hospedagem e o site, como exceção à
-Q14: `governadados.web.app`, no projeto "Extras", sem faturamento (D04). Não há provisionamento ou deploy autorizado por este plano.
+Q14: `governadados.web.app`, no projeto "Extras", sem faturamento (D04). No mesmo dia autorizou a
+E5: repositório público e o deploy em `.github/workflows/deploy.yml`, no modelo do Linkedia. O CI
+valida a cópia, roda os testes, faz o build e as verificações estáticas da E3; as medidas no Chrome
+continuam locais, porque dependem da máquina.
 
 ## 6. Critérios de aceite funcional
 
