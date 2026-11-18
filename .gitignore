@@ -43,3 +43,6 @@ provas/**/gerado/
 
 # Capturas regeneráveis por provas/medicao/capturar.mjs
 provas/medicao/capturas/
+
+# Caixa de correio entre projetos (local)
+/alinhamento.md

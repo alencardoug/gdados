@@ -436,6 +436,25 @@ própria sessão:
    configuração do serviço; não recomendada. A economia é de cerca de US$ 0,36 por mês [estimado].
    O gdados não precisa de segredo nenhum.
 
+**Aplicado em 18/11/2026, com o Owner aprovando todas as propostas acima** [medido]:
+
+- E4.5: os três projetos sem relação e a conta de faturamento são trocados por marcador na exibição
+  (`portal/src/lib/mascara.mjs`, que guarda só o SHA-256 dos IDs); a página diz quantos foram
+  trocados e que o SHA-256 é o do original; o teste `mascara.test.mjs` e a verificação 10 da E3
+  falham se algum chegar a `dist/`. Os nomes continuam no histórico e nos resultados da E3 deste
+  repositório, como já estão no `mvp_eng_dados_2` público;
+- `governadados` guarda no máximo 5 versões (`maxVersions: 5`);
+- os refinos dos outros projetos seguem pelos avisos na caixa de correio de cada um
+  ([alinhamento](alinhamento_entre_projetos.md)).
+
+**Segredos em variáveis de ambiente (18/11/2026).** O Owner perguntou se "qualquer pessoa" se
+resume a quem acessa o projeto. Quase: a configuração do Cloud Run, com os valores, aparece para
+quem tem acesso de leitura ao projeto, nos logs de auditoria do projeto, na saída de quem descreve o
+serviço (inclusive uma IA, cujo histórico vai ao provedor dela) e onde o valor passar no deploy
+(histórico do terminal, logs de CI). O Owner considera o risco aceitável para liberar o Secret
+Manager a um projeto que precise dele; os avisos pedem os valores por arquivo fora do Git, nunca na
+linha de comando, e limite de gasto nas contas dos provedores de API.
+
 ## D05 — Relação com o portal da etapa 2.7 do `bi-como-codigo`
 
 **Estado:** decidida pelo Owner em 14/11/2026 (Q12).

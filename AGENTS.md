@@ -1,5 +1,7 @@
 # Instruções para agentes — gdados
 
+Caixa de correio: ao iniciar a sessão, leia @alinhamento.md; se houver aviso depois de "a partir daqui", leu, atua, apaga (regras no próprio arquivo).
+
 ## Antes de trabalhar
 
 Leia [README.md](README.md), [PLANO.md](PLANO.md) e [docs/decisoes.md](docs/decisoes.md).
@@ -16,6 +18,9 @@ O pedido vivo do Owner define o trabalho: avaliar um plano não autoriza impleme
   `mvp_eng_dados_2`, usar só leitura de arquivos e `git show`/`git log`; nenhum comando do projeto,
   nem os que parecem só ler (`docs/consumidores.md` §2 da origem).
 - Se faltar uma exportação da origem, registrar a dependência e encaminhar a necessidade ao Owner.
+- Exceção (Owner, 18/11/2026): avisos a outros projetos vão para o `alinhamento.md` da raiz deles,
+  acrescentados ao fim, conforme a nota de uso do próprio arquivo. É a única escrita permitida fora
+  do gdados.
 - Não desfazer alterações de outras sessões. Desfazer somente alterações próprias identificadas.
 
 ## Estado da autorização

@@ -22,6 +22,10 @@ A resposta de 14/11/2026 está em
 `resposta_gdados_20261117.md` e `resposta_gdados_20261117b.md`, todos fora do Git. A fase da base dos consumidores fechou na `v2.1.0`;
 a resposta abre uma fase curta de correções na origem, que terminará numa tag nova, sem data.
 
+**Caixa de correio (18/11/2026, Owner):** cada projeto do Owner tem um `alinhamento.md` na raiz, local
+(fora do Git) e vazio por padrão: quem abre a sessão lê, atua e apaga. As regras de uso ficam no
+próprio arquivo; este documento continua como índice das pendências do gdados.
+
 ## 1. Direção decidida
 
 | Ponto | Decisão | Dono |
