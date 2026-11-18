@@ -108,11 +108,15 @@ O histórico desta conversa não é necessário para compreender o escopo docume
   ([página de conceitos §10](docs/pagina_de_conceitos.md#10-roteiro-de-aprendizado-pedido-de-17112026)),
   e **amostras de linhas** por tabela, que contrariam regras atuais e dependem de decisão
   ([D06](docs/decisoes.md#d06--amostras-de-registros-no-portal));
+- em 18/11/2026 o Owner aprovou o conteúdo e o portal para a fase atual e definiu que o roteiro
+  cresce **um degrau por vez**, conforme aprende. No mesmo dia, uma leitura do GCP e as opções de
+  hospedagem gratuita foram registradas na
+  [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação);
 - a origem prepara uma tag nova, sem data, com F32, F33, F34 e outras mudanças aditivas
   ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
   não espera por ela; quando for anunciada, refixar e revalidar pela D03 e repetir a verificação.
 
-**Próximo passo:** continuar a E4. O primeiro trabalho proposto é o roteiro de aprendizado, que
+**Próximo passo:** continuar a E4. O primeiro trabalho proposto é o primeiro degrau do roteiro, que
 aguarda o "pode fazer" do Owner (página de conceitos §10). Depois, ou em paralelo, as decisões do
 Owner: D06 (amostras), a meta de zoom no grafo inteiro (relatório da E3, §3) e os identificadores
 GCP (D04). Para avaliar o portal localmente: `cd portal && npm run build && npm run preview`. Para

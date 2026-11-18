@@ -322,6 +322,27 @@ mas o build de 18/11/2026 não entra como está — 789 arquivos (o limite é 51
 envio) e links absolutos (`/conceitos/`), que exigiriam base relativa e menos arquivos (por
 exemplo, juntar os JSON). Enviar é publicar: fica para a E5, com a E4.5 resolvida antes.
 
+**Leitura do GCP em 18/11/2026** [medido com `gcloud` só de leitura, a pedido do Owner; nada criado
+nem alterado]. O Owner informou que os créditos acabaram e os custos passaram a ser reais.
+
+- A conta de faturamento `0199D3-…` está aberta e ligada a três projetos, sem relação com o gdados:
+  `analisador-de-risco`, `da-voz-ao-produto` e `customer-care-prod`. `mvp-ed1-gcp`, `mvp-ed1-estudo`
+  e `nl2sql-0ee96a` estão em exclusão, sem faturamento.
+- Nos três projetos: quatro serviços do Cloud Run sem instância mínima e com acesso público (só
+  cobram com tráfego acima da cota gratuita), *buckets* com cerca de 170 MB em `us-east1` (dentro da
+  cota gratuita), 12 versões ativas de segredos e cerca de 1,6 GB de imagens no Artifact Registry.
+  Não há Compute Engine, Cloud SQL, App Engine nem conjuntos no BigQuery.
+- O que passa da cota gratuita, pela tabela pública de preços e não por fatura: as imagens além de
+  0,5 GB e os segredos além de 6 versões, algo abaixo de US$ 1 por mês [estimado].
+- O gasto real e os orçamentos não foram lidos: a API de orçamentos está desligada e o valor só
+  aparece em Faturamento > Relatórios, na consola.
+
+**Hospedagem gratuita.** O build tem 19 MB. Os projetos `linked-ia` e `portfolio-douglas-alencar`
+já usam Firebase Hosting **sem conta de faturamento** (plano Spark, que não gera cobrança) e já têm
+mais de um site. Um site novo em um deles cabe na cota gratuita (10 GB armazenados, 360 MB/dia de
+transferência) sem criar projeto, mas continua sendo recurso novo no GCP: exige a decisão do Owner
+sobre a Q14 na E5. Fora do GCP: GitHub Pages (gratuito com repositório público) e o artifact acima.
+
 **Pendente:** hospedagem, repositório GitHub, identificação do site, domínio, audiência,
 permissões do workflow e forma de aceite para publicar. O usuário citar o Linkedia não autoriza
 reutilizar suas contas, seus recursos ou seus vínculos IAM.
