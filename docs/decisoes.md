@@ -453,9 +453,8 @@ própria sessão:
 resume a quem acessa o projeto. Quase: a configuração do Cloud Run, com os valores, aparece para
 quem tem acesso de leitura ao projeto, nos logs de auditoria do projeto, na saída de quem descreve o
 serviço (inclusive uma IA, cujo histórico vai ao provedor dela) e onde o valor passar no deploy
-(histórico do terminal, logs de CI). O Owner considera o risco aceitável para liberar o Secret
-Manager a um projeto que precise dele; os avisos pedem os valores por arquivo fora do Git, nunca na
-linha de comando, e limite de gasto nas contas dos provedores de API.
+(histórico do terminal, logs de CI). **Decisão do Owner (18/11/2026): os segredos ficam no Secret Manager**, porque o custo continua
+abaixo de US$ 1 por mês. Os avisos aos outros projetos não pedem a troca.
 
 ## D05 — Relação com o portal da etapa 2.7 do `bi-como-codigo`
 
