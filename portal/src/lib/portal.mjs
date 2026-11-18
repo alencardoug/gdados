@@ -2,6 +2,7 @@
 // ou identificadores do pacote atual: as coleções são lidas com tamanho e chaves variáveis (D03).
 import { readFileSync } from "node:fs";
 import { carregarOrigem } from "./origem.mjs";
+import { mascarar } from "./mascara.mjs";
 import { criarRenderizador } from "./markdown.mjs";
 import { camadasPorCaminhoMaisLongo } from "../cliente/camadas.js";
 
@@ -29,7 +30,16 @@ export const pastasCopiadas = [...pastas].sort();
 export const arquivoCopiado = (caminho) => arquivos.has(caminho) || pastas.has(caminho);
 export const rotaDoArquivo = (caminho, ancora = null) =>
   rota(`origem/${caminho.replace(/\/$/, "")}/`) + (ancora ? `#${ancora}` : "");
-export const lerArquivo = (caminho) => readFileSync(arquivos.get(caminho).local, "utf8");
+// Exibição com os identificadores da D04 trocados por marcadores (mascara.mjs); o SHA-256 conferido
+// é o do arquivo original.
+const lidos = new Map();
+const lerMascarado = (caminho) => {
+  if (!lidos.has(caminho)) lidos.set(caminho, mascarar(readFileSync(arquivos.get(caminho).local, "utf8")));
+  return lidos.get(caminho);
+};
+export const lerArquivo = (caminho) => lerMascarado(caminho).texto;
+/** Quantos identificadores da D04 foram trocados na exibição do arquivo. */
+export const trocasNoArquivo = (caminho) => lerMascarado(caminho).trocas;
 export const registroDoArquivo = (caminho) => arquivos.get(caminho) ?? null;
 
 /** Separa "docs/x.md#ancora" em caminho e âncora, como o pacote os escreve. */

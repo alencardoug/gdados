@@ -5,7 +5,7 @@ import Base from "../../layouts/Base.astro";
 import Md from "../../components/Md.astro";
 import DiagramasDaOrigem from "../../components/DiagramasDaOrigem.astro";
 import {
-  caminhosCopiados, pastasCopiadas, procedencia, rota, rotaDoArquivo, registroDoArquivo, lerArquivo, mdDoArquivo, commitCurto,
+  caminhosCopiados, pastasCopiadas, procedencia, rota, rotaDoArquivo, registroDoArquivo, lerArquivo, mdDoArquivo, commitCurto, trocasNoArquivo,
 } from "../../lib/portal.mjs";
 
 export function getStaticPaths() {
@@ -35,6 +35,7 @@ if (pasta) {
   conteudo = lerArquivo(caminho);
 }
 const registro = pasta ? null : registroDoArquivo(caminho);
+const trocas = pasta ? 0 : trocasNoArquivo(caminho);
 const temDiagrama = html?.includes('class="language-mermaid"') ?? false;
 ---
 <Base titulo={caminho} secao="estrutura">
@@ -44,8 +45,8 @@ const temDiagrama = html?.includes('class="language-mermaid"') ?? false;
 </p>
 <h1><code>{caminho}{pasta ? "/" : ""}</code></h1>
 <p class="suave">
-  Texto de <code>{procedencia.repository}</code> no commit <code title={procedencia.commit}>{commitCurto(procedencia.commit)}</code> (<code>{procedencia.ref}</code>), copiado sem alteração.
-  {registro && <> SHA-256 <code>{registro.sha256.slice(0, 16)}…</code>, {registro.bytes.toLocaleString("pt-BR")} bytes.</>}
+  Texto de <code>{procedencia.repository}</code> no commit <code title={procedencia.commit}>{commitCurto(procedencia.commit)}</code> (<code>{procedencia.ref}</code>), {trocas ? <>copiado sem alteração, exceto {trocas === 1 ? "um identificador" : `${trocas} identificadores`} de projetos GCP sem relação com o projeto de dados ou de conta de faturamento, trocados aqui por marcador.</> : "copiado sem alteração."}
+  {registro && <> SHA-256 <code>{registro.sha256.slice(0, 16)}…</code> do arquivo original, {registro.bytes.toLocaleString("pt-BR")} bytes.</>}
   Este conteúdo pertence à origem. O portal exibe o texto e não o reinterpreta.
   {html && <> Links para arquivos que não foram copiados aparecem <span class="fora-da-copia">assim</span>, sem destino.</>}
 </p>

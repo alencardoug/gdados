@@ -3,6 +3,8 @@
 // Cada verificação devolve { item, nome, ok, detalhe }; "item" é o número da E3 no PLANO.
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+// Exceção à independência: a lista dos identificadores mascarados (só hashes) tem um dono, o portal.
+import { mascarar } from "../portal/src/lib/mascara.mjs";
 
 const lerJson = (c) => JSON.parse(readFileSync(c, "utf8"));
 const html = (dist, rota) => readFileSync(join(dist, rota.replace(/^\//, ""), "index.html"), "utf8");
@@ -188,7 +190,9 @@ export function verificarEstatica({ dist, origem }) {
   // 10. Revisão do que seria publicado: segredos e identificadores fora do escopo.
   const achados = { emails: new Set(), chaves: [], arquivos_proibidos: [], projetos_gcp: new Map() };
   const dominiosDeExemplo = /@(exemplo\.com|example\.(com|org|net))$|\.(invalid|example|test)$/;
-  const PROJETOS = /\b(mvp-ed1-gcp|mvp-ed1-estudo|analisador-de-risco|da-voz-ao-produto|customer-care-prod)\b/g;
+  // Os projetos do próprio projeto de dados ficam (D04); os demais identificadores são mascarados.
+  const PROJETOS = /\b(mvp-ed1-gcp|mvp-ed1-estudo)\b/g;
+  const mascarados = [];
   const visitar = (dir) => {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
       const c = join(dir, e.name);
@@ -198,6 +202,7 @@ export function verificarEstatica({ dist, origem }) {
       const t = readFileSync(c, "utf8");
       if (/BEGIN [A-Z ]*PRIVATE KEY/.test(t)) achados.chaves.push(relative(dist, c));
       for (const m of t.matchAll(/[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,}/g)) if (!dominiosDeExemplo.test(m[0]) && !/\.(js|css)$/.test(e.name)) achados.emails.add(`${m[0]} (${relative(dist, c)})`);
+      if (mascarar(t).trocas) mascarados.push(relative(dist, c));
       for (const m of t.matchAll(PROJETOS)) achados.projetos_gcp.set(m[1], (achados.projetos_gcp.get(m[1]) ?? new Set()).add(relative(dist, c).replace(/\/index\.html$/, "")));
     }
   };
@@ -205,7 +210,9 @@ export function verificarEstatica({ dist, origem }) {
   add(10, "Sem segredos, chaves, arquivos proibidos ou e-mails reais em dist/",
     !achados.chaves.length && !achados.arquivos_proibidos.length && !achados.emails.size,
     { chaves: achados.chaves, arquivos_proibidos: achados.arquivos_proibidos, emails: [...achados.emails].slice(0, 20) });
-  add(10, "Identificadores de projetos GCP presentes em dist/ (para a D04; não é falha)", true,
+  add(10, "Nenhum identificador mascarado pela D04 (projetos sem relação, conta de faturamento) em dist/",
+    !mascarados.length, { arquivos: mascarados.slice(0, 20) });
+  add(10, "Projetos GCP do projeto de dados presentes em dist/ (mantidos pela D04; não é falha)", true,
     { projetos: Object.fromEntries([...achados.projetos_gcp].map(([k, v]) => [k, [...v]])) });
 
   // 11. Cobertura da busca: todo termo do inventário é achado pelo título e por cada termo de busca.
