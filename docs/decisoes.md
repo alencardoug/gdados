@@ -425,7 +425,9 @@ própria sessão:
 2. limitar as versões guardadas pelo Firebase Hosting: hoje é ilimitado (`maxVersions` 999999 ou
    padrão) e há 38 versões no `linkedia`, 24 no `ia-lider` e 100 ou mais no `portfolio`
    [medido]. No Spark não há cobrança, mas as versões ocupam os 10 GB da cota. Proposta: guardar 5,
-   inclusive no `governadados`;
+   inclusive no `governadados`. Em 18/11/2026 o Owner reduziu para a versão no ar e uma anterior
+   (`maxVersions: 2`): voltar mais longe é regenerar pelo commit, desde que o build seja
+   reproduzível;
 3. nos projetos com Cloud Run, trocar a revisão manual por regras automáticas: política de limpeza
    no Artifact Registry (manter a imagem mais recente de cada serviço) e regra de ciclo de vida nos
    *buckets* `run-sources-*` (apagar fontes de deploy com mais de 7 dias). Uma conferência mensal
@@ -443,7 +445,7 @@ própria sessão:
   trocados e que o SHA-256 é o do original; o teste `mascara.test.mjs` e a verificação 10 da E3
   falham se algum chegar a `dist/`. Os nomes continuam no histórico e nos resultados da E3 deste
   repositório, como já estão no `mvp_eng_dados_2` público;
-- `governadados` guarda no máximo 5 versões (`maxVersions: 5`);
+- `governadados` guarda a versão no ar e uma anterior (`maxVersions: 2`);
 - os refinos dos outros projetos seguem pelos avisos na caixa de correio de cada um
   ([alinhamento](alinhamento_entre_projetos.md)).
 
