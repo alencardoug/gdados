@@ -388,6 +388,54 @@ dados, e o prefixo truncado de uma conta de faturamento ([relatório da E3](rela
 Antes de publicar, decidir entre publicar como está, retirar esses documentos da lista de cópia ou
 pedir à origem uma versão sanitizada.
 
+**Avaliação da E4.5 (18/11/2026), a pedido do Owner.** O portal não acrescenta esses identificadores:
+eles vêm de três textos copiados por commit (`registro_fase_gcp.md`, `capacidade_e_recuperacao.md`,
+`terraform.tfvars.example`). Um ID de projeto não dá acesso (o acesso é do IAM), e o
+`mvp_eng_dados_2` já é público no GitHub com esses mesmos textos. Mesmo assim, os três projetos sem
+relação e o prefixo da conta de faturamento não ensinam nada sobre o projeto de dados.
+**Recomendação:** no build, trocar só esses quatro por um marcador ("projeto não relacionado",
+"conta de faturamento"), com aviso na página, um teste que falha se algum aparecer em `dist/` e um
+pedido à origem para sanitizar na fonte; `mvp-ed1-gcp` e `mvp-ed1-estudo`, que são o próprio
+projeto de dados, ficam. **Aguarda o Owner.**
+
+**Repositório (18/11/2026, Owner):** "GH repo público se não houver vazamento de chaves e informações
+privadas minhas." Varredura de 18/11/2026 nos 254 arquivos versionados [medido]: nenhuma chave,
+token ou credencial; o `.gitignore` já cobre `.env`, chaves, contas de serviço e estado Terraform.
+Achados: os 33 commits têm como autor o e-mail pessoal do Owner (a origem pública já o expõe em 208
+commits); os documentos citam caminhos locais `/home/doug/...`; IDs de projeto trazem o nome do
+Owner, como os demais projetos dele. **Recomendação:** antes do primeiro *push*, reescrever o autor
+dos commits para o endereço `noreply` do GitHub (o repositório nunca foi enviado, então nada se
+perde fora daqui) e configurar esse endereço no gdados. **Aguarda o "pode fazer".**
+
+**Deploy (18/11/2026, Owner):** semelhante aos dos outros projetos, avisando oportunidades de
+refino. Há dois modelos nos projetos do Owner [lido]:
+
+- `portfolio`, `ia-lider`, `contos` e `corno`: o workflow gerado pela CLI do Firebase, com a **chave
+  JSON de uma conta de serviço guardada como segredo do GitHub** (credencial de longa duração) e
+  *actions* por *tag* móvel (`@v0`, `@v4`);
+- Linkedia (`linkedia-magazine-publish`): sem chave, por federação de identidade restrita ao
+  repositório, ao `main` e ao *push*; *actions* fixadas por SHA; o deploy publica o artefato do build
+  testado; teste de fumaça depois.
+
+**Proposta para o gdados:** o modelo do Linkedia, já previsto na E5, com `npm run build`, os testes
+do portal e a verificação da E3 antes do deploy. Refinos encontrados, a levar a cada projeto na sua
+própria sessão:
+
+1. migrar os quatro sites do primeiro modelo para a federação e apagar as chaves JSON;
+2. limitar as versões guardadas pelo Firebase Hosting: hoje é ilimitado (`maxVersions` 999999 ou
+   padrão) e há 38 versões no `linkedia`, 24 no `ia-lider` e 100 ou mais no `portfolio`
+   [medido]. No Spark não há cobrança, mas as versões ocupam os 10 GB da cota. Proposta: guardar 5,
+   inclusive no `governadados`;
+3. nos projetos com Cloud Run, trocar a revisão manual por regras automáticas: política de limpeza
+   no Artifact Registry (manter a imagem mais recente de cada serviço) e regra de ciclo de vida nos
+   *buckets* `run-sources-*` (apagar fontes de deploy com mais de 7 dias). Uma conferência mensal
+   confirma que as regras funcionam;
+4. Secret Manager: a alternativa gratuita segura é juntar os segredos de cada projeto em um só (um
+   JSON por projeto, 3 versões, dentro das 6 gratuitas), o que exige mudar o código dos três
+   aplicativos. Variável de ambiente comum é gratuita, mas deixa as chaves visíveis a quem lê a
+   configuração do serviço; não recomendada. A economia é de cerca de US$ 0,36 por mês [estimado].
+   O gdados não precisa de segredo nenhum.
+
 ## D05 — Relação com o portal da etapa 2.7 do `bi-como-codigo`
 
 **Estado:** decidida pelo Owner em 14/11/2026 (Q12).
