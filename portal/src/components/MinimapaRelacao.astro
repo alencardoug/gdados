@@ -1,52 +1,69 @@
 ---
 import Conceito from "./Conceito.astro";
-import MapaCamadas from "./MapaCamadas.astro";
+import Identificador from "./Identificador.astro";
+import { neighborLayers, otherFunction } from "../lib/fluxo-de-camadas.mjs";
 import { relacaoPorId, rotaDaRelacao, rota } from "../lib/portal.mjs";
 const { relation: x } = Astro.props;
+const layerOf = (id) => relacaoPorId.get(id)?.camada;
+const catalog = (layer) => rota(`governanca/?camada=${encodeURIComponent(layer)}#catalogo`);
 const groups = [
-  { label: "Fornecem valores", direction: "inputs", items: x.entradas.map(({ source, n }) => ({ id: source, n })) },
-  { label: "Recebem valores", direction: "outputs", items: x.saidas.map(({ target, n }) => ({ id: target, n })) },
+  { direction: "inputs", label: "Fornecem valores", layers: neighborLayers(x.entradas, "source", layerOf) },
+  { direction: "outputs", label: "Recebem valores", layers: neighborLayers(x.saidas, "target", layerOf) },
 ];
-const visibleLimit = 3;
 ---
 <section aria-labelledby="linhagem">
   <h2 id="linhagem">Onde esta relação entra no fluxo</h2>
-  <MapaCamadas currentLayer={x.camada} />
-  <h3><Conceito id="linhagem">Linhagem</Conceito> imediata</h3>
-  <p>Uma seta acompanha valores de colunas de uma relação para outra. Junções e filtros também podem participar da transformação sem aparecer aqui.</p>
+  <p>As setas seguem a <Conceito id="linhagem">linhagem</Conceito> imediata dos valores. Junções e filtros podem participar da transformação sem aparecer aqui.</p>
   <div class="relation-flow">
-    {groups.map((g) => <Fragment>
-      {g.direction === "outputs" && <div class="current-relation">
-        <span>Relação em foco</span><strong><code>{x.id}</code></strong>
-      </div>}
-      <div class:list={["neighbors", g.direction, { connected: g.items.length > 0 }]}>
-        <h4>{g.label} <span>({g.items.length})</span></h4>
-        {!g.items.length && <p>Nenhum {g.direction === "inputs" ? "insumo" : "consumidor"} na linhagem exportada.</p>}
-        {[g.items.slice(0, visibleLimit), g.items.slice(visibleLimit)].map((items, i) => {
-          const Group = i === 0 ? "div" : "details";
-          return items.length > 0 && <Group>
-            {i > 0 && <summary>Ver mais {items.length}</summary>}
-            <ul role="list">{items.map(({ id }) => <li>{relacaoPorId.has(id)
-              ? <a href={rotaDaRelacao(id)}><code>{id}</code></a> : <code>{id}</code>}</li>)}</ul>
-          </Group>;
-        })}
-      </div>
-    </Fragment>)}
+    {groups.map(({ direction, label, layers }) => {
+      let visible = 3;
+      return <Fragment>
+        {direction === "outputs" && <div class="current-relation">
+          <strong>Você está aqui</strong>
+          {otherFunction(x.camada) && <small>Outras funções</small>}
+          <a href={catalog(x.camada)} aria-current="location"><Identificador value={x.camada} /></a>
+          <div><Identificador value={x.id} /></div>
+        </div>}
+        <div class:list={["neighbors", direction, { connected: layers.length > 0 }]}>
+          {layers.length ? <>
+            <h3>{label}</h3>
+            {layers.map(({ layer, items }) => {
+              const first = items.slice(0, visible);
+              visible -= first.length;
+              const rest = items.slice(first.length);
+              const verb = direction === "inputs" ? (items.length === 1 ? "fornece" : "fornecem") : (items.length === 1 ? "recebe" : "recebem");
+              return <div class="neighbor-layer" data-direction={direction} data-layer={layer ?? ""}>
+                {otherFunction(layer) && <small>Outras funções</small>}
+                <div class="neighbor-stop">{layer == null ? "Camada não informada" : <a href={catalog(layer)}><Identificador value={layer} /></a>} · <b>{items.length} {verb}</b></div>
+                {[first, rest].map((batch, i) => {
+                  const Group = i === 0 ? "div" : "details";
+                  return batch.length > 0 && <Group>
+                    {i > 0 && <summary>Ver mais {batch.length}</summary>}
+                    <ul role="list">{batch.map(({ id }) => <li>{relacaoPorId.has(id)
+                      ? <a href={rotaDaRelacao(id)}><Identificador value={id} /></a> : <Identificador value={id} />}</li>)}</ul>
+                  </Group>;
+                })}
+              </div>;
+            })}
+          </> : <p>{direction === "inputs" ? "Nenhum insumo" : "Nenhum consumidor"} na linhagem exportada.</p>}
+        </div>
+      </Fragment>;
+    })}
   </div>
   <details class="lineage-table">
     <summary>Ler em tabela, com o número de ligações entre colunas</summary>
     <div class="rolagem"><table>
       <thead><tr><th scope="col">Sentido</th><th scope="col">Relação</th><th scope="col">Ligações entre colunas</th></tr></thead>
       <tbody>
-        {groups.map((g) => g.items.map(({ id, n }) => <tr>
+        {groups.map((g) => g.layers.flatMap(({ items }) => items.map(({ id, n }) => <tr>
           <td>{g.direction === "inputs" ? "Insumo" : "Consumidor"}</td>
-          <td>{relacaoPorId.has(id) ? <a href={rotaDaRelacao(id)}><code>{id}</code></a> : <code>{id}</code>}</td>
+          <td>{relacaoPorId.has(id) ? <a href={rotaDaRelacao(id)}><Identificador value={id} /></a> : <Identificador value={id} />}</td>
           <td>{n}</td>
-        </tr>))}
+        </tr>)))}
         {!x.entradas.length && !x.saidas.length && <tr><td colspan="3">Nenhuma ligação na linhagem exportada.</td></tr>}
       </tbody>
     </table></div>
   </details>
   {x.r.resource_type === "source" && <p class="suave">Esta relação é uma entrada do dbt. As <a href={rota("estrutura/#travessias")}>travessias</a> mostram como os dados chegam ao armazém.</p>}
-  <p><a href={rota(`governanca/linhagem/?r=${x.id}`)}>Abrir grafo por relação</a> · <a href={rota(`governanca/linhagem/?modo=coluna&r=${x.id}`)}>Seguir o valor de uma coluna</a></p>
+  <p><a href={rota("#mapa")}>Ver o fluxo entre todas as camadas</a> · <a href={rota(`governanca/linhagem/?r=${x.id}`)}>Abrir grafo por relação</a> · <a href={rota(`governanca/linhagem/?modo=coluna&r=${x.id}`)}>Seguir o valor de uma coluna</a></p>
 </section>

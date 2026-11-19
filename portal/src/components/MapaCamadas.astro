@@ -1,53 +1,50 @@
 ---
-import { relationsByLayer, rota } from "../lib/portal.mjs";
-interface Props { currentLayer?: string }
-const { currentLayer } = Astro.props;
-// Funções editoriais a partir da Arquitetura §2. A ordem organiza a leitura por função.
-const stages = [
-  { role: "Entrada", layers: ["raw", "raw_legacy"] },
-  { role: "Preparo", layers: ["staging"] },
-  { role: "Validação", layers: ["trusted"] },
-  { role: "Análise", layers: ["analytics"] },
-  { role: "Consumo", layers: ["consumption"] },
-];
-const otherRoles = [
-  { role: "Rejeitados", layers: ["quarantine"] },
-  { role: "Histórico", layers: ["snapshots"] },
-  { role: "Auditoria", layers: ["governance"] },
-];
-const descriptions: Record<string, string> = {
-  raw: "Cópia da origem principal", raw_legacy: "Capturas do legado",
-  staging: "Padroniza tipos e valores", trusted: "Aplica regras de negócio",
-  analytics: "Organiza fatos e dimensões", consumption: "Entrega views de leitura",
-  quarantine: "Guarda rejeições e motivos", snapshots: "Preserva versões das dimensões",
-  governance: "Registra execuções e controles",
-};
-const known = new Set([...stages, ...otherRoles].flatMap((g) => g.layers));
-const otherLayers = [...relationsByLayer.keys()].filter((c) => !known.has(c));
-if (otherLayers.length) otherRoles.push({ role: "Outras camadas do pacote", layers: otherLayers });
-const lanes = [
-  { label: "Da entrada ao consumo", groups: stages },
-  { label: "Outras funções", groups: otherRoles },
+import EstacaoCamada from "./EstacaoCamada.astro";
+import Identificador from "./Identificador.astro";
+import { arestasDeRelacoes, relacaoPorId, relationsByLayer } from "../lib/portal.mjs";
+import { layerFlows, planLayerMap } from "../lib/fluxo-de-camadas.mjs";
+const flows = layerFlows(arestasDeRelacoes, (id) => relacaoPorId.get(id)?.camada);
+const { stations, detached, extra } = planLayerMap([...relationsByLayer.keys()], flows);
+const extraGroups = [
+  { title: "Outros fluxos diretos", edges: extra.filter((f) => f.source !== f.target) },
+  { title: "Entre relações da mesma camada", edges: extra.filter((f) => f.source === f.target) },
 ];
 ---
-<div class:list={["layer-map", { compact: currentLayer }]}>
-  {lanes.map(({ label, groups }) => {
-    const present = groups.filter((g) => g.layers.some((c) => relationsByLayer.has(c)));
-    return present.length > 0 && <div class="layer-band">
-      <p class="band-name">{label}</p>
-      <ul aria-label={label} class="stops" role="list">
-        {present.map((g) => <li>
-          <span class="layer-role">{g.role}</span>
-          {g.layers.filter((c) => relationsByLayer.has(c)).map((c) => {
-            const n = relationsByLayer.get(c).length;
-            return <a href={rota(`governanca/?camada=${encodeURIComponent(c)}#catalogo`)} aria-current={currentLayer === c ? "location" : undefined}>
-              <code>{c}</code>
-              {currentLayer === c && <strong class="current-label">Você está aqui</strong>}
-              {!currentLayer && <>{descriptions[c] && <span class="layer-description">{descriptions[c]}</span>}<span class="layer-count">{n} {n === 1 ? "relação" : "relações"}</span></>}
-            </a>;
-          })}
-        </li>)}
-      </ul>
-    </div>;
-  })}
+<div class="layer-map">
+  <div class="flow-spine">
+    {stations.map(({ layer, next, branches }, i) => <Fragment>
+      <div class="spine-stop">
+        <EstacaoCamada {layer} {flows} />
+        {branches.length > 0 && <ul class="flow-branches" role="list" aria-label={`Ramais de ${layer}`}>
+          {branches.map(({ layer: branch, edge }) => <li>
+            <span class:list={["branch-edge", { incoming: edge.target === layer }]} data-from={edge.source} data-to={edge.target}>
+              <span class="sr-only">{edge.source} para {edge.target}, </span><b>{edge.pairs}</b><span class="sr-only"> pares de relações</span>
+            </span>
+            <EstacaoCamada layer={branch} {flows} />
+          </li>)}
+        </ul>}
+      </div>
+      {next ? <div class="spine-edge" data-from={next.source} data-to={next.target}>
+        <span class="sr-only">{next.source} para {next.target}, </span><b>{next.pairs}</b><span class="sr-only"> pares de relações</span>
+      </div> : i < stations.length - 1 && <p class="flow-gap">A linhagem não informa ligação direta de {layer} para {stations[i + 1].layer}.</p>}
+    </Fragment>)}
+  </div>
+  {detached.length > 0 && <div class="detached-stations">
+    <p>Camadas sem ligação direta com a linha principal na linhagem exportada</p>
+    {detached.map((layer) => <EstacaoCamada {layer} {flows} />)}
+  </div>}
+  {extraGroups.filter((g) => g.edges.length).map(({ title, edges }) => <div class="extra-flows">
+    <h3>{title}</h3>
+    <ul role="list">{edges.map((f) => <li data-from={f.source} data-to={f.target}>
+      <Identificador value={f.source} /> <span aria-label="para">→</span> <Identificador value={f.target} /> <b>{f.pairs}</b>
+    </li>)}</ul>
+  </div>)}
 </div>
+<details class="lineage-table"><summary>Ler todos os fluxos em tabela</summary>
+  <div class="rolagem"><table>
+    <thead><tr><th scope="col">Camada que fornece</th><th scope="col">Camada que recebe</th><th scope="col">Pares de relações</th></tr></thead>
+    <tbody>{flows.map(({ source, target, pairs }) => <tr>
+      <td><Identificador value={source} /></td><td><Identificador value={target} /></td><td>{pairs}</td>
+    </tr>)}</tbody>
+  </table></div>
+</details>

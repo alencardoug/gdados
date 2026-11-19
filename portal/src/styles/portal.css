@@ -158,33 +158,46 @@ footer.procedencia p { margin: 0.25rem 0; }
 .bloco > .rotulo code, .bloco > .rotulo a { text-transform: none; letter-spacing: 0; }
 .legenda .amostra.losango { background: #475569; border-radius: 0; transform: rotate(45deg) scale(0.8); }
 
-/* Orientação por função. O trilho une as etapas de leitura e cada estação abre o catálogo. */
-.layer-map { border: 1px solid var(--borda); background: var(--superficie); border-radius: 0.65rem; }
-.layer-band { padding: 1rem 1.25rem; }
-.layer-band + .layer-band { border-top: 1px solid var(--borda); }
-.band-name, .layer-role { font-weight: 650; }
-.band-name { margin: 0 0 0.85rem; }
-.stops { list-style: none; display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; padding: 0; margin: 0; }
-.stops > li { min-width: 0; }
-.stops a { display: block; width: fit-content; max-width: 100%; padding: 0.2rem 0.5rem; border-radius: 0.3rem; text-decoration: none; }
-.stops a code { background: transparent; padding: 0; font-weight: 650; text-decoration: underline; text-underline-offset: 0.16em; }
-.stops a:hover, .stops a[aria-current] { background: var(--track-surface); }
-.stops a[aria-current] { box-shadow: inset 0 0 0 2px var(--track); }
-.stops a + a { margin-top: 0.3rem; }
-.layer-role, .layer-description, .layer-count, .current-label { display: block; font-size: 0.85rem; }
-.layer-role { color: var(--track); padding-inline: 0.5rem; margin-bottom: 0.2rem; }
-.layer-description { color: var(--texto); }
-.layer-count { color: var(--suave); font-variant-numeric: tabular-nums; }
-.current-label { color: var(--track); font-size: 0.75rem; }
-.layer-band:first-child .layer-role { position: relative; padding-top: 1rem; }
-.layer-band:first-child .layer-role::before { content: ""; position: absolute; left: 0.5rem; top: 0.3rem; width: 100%; border-top: 2px solid var(--track); }
-.layer-band:first-child li:last-child .layer-role::before { display: none; }
-.layer-band:first-child .layer-role::after { content: ""; position: absolute; left: 0.5rem; top: 0; width: 0.55rem; height: 0.55rem; border: 2px solid var(--track); border-radius: 50%; background: var(--superficie); }
-
-.compact .layer-band { padding-block: 0.65rem; }
-.compact .band-name { font-size: 0.85rem; margin-bottom: 0.5rem; }
-.compact .layer-role { font-size: 0.75rem; }
-.compact .stops a { line-height: 1.3; }
+/* Fluxo entre camadas. Cada traço do mapa corresponde a um par de camadas na linhagem. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+code.identifier { white-space: normal; overflow-wrap: normal; word-break: normal; hyphens: none; }
+.identifier > span { white-space: nowrap; }
+.layer-map { border-block: 1px solid var(--borda); padding-block: 1rem; }
+.flow-spine { max-width: 52rem; }
+.spine-stop, .spine-edge { --station-width: 40%; }
+.spine-stop { display: grid; grid-template-columns: minmax(0, var(--station-width)) minmax(0, 1fr); }
+.layer-station { display: flex; flex-direction: column; justify-content: center; padding: 0.5rem 0.8rem; border: 1px solid var(--borda); border-inline-start: 3px solid var(--track); border-radius: 0.35rem; background: var(--superficie); }
+.layer-station a { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.7rem; font-weight: 700; text-decoration: none; }
+.layer-station code { padding: 0; background: none; text-decoration: underline; text-underline-offset: 0.15em; }
+.layer-station > span, .layer-station small, .layer-count { font-size: 0.82rem; line-height: 1.35; }
+.layer-count, .layer-station small { color: var(--suave); font-weight: 400; }
+.flow-spine ul, .extra-flows ul { list-style: none; padding: 0; margin: 0; }
+.flow-branches { --fork: 1rem; align-self: center; position: relative; }
+.flow-branches::before { content: ""; position: absolute; top: 50%; width: var(--fork); border-top: 2px solid var(--track); }
+.flow-branches li { position: relative; display: grid; grid-template-columns: clamp(2.6rem, 8vw, 5rem) minmax(0, 1fr); align-items: center; padding: 0.16rem 0 0.16rem var(--fork); }
+.flow-branches li::before { content: ""; position: absolute; left: var(--fork); inset-block: 0; border-left: 2px solid var(--track); }
+.flow-branches li:first-child::before { top: 50%; }
+.flow-branches li:last-child::before { bottom: 50%; }
+.branch-edge, .spine-edge { position: relative; display: grid; place-items: center; color: var(--track); }
+.branch-edge::before { content: ""; position: absolute; inset-inline: 0; border-top: 2px solid var(--track); }
+.branch-edge b, .spine-edge b, .extra-flows b { position: relative; background: var(--track-surface); color: var(--track); border-radius: 1rem; padding: 0 0.3em; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.branch-edge::after, .spine-edge::after { content: ""; position: absolute; width: 0.38rem; height: 0.38rem; border: solid var(--track); border-width: 2px 2px 0 0; }
+.branch-edge::after { right: 2px; transform: rotate(45deg); }
+.branch-edge.incoming::after { left: 2px; right: auto; transform: rotate(-135deg); }
+.spine-edge { width: var(--station-width); height: 2.3rem; }
+.spine-edge::before { content: ""; position: absolute; inset-block: 0; border-left: 2px solid var(--track); }
+.spine-edge::after { bottom: 2px; transform: rotate(135deg); }
+.flow-gap, .detached-stations p { font-size: 0.85rem; color: var(--suave); }
+.extra-flows, .detached-stations { margin-top: 1rem; }
+.extra-flows h3 { margin: 0 0 0.3rem; font-size: 0.9rem; }
+.extra-flows ul { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.extra-flows li { padding: 0.15rem 0.45rem; border: 1px solid var(--borda); border-radius: 0.3rem; font-size: 0.9rem; }
+.extra-flows code { background: none; padding: 0; }
+@media (max-width: 36rem) {
+  .spine-stop, .spine-edge { --station-width: 41%; }
+  .flow-branches { --fork: 0.4rem; }
+  .layer-station { padding: 0.45rem; }
+}
 
 /* A ficha mantém os termos ligados às explicações e os valores declarados juntos. */
 .identity-card { margin-top: 1rem; border: 1px solid var(--borda); border-top: 0.25rem solid var(--track); border-radius: 0.6rem; background: var(--superficie); }
@@ -209,15 +222,16 @@ footer.procedencia p { margin: 0.25rem 0; }
 .composition code, .relation-flow code { background: transparent; padding: 0; }
 .relation-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; padding-block: 0.6rem; border-bottom: 1px solid var(--borda); }
 .relation-nav a { padding-block: 0.25rem; }
-.relation-flow { --arrow-space: 2.25rem; display: grid; grid-template-columns: 1fr 0.85fr 1fr; align-items: center; gap: var(--arrow-space); }
-.relation-flow > div { border: 1px solid var(--borda); border-radius: 0.5rem; padding: 0.85rem 1rem; min-width: 0; overflow-wrap: anywhere; }
-.current-relation { background: var(--track-surface); text-align: center; }
-.current-relation span { display: block; color: var(--track); font-size: 0.85rem; }
-.neighbors { position: relative; background: var(--superficie); }
-.neighbors h4, .neighbors p { margin: 0; }
-.neighbors h4 span, .neighbors p { color: var(--suave); }
-.neighbors li, .neighbors summary { margin-top: 0.3rem; }
-.neighbors.connected::after { content: "→" / ""; position: absolute; top: 50%; transform: translateY(-50%); width: var(--arrow-space); text-align: center; font-size: 1.4rem; color: var(--track); }
+.relation-flow { --arrow-space: 1.8rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1fr); align-items: center; gap: var(--arrow-space); background: var(--superficie); padding: 0.65rem; border-block: 1px solid var(--borda); }
+.current-relation { text-align: center; padding: 0.55rem; border: 2px solid var(--track); border-radius: 0.4rem; background: var(--track-surface); }
+.current-relation > strong, .relation-flow small { display: block; color: var(--track); font-size: 0.78rem; }
+.current-relation > div { margin-top: 0.2rem; font-weight: 650; }
+.neighbors { position: relative; min-width: 0; }
+.neighbors h3, .neighbors p { margin: 0; color: var(--suave); font-size: 0.85rem; }
+.neighbor-layer { padding-inline-start: 0.55rem; border-inline-start: 2px solid var(--track); margin-block-start: 0.3rem; }
+.neighbor-stop { color: var(--track); font-size: 0.9rem; }
+.neighbor-layer li, .neighbor-layer summary { font-size: 0.9rem; line-height: 1.4; }
+.neighbors.connected::after { content: "⟶" / ""; position: absolute; top: 50%; transform: translateY(-50%); width: var(--arrow-space); text-align: center; font-size: 1.55rem; line-height: 1; color: var(--track); }
 .inputs::after { left: 100%; }
 .outputs::after { right: 100%; }
 .lineage-table { margin-block: 1rem; }
@@ -244,16 +258,9 @@ table.amostra { border-collapse: separate; border-spacing: 0; }
 @media (max-width: 48rem) {
   .identity-card h1 { font-size: clamp(1.2rem, 5vw, 1.6rem); }
   .identity-card dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .identity-card dl > div, .identity-card h1, .layer-band { padding-inline: 0.8rem; }
-  .stops { grid-auto-flow: row; gap: 0.6rem; }
-  .stops > li { display: grid; grid-template-columns: minmax(5rem, 30%) minmax(0, 1fr); padding-left: 0.75rem; align-content: start; position: relative; }
-  .stops a { grid-column: 2; }
-  .layer-band:first-child .layer-role { position: static; padding-top: 0.2rem; }
-  .layer-band:first-child .layer-role::before { left: 0.25rem; top: 0.75rem; width: 0; height: calc(100% + 0.6rem); border-top: none; border-left: 2px solid var(--track); }
-  .layer-band:first-child .layer-role::after { left: 0; top: 0.55rem; }
-  .compact .stops { gap: 0.35rem; }
-  .compact .layer-band:first-child .layer-role::before { height: calc(100% + 0.35rem); }
-  .relation-flow { grid-template-columns: minmax(0, 1fr); gap: var(--arrow-space); }
+  .identity-card dl > div, .identity-card h1 { padding-inline: 0.8rem; }
+  .relation-flow { --arrow-space: 1.35rem; grid-template-columns: minmax(0, 1fr); }
+  .neighbors p { text-align: center; }
   .neighbors.connected::after { content: "↓" / ""; left: 50%; right: auto; transform: translateX(-50%); height: var(--arrow-space); line-height: var(--arrow-space); }
   .inputs.connected::after { top: 100%; }
   .outputs.connected::after { top: auto; bottom: 100%; }

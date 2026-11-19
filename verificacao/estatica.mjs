@@ -10,7 +10,8 @@ import { mascarar } from "../portal/src/lib/mascara.mjs";
 const lerJson = (c) => JSON.parse(readFileSync(c, "utf8"));
 const html = (dist, rota) => readFileSync(join(dist, rota.replace(/^\//, ""), "index.html"), "utf8");
 const textoDe = (h) =>
-  h.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " ")
+  h.replace(/<code class="identifier">([\s\S]*?)<\/code>/g, (_, name) => `<code>${name.replace(/<[^>]+>/g, "")}</code>`)
+    .replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, " ");
 const relacaoDaColuna = (c) => c.split(".").slice(0, 2).join(".");
 
@@ -102,14 +103,32 @@ export function verificarEstatica({ dist, origem }) {
   // Orientação: confere o que o leitor recebe, inclusive a direção e o destino de cada link.
   const layers = Object.groupBy(Object.values(R), (r) => r.schema);
   const homeHtml = html(dist, "/");
-  const stations = [...homeHtml.matchAll(/<a href="[^"]*\?camada=([^"#]+)#catalogo">([\s\S]*?)<\/a>/g)]
-    .map(([, layer, body]) => [decodeURIComponent(layer), textoDe(body).trim(), Number(body.match(/class="layer-count">(\d+)/)?.[1])]);
+  const stations = [...homeHtml.matchAll(/<div class="layer-station"><a href="[^"]*\?camada=([^"#]+)#catalogo">([\s\S]*?)<\/a>([\s\S]*?)<\/div>/g)]
+    .map(([, layer, body, tail]) => [decodeURIComponent(layer), textoDe(body).trim(), Number(body.match(/class="layer-count">(\d+)/)?.[1]), textoDe(tail)]);
   const mapMatches = stations.length === Object.keys(layers).length && Object.entries(layers).every(([c, xs]) =>
     stations.some(([target, text, n]) => target === c && text.startsWith(c + " ") && n === xs.length));
   add(6, "Cada camada abre seu catálogo e mostra o número de relações do pacote", mapMatches,
     { camadas: stations.length, relacoes: Object.keys(R).length });
 
-  const mapErrors = [], barErrors = [], orderErrors = [];
+  const expectedFlows = new Map();
+  for (const edge of esperado.keys()) {
+    const [source, target] = edge.split("→").map((id) => R[id].schema);
+    const pair = `${source}→${target}`;
+    expectedFlows.set(pair, (expectedFlows.get(pair) ?? 0) + 1);
+  }
+  const drawn = [...homeHtml.matchAll(/data-from="([^"]+)" data-to="([^"]+)">[\s\S]*?<b>(\d+)<\/b>/g)]
+    .map(([, source, target, n]) => [`${source}→${target}`, Number(n)]);
+  const flowTable = homeHtml.match(/Ler todos os fluxos em tabela<\/summary>([\s\S]*?)<\/table>/)?.[1] ?? "";
+  const tabulated = [...flowTable.matchAll(/<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>(\d+)<\/td><\/tr>/gs)]
+    .map(([, source, target, n]) => [`${textoDe(source).trim()}→${textoDe(target).trim()}`, Number(n)]);
+  const sameFlows = (pairs) => pairs.length === expectedFlows.size && isDeepStrictEqual(new Map(pairs), expectedFlows);
+  const missingIncoming = stations.filter(([layer, , , body]) =>
+    body.includes("não informa entrada de outra camada") !==
+      ![...expectedFlows.keys()].some((key) => key.endsWith("→" + layer) && key !== `${layer}→${layer}`));
+  add(2, "Traços, ramais, saltos e tabela contam os pares dirigidos entre as camadas", sameFlows(drawn) && sameFlows(tabulated) && !missingIncoming.length,
+    { fluxos: expectedFlows.size, pares: esperado.size, ausencias_divergentes: missingIncoming.map(([layer]) => layer) });
+
+  const mapErrors = [], barErrors = [], orderErrors = [], neighborLayerErrors = [];
   const samples = lerJson(join(origem, "amostras_de_registros.json")).relations;
   for (const [id, r] of Object.entries(R)) {
     const page = html(dist, `/governanca/relacao/${id}/`);
@@ -123,12 +142,30 @@ export function verificarEstatica({ dist, origem }) {
     }
     const flow = orientation.split('class="lineage-table"')[0];
     const [before, after = ""] = flow.split('class="current-relation"');
-    const neighbors = (fragment) => [...fragment.matchAll(/href="[^"]*\/relacao\/([^"/]+)\/"><code>([^<]+)<\/code>/g)]
-      .map(([, href, name]) => href === name ? href : `${name} → ${href}`).sort();
+    const neighbors = (fragment) => [...fragment.matchAll(/href="[^"]*\/relacao\/([^"/]+)\/"><code class="identifier">([\s\S]*?)<\/code>/g)]
+      .map(([, href, body]) => {
+        const name = body.replace(/<[^>]+>/g, "");
+        return href === name ? href : `${name} → ${href}`;
+      }).sort();
     const tableRows = [...orientation.matchAll(/<tr><td>(Insumo|Consumidor)<\/td>([\s\S]*?)<\/tr>/g)]
       .map(([row]) => textoDe(row).trim()).sort();
     if (!isDeepStrictEqual(currentLayers, [r.schema]) || !isDeepStrictEqual(neighbors(before), inputs.sort()) ||
         !isDeepStrictEqual(neighbors(after), outputs.sort()) || !isDeepStrictEqual(tableRows, rows.sort())) mapErrors.push(id);
+
+    const expectedStops = [];
+    for (const [direction, ids] of [["inputs", inputs], ["outputs", outputs]]) {
+      for (const [layer, group] of Object.entries(Object.groupBy(ids, (i) => R[i].schema))) {
+        const verbs = direction === "inputs" ? ["fornece", "fornecem"] : ["recebe", "recebem"];
+        expectedStops.push(`${direction} ${layer} ${group.length} ${verbs[group.length === 1 ? 0 : 1]}`);
+      }
+    }
+    const stops = [...flow.matchAll(/class="neighbor-layer" data-direction="([^"]+)" data-layer="([^"]+)">[\s\S]*?<b>(\d+ \w+)<\/b>/g)]
+      .map(([, direction, layer, count]) => `${direction} ${layer} ${count}`);
+    const ordinaryLayers = ["raw", "raw_legacy", "staging", "trusted", "analytics", "consumption"];
+    const other = [id, ...inputs, ...outputs].some((i) => !ordinaryLayers.includes(R[i].schema));
+    if (!isDeepStrictEqual(stops.sort(), expectedStops.sort()) || flow.includes("Outras funções") !== other ||
+        flow.includes("inputs connected") !== Boolean(inputs.length) ||
+        flow.includes("outputs connected") !== Boolean(outputs.length)) neighborLayerErrors.push(id);
 
     const classes = Object.groupBy(Object.values(r.columns), (c) => c.sensitivity ?? "ausente");
     const expectedCounts = Object.fromEntries(Object.entries(classes).map(([c, xs]) => [c, xs.length]));
@@ -149,6 +186,8 @@ export function verificarEstatica({ dist, origem }) {
   }
   add(2, "Minimapas e tabelas reproduzem a camada e os vizinhos imediatos de cada relação", mapErrors.length === 0,
     { relacoes: Object.keys(R).length, arestas: esperado.size, divergentes: mapErrors });
+  add(2, "Faixas das fichas só acendem os sentidos com vizinhos e contam cada camada", !neighborLayerErrors.length,
+    { relacoes: Object.keys(R).length, divergentes: neighborLayerErrors });
   add(6, "Barras e legendas reproduzem a classificação de cada conjunto de colunas", barErrors.length === 0,
     { relacoes: Object.keys(R).length, divergentes: barErrors });
   add(6, "Ordem de exportação da amostra e chave primária têm rótulos fiéis", orderErrors.length === 0,

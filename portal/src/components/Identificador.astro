@@ -1,0 +1,5 @@
+---
+interface Props { value: string }
+const parts = Astro.props.value.split(/(?<=[._])(?=.)/u);
+---
+<code class="identifier">{parts.map((part, i) => <>{i > 0 && <wbr />}<span>{part}</span></>)}</code>
