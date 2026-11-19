@@ -1,29 +1,29 @@
 {
   "repository": "mvp_eng_dados_2",
-  "ref": "v2.1.0",
-  "commit": "eb117098e2b73370cf8ce027da1ffefa6acf01a7",
-  "commit_date": "2026-11-17T03:42:55-03:00",
-  "copied_at": "2026-11-17T19:26:50+00:00",
+  "ref": "v2.2.0",
+  "commit": "f5a517355336ed2b039bd43642bdb4ec07bc7a31",
+  "commit_date": "2026-11-18T20:37:19-03:00",
+  "copied_at": "2026-11-19T00:37:51+00:00",
   "decision": "D03 em docs/decisoes.md",
   "list": "scripts/arquivos_da_origem.txt",
   "files": [
     {
       "path": "pacote_de_metadados.json",
       "source_path": "docs/pacote_de_metadados.json",
-      "sha256": "5fe93e964fe007e3748f850ff6a5a21b3d9f534a1cc37a0cad019c5a10184a7e",
-      "bytes": 5303811
+      "sha256": "d450b35bcf6654cdbbd82d488828044735bac5dde29ff8ce51da468490c103b1",
+      "bytes": 5467819
     },
     {
       "path": "pacote_de_metadados.schema.json",
       "source_path": "docs/pacote_de_metadados.schema.json",
-      "sha256": "34c13dfef9a51fcbb92dede3c9260df95ba25cee7ba9801d809576283d7c4cd9",
-      "bytes": 51162
+      "sha256": "ccbea528be9c80e93c40df7d04b1aa3ad8c9c5c6390c0c9890c20926347632d1",
+      "bytes": 54989
     },
     {
       "path": "pacote_de_metadados.exemplo.json",
       "source_path": "docs/pacote_de_metadados.exemplo.json",
-      "sha256": "0b70bf3808f7066294e0b5d7cd8d016c5f0cf366885808293479ad36af92b3f8",
-      "bytes": 21986
+      "sha256": "6c8643c30c1de67b1610e60da68c197ac5924bda416709feaaea1ddbb1a8af60",
+      "bytes": 23738
     },
     {
       "path": "arquivos/airbyte/streams.yml",
@@ -68,6 +68,12 @@
       "bytes": 3856
     },
     {
+      "path": "arquivos/docs/adr/0056-chaves-declaradas-em-analytics.md",
+      "source_path": "docs/adr/0056-chaves-declaradas-em-analytics.md",
+      "sha256": "6abd40d96f09a054958cbc84efb6b47ff99569ababc5a5a7205a8a2f4cfd1c89",
+      "bytes": 11563
+    },
+    {
       "path": "arquivos/docs/arquitetura.md",
       "source_path": "docs/arquitetura.md",
       "sha256": "7f9a52dbd11a1db84211d90ce74fb7243d0f3024329a3831f2abce3d191429fd",
@@ -76,13 +82,13 @@
     {
       "path": "arquivos/docs/capacidade_e_recuperacao.md",
       "source_path": "docs/capacidade_e_recuperacao.md",
-      "sha256": "f763957c71bcf72937975c313d18d155882bdd7be342b421e95f5701f61e18e2",
-      "bytes": 51929
+      "sha256": "58be7b9d3094bce37e64f5929b1d3c1679b8c18269022416eb77f2a52e9e7ff0",
+      "bytes": 52162
     },
     {
       "path": "arquivos/docs/dicionario_de_dados.md",
       "source_path": "docs/dicionario_de_dados.md",
-      "sha256": "a21b131d3cb0dfebfb61859bb1a1536b4c61547dc8d04778b5710fb4621ac051",
+      "sha256": "84981d55e905fcf8cac977a6dc20158b92a89ad5f0e5fdf4f41fe9a57f927121",
       "bytes": 82365
     },
     {
@@ -220,8 +226,8 @@
     {
       "path": "arquivos/docs/pendencias.md",
       "source_path": "docs/pendencias.md",
-      "sha256": "d540dbc54bd2cc6321fc07beaa84cbbc0e4db4611f98f230e8336ff3cd12f312",
-      "bytes": 98606
+      "sha256": "a36abf457bda04027e398773b931a1ffe289ad85bd9d9568a980d90c99f618f2",
+      "bytes": 102098
     },
     {
       "path": "arquivos/docs/registro_fase_gcp.md",
