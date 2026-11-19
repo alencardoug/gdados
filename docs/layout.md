@@ -184,3 +184,38 @@ abrir ideias novas. A rodada 3 abre "da pergunta à origem" (ideia 2), que pode 
 para acender as estações percorridas por uma pergunta, e o esquema estrela (ideia 6).
 
 Decisão do Owner: (pendente)
+
+### Rodada 2 — A orientação vira fluxo · 19/11/2026
+
+**Construção do Codex.** A inicial responde “entre quais camadas passam valores?” e a ficha
+responde “quem fornece valores a esta relação e quem os recebe?”. Os dois mapas são HTML e CSS
+gerados no build do Astro. A rodada usa o pacote `v2.3.0` da origem, commit `2bceb47`.
+
+| Ponto | O que o leitor encontra | Artefato e leitura em texto |
+|---|---|---|
+| Minimapa da ficha | Uma só faixa reúne “Você está aqui”, os trechos ativos e os nomes dos vizinhos agrupados por camada e sentido. Em `raw_legacy.support_agents`, uma relação de `staging` e duas de `trusted` recebem valores. “Outras funções” acompanha apenas as camadas desse grupo que participam da ficha. | Vizinhos imediatos de `lineage.relations.*.columns.*.leaves`, agrupados pelo `schema` de cada relação. A lista nomeia os vizinhos e a tabela detalha o número de ligações entre colunas de cada par. |
+| Mapa da inicial | Cada seta traz a contagem de pares dirigidos de relações. O legado entrega a `staging` e diretamente a `trusted`. De `trusted` saem ramais para `quarantine` e `snapshots`. A linhagem mostra saídas de `governance` para `staging` e `trusted` e deixa sua entrada sem informação. | As mesmas folhas e o mesmo `schema` sustentam o mapa e a tabela completa. Cada par fornecedor–consumidor conta uma vez, qualquer que seja o número de colunas envolvidas. Saltos, retornos e pares internos aparecem com origem, destino e contagem ao lado da linha principal. |
+| Avisos de ausência | O cabeçalho reúne o que vale para a tabela inteira, como tipo ausente ou “cada coluna é origem”. Uma ausência parcial continua na linha correspondente. O mesmo critério reúne referências ou resultados inteiramente ausentes na tabela de testes. | Campos de `relations.*.columns`, `lineage`, `description_gaps` e `tests`. Em 240 fichas, uma nota informa a falta de tipo em todas as colunas. |
+| Identificadores | Cartão, relação em foco, vizinhos e tabelas oferecem quebras após ponto ou sublinhado. As âncoras e o texto copiável conservam o nome integral. | Identificadores de relações, colunas, testes e chaves usados nos próprios links e tabelas. Cada segmento fica inteiro em uma linha. |
+| Sensibilidade | Clique ou Enter na legenda leva à primeira coluna da classe e destaca todas as correspondentes. “Limpar destaque” devolve o foco à legenda. | A barra, as contagens e as linhas usam `relations.*.columns.*.sensitivity`. Com JavaScript desativado, os links, a legenda numérica e o dicionário continuam disponíveis. As permissões de leitura continuam na seção de acesso. |
+
+**Verificação local de 19/11/2026.** A validação conferiu 97 arquivos da origem. Passaram 53 de
+53 casos de unidade e 25 de 25 verificações estáticas. As três builds geraram 479 páginas com
+SHA-256 idêntico de `dist/` (`04144cf21143fa6cbcba82e379e832fb95293bbdbcdcbecc0f57871f158a1981`).
+Duraram 9,59 s, 7,28 s e 7,08 s, com mediana de 7,28 s para a meta de 60 s. A verificação
+conferiu 36.738 links e âncoras, as 283 fichas e os 469 pares dirigidos distribuídos em 16 fluxos
+de camada, inclusive os internos. A leitura das amostras conferiu as 20.617 células exportadas.
+Em gzip nível 6, HTML e CSS somaram 7.119 bytes na inicial e até 30.607 bytes nas fichas.
+
+**Entrega e limite da medição.** Os commits de implementação são `c4fc657`, `43f6fb0` e
+`b743248`. A entrega usa o bundle `.cache/layout-rodada-2/rodada-2.bundle`, baseado em
+`d6b768f`. A E3 de navegador cabe ao Claude, inclusive o novo teste de clique, Enter e retorno de
+foco ao limpar o destaque em 390 px e nos dois temas. Legibilidade, altura da faixa, foco visível,
+transferência HTTP e tempos de interação desta rodada aguardam essa verificação.
+
+**Pergunta ao Owner.** No mapa da inicial, é fácil encontrar a entrega direta de
+`raw_legacy` para `trusted` ao lado do caminho que passa por `staging`?
+
+Crítica do Claude: (pendente)
+
+Decisão do Owner: (pendente)
