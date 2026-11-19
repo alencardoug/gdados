@@ -5,7 +5,9 @@
 import Conceito from "../../components/Conceito.astro";
 import Base from "../../layouts/Base.astro";
 import Md from "../../components/Md.astro";
-import { pacote, procedencia, relacoes, camadas, rota, rotaDaRelacao, rotaDaReferencia, mdDoPacoteEmLinha, data, caminhosCopiados } from "../../lib/portal.mjs";
+import Resultado from "../../components/Resultado.astro";
+import { pacote, procedencia, relacoes, relacaoPorId, camadas, rota, rotaDaRelacao, rotaDaColuna, rotaDaReferencia, mdDoPacoteEmLinha, data, caminhosCopiados, fksDoPacote, naoNulas, modeloER, camadasComChave } from "../../lib/portal.mjs";
+import { definicaoER, vizinhos } from "../../lib/er.mjs";
 import { semMarcacao } from "../../lib/markdown.mjs";
 
 // Camadas e materializações (perspectiva física).
@@ -47,6 +49,19 @@ const travessias = await Promise.all(
   })),
 );
 
+// Diagrama entidade-relacionamento (F34): um recorte por relação do modelo (ela e as ligadas a ela por
+// chave) e o modelo inteiro. Abre num recorte, como na linhagem (D02, condição 1): o da relação com mais
+// chaves estrangeiras próprias, que mostra uma estrela inteira.
+const ligacoesDe = (id) => fksDoPacote.filter((f) => f.relacao === id || f.references_relation === id).length;
+const saidasDe = (id) => fksDoPacote.filter((f) => f.relacao === id).length;
+const recortesER = modeloER
+  .map((id) => ({ id, rotulo: `${id} (${ligacoesDe(id)} ${ligacoesDe(id) === 1 ? "ligação" : "ligações"})`, definicao: definicaoER(pacote, vizinhos(pacote, id), { titulo: `Recorte de ${id}`, foco: id }) }))
+  .sort((a, b) => saidasDe(b.id) - saidasDe(a.id) || ligacoesDe(b.id) - ligacoesDe(a.id) || a.id.localeCompare(b.id));
+const modeloInteiro = modeloER.length ? { id: "modelo-inteiro", rotulo: `Modelo inteiro (${modeloER.length} relações, ${fksDoPacote.length} ligações)`, definicao: definicaoER(pacote, modeloER, { titulo: "Modelo entidade-relacionamento" }) } : null;
+const lnkCol = (rel, col) => (relacaoPorId.has(rel) ? rotaDaColuna(rel, col) : null);
+const resultadoDoTeste = (f) => Object.values(pacote.tests).find((t) => t.test === "relationships" && t.relation === f.relacao && t.column === f.column && t.references_relation === f.references_relation && t.references_column === f.references_column)?.result ?? null;
+const adr0056 = rotaDaReferencia("docs/adr/0056-chaves-declaradas-em-analytics.md");
+
 const ENTREGA = { read_by_commit: "lido por commit", not_available: "indisponível" };
 const comGrao = relacoes.filter((x) => x.r.grain != null);
 const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].sort();
@@ -58,7 +73,7 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
   Esta página separa o que o projeto <strong>declara</strong> (configuração e código), o que foi <strong>registrado</strong> numa data
   (execução e evidência) e o que <strong>não está disponível</strong> ao portal.
 </p>
-<nav aria-label="Nesta página"><a href="#fisica">Camadas</a> · <a href="#travessias">Travessias</a> · <a href="#logica">Entidades e grãos</a> · <a href="#ambientes">Ambientes e documentos</a> · <a href="#arquivos">Arquivos da origem</a></nav>
+<nav aria-label="Nesta página"><a href="#fisica">Camadas</a> · <a href="#travessias">Travessias</a> · <a href="#logica">Entidades e grãos</a> · <a href="#entidades">Relacionamentos</a> · <a href="#ambientes">Ambientes e documentos</a> · <a href="#arquivos">Arquivos da origem</a></nav>
 
 <h2 id="fisica"><Conceito id="camada">Camadas</Conceito> e <Conceito id="materializacao">materializações</Conceito></h2>
 <p>As camadas aparecem na ordem do pipeline, calculada pela linhagem. A materialização diz como cada objeto existe no banco: tabela, view, incremental, snapshot ou seed. Uma <em>source</em> não é materializada pelo dbt; ela é a origem.</p>
@@ -100,11 +115,6 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
   O grão diz o que uma linha representa. É o primeiro passo para ler um fato ou uma dimensão.
   Abaixo estão as relações que declaram grão no pacote.
 </p>
-<p>
-  <span class="ausente">Relacionamentos não declarados no pacote da {procedencia.ref}</span> (<a href={rota("conceitos/limitacoes/#chaves-estrangeiras")}>limitação conhecida</a>).
-  O pacote ainda não traz o destino das chaves estrangeiras, e o portal não deduz as ligações pelo nome dos testes.
-  A origem aceitou acrescentar esse campo na próxima versão do pacote. Quando ele chegar, o diagrama entidade-relacionamento passa a ser gerado a partir dele.
-</p>
 <div class="rolagem"><table>
 <thead><tr><th scope="col">Relação</th><th scope="col">Grão declarado</th><th scope="col">Domínio</th></tr></thead>
 <tbody>
@@ -112,6 +122,41 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
   <tr><td><a href={rotaDaRelacao(x.id)}><code>{x.id}</code></a></td><td>{x.r.grain}</td><td>{x.r.meta?.domain ?? <span class="ausente">não declarado</span>}</td></tr>
 ))}
 </tbody></table></div>
+
+<h2 id="entidades"><Conceito id="entidade-e-relacionamento">Relacionamentos</Conceito> entre as relações</h2>
+{modeloInteiro == null ? <p><span class="ausente">Nenhuma chave primária ou estrangeira declarada no pacote da {procedencia.ref}.</span></p> : <>
+<p>
+  O diagrama é gerado das <Conceito id="chave">chaves</Conceito> primárias e estrangeiras que o pacote declara (<code>primary_key</code> e <code>foreign_keys</code>).
+  No pacote da <code>{procedencia.ref}</code>, só {camadasComChave.map((c) => <code>{c}</code>).reduce((a, b) => [a, ", ", b])} declara chaves: são as que a origem instala no banco
+  ({adr0056 ? <a href={adr0056}>ADR-0056 da origem</a> : "ADR-0056 da origem"}). O portal não deduz ligações pelo nome das colunas nem dos testes.
+</p>
+<p>
+  Escolha uma relação para ver só ela e as relações ligadas a ela por chave, ou o modelo inteiro.
+  Na ponta da relação que aponta, a linha diz "zero ou mais". Na ponta da relação apontada, diz "exatamente um" quando a coluna tem teste <code>not_null</code> declarado,
+  e "zero ou um" quando não tem: o pacote não declara a cardinalidade (<a href={rota("conceitos/limitacoes/#cardinalidade-dos-relacionamentos")}>limitação conhecida</a>).
+</p>
+<label>Recorte <select id="er-recorte">
+  {recortesER.map((r) => <option value={r.id} data-definicao={r.definicao}>{r.rotulo}</option>)}
+  <option value={modeloInteiro.id} data-definicao={modeloInteiro.definicao}>{modeloInteiro.rotulo}</option>
+</select></label>
+<div id="er-diagrama" class="diagrama" data-definicao={recortesER[0]?.definicao ?? modeloInteiro.definicao}><p class="suave">Carregando o diagrama…</p></div>
+<details><summary>Definição do diagrama (Mermaid, gerada do pacote)</summary><pre><code id="er-definicao">{recortesER[0]?.definicao ?? modeloInteiro.definicao}</code></pre></details>
+<h3>Chaves estrangeiras (alternativa em tabela)</h3>
+<div class="rolagem"><table>
+<thead><tr><th scope="col">Relação</th><th scope="col">Coluna</th><th scope="col">Referência</th><th scope="col">Teste <code>not_null</code></th><th scope="col">Teste <code>relationships</code></th></tr></thead>
+<tbody>
+{fksDoPacote.map((f) => (
+  <tr>
+    <td><a href={rotaDaRelacao(f.relacao)}><code>{f.relacao}</code></a></td>
+    <td>{lnkCol(f.relacao, f.column) ? <a href={lnkCol(f.relacao, f.column)}><code>{f.column}</code></a> : <code>{f.column}</code>}</td>
+    <td>{lnkCol(f.references_relation, f.references_column) ? <a href={lnkCol(f.references_relation, f.references_column)}><code>{f.references_relation}.{f.references_column}</code></a> : <code>{f.references_relation}.{f.references_column}</code>}</td>
+    <td>{naoNulas.has(`${f.relacao}.${f.column}`) ? "declarado" : <span class="suave">não declarado</span>}</td>
+    <td><Resultado resultado={resultadoDoTeste(f)} /></td>
+  </tr>
+))}
+</tbody></table></div>
+<p class="suave">Os resultados são os da execução registrada no pacote. Uma chave estrangeira sem teste <code>relationships</code> correspondente apareceria como "sem resultado".</p>
+</>}
 
 <h2 id="ambientes">Ambientes e documentos</h2>
 <p>
@@ -147,12 +192,45 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
 import mermaid from "mermaid";
 const alvo = document.getElementById("diagrama");
 const escuro = matchMedia("(prefers-color-scheme: dark)").matches;
-mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: escuro ? "dark" : "neutral" });
-mermaid.render("travessias-svg", alvo.dataset.definicao).then(({ svg }) => {
+// No ER, o desenho fica no tamanho natural e a área rola na horizontal: reduzido, o modelo inteiro fica ilegível.
+mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: escuro ? "dark" : "neutral", er: { useMaxWidth: false } });
+const travessias = mermaid.render("travessias-svg", alvo.dataset.definicao).then(({ svg }) => {
   alvo.innerHTML = svg;
   performance.mark("travessias:pronto");
   alvo.dataset.pronto = "1";
 }).catch((e) => {
   alvo.textContent = `O diagrama não pôde ser desenhado (${e.message}). As travessias estão na tabela abaixo.`;
 });
+
+// Diagrama entidade-relacionamento: um recorte por vez, escolhido no seletor ou por ?er=<relação>.
+const er = document.getElementById("er-diagrama");
+const seletor = document.getElementById("er-recorte");
+const textoER = document.getElementById("er-definicao");
+let vez = 0;
+const desenharER = async () => {
+  const opcao = seletor.selectedOptions[0];
+  const definicao = opcao.dataset.definicao;
+  const minha = ++vez;
+  textoER.textContent = definicao;
+  er.dataset.pronto = "";
+  try {
+    const { svg } = await mermaid.render(`er-svg-${minha}`, definicao);
+    if (minha !== vez) return;
+    er.innerHTML = svg;
+    er.dataset.pronto = "1";
+  } catch (e) {
+    if (minha === vez) er.textContent = `O diagrama não pôde ser desenhado (${e.message}). As chaves estão na tabela abaixo.`;
+  }
+};
+if (er && seletor) {
+  const pedido = new URLSearchParams(location.search).get("er");
+  if (pedido != null && [...seletor.options].some((o) => o.value === pedido)) seletor.value = pedido;
+  seletor.addEventListener("change", () => {
+    const url = new URL(location.href);
+    url.searchParams.set("er", seletor.value);
+    history.replaceState(null, "", url);
+    travessias.then(desenharER);
+  });
+  travessias.then(desenharER);
+}
 </script>

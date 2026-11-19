@@ -5,6 +5,7 @@ import { carregarOrigem } from "./origem.mjs";
 import { mascarar } from "./mascara.mjs";
 import { criarRenderizador } from "./markdown.mjs";
 import { camadasPorCaminhoMaisLongo } from "../cliente/camadas.js";
+import { chavesEstrangeiras, colunasNaoNulas, relacoesDoModelo } from "./er.mjs";
 
 const { procedencia, pacote, arquivos } = carregarOrigem();
 export { procedencia, pacote };
@@ -128,6 +129,16 @@ for (const [nome, m] of Object.entries(pacote.metrics)) {
   }
 }
 
+/** Chaves (F34 da origem): estrangeiras que chegam a cada relação e camadas que declaram chave. */
+export const fksDoPacote = chavesEstrangeiras(pacote);
+export const referenciasPorRelacao = agrupar(fksDoPacote, (f) => f.references_relation);
+export const naoNulas = colunasNaoNulas(pacote);
+export const modeloER = relacoesDoModelo(pacote);
+export const camadasComChave = [
+  ...new Set(Object.values(pacote.relations).filter((r) => (r.primary_key ?? []).length || (r.foreign_keys ?? []).length).map((r) => r.schema)),
+].sort();
+export const rotaDoER = (id = null) => rota(`estrutura/${id ? `?er=${id}` : ""}#entidades`);
+
 export const relacoes = idsDasRelacoes.map((id) => {
   const r = pacote.relations[id];
   const faltas = faltasPorRelacao.get(id) ?? [];
@@ -141,6 +152,9 @@ export const relacoes = idsDasRelacoes.map((id) => {
     semDescricao: faltas.some((f) => f.column == null),
     colunasSemDescricao: new Set(faltas.filter((f) => f.column != null).map((f) => f.column)),
     sensibilidades,
+    chavePrimaria: r.primary_key ?? [],
+    chavesEstrangeiras: r.foreign_keys ?? [],
+    referenciadaPor: referenciasPorRelacao.get(id) ?? [],
     auditoria: pacote.view_audits[id] ?? null,
     regras: pacote.view_rules[id] ?? null,
     perguntas: perguntasPorRelacao.get(id) ?? [],

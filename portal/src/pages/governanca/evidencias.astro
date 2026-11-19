@@ -72,7 +72,7 @@ const adrs = caminhosCopiados
 
 <h2 id="auditorias">Auditorias das views</h2>
 <div class="rolagem"><table>
-<thead><tr><th scope="col">View</th><th scope="col">Estado</th><th scope="col">Commit</th><th scope="col">Critérios</th><th scope="col">Achados</th><th scope="col">Referência</th></tr></thead>
+<thead><tr><th scope="col">View</th><th scope="col">Estado</th><th scope="col">Commit</th><th scope="col">Critérios</th><th scope="col">Achados</th><th scope="col">Referência</th><th scope="col">O que a sustenta</th></tr></thead>
 <tbody>
 {Object.entries(pacote.view_audits).map(([v, a]) => (
   <tr>
@@ -82,9 +82,15 @@ const adrs = caminhosCopiados
     <td>{a.criteria.map((c) => <div><code>{c}</code></div>)}</td>
     <td>{a.findings.length ? a.findings.join(", ") : <span class="suave">nenhum</span>}</td>
     <td>{a.reference == null ? <span class="ausente">ausente</span> : rotaDaReferencia(a.reference) ? <a href={rotaDaReferencia(a.reference)}><code>{a.reference}</code></a> : <code>{a.reference}</code>}</td>
+    <td>{(a.checks ?? []).length + (a.data_tests ?? []).length === 0
+      ? <span class="suave">nenhuma verificação declarada</span>
+      : <>{(a.checks ?? []).map((id) => <div><span class="etiqueta">pytest</span> {id in pacote.checks ? <Resultado resultado={pacote.checks[id].result} /> : <span class="ausente">não encontrada</span>}</div>)}
+          {(a.data_tests ?? []).map((id) => <div><span class="etiqueta">dbt</span> {id in pacote.tests ? <Resultado resultado={pacote.tests[id].result} /> : <span class="ausente">não encontrado</span>}</div>)}</>}</td>
   </tr>
 ))}
 </tbody></table></div>
+
+<p class="suave">"O que a sustenta" mostra o resultado das verificações do <code>pytest</code> e dos testes do dbt que a origem declara para cada auditoria. Os nomes estão na página de cada view.</p>
 
 <h2 id="verificacoes">Verificações do <code>pytest</code></h2>
 <p>

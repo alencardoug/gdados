@@ -10,6 +10,7 @@ import Resultado from "../../../components/Resultado.astro";
 import {
   relacoes, relacaoPorId, procedencia, pacote, rota, rotaDaRelacao, rotaDaColuna, rotaDaPergunta, rotaDaMetrica,
   rotaDaReferencia, mdDoPacote, mdDoPacoteEmLinha, relacaoDaColuna, nomeDaColuna, metricasPorColuna, commitCurto,
+  camadasComChave, naoNulas, modeloER, rotaDoER,
 } from "../../../lib/portal.mjs";
 
 export function getStaticPaths() {
@@ -37,6 +38,18 @@ const citada = conceitosQueCitam("relacao", x.id);
 // meta.grants além de select (que já está em grants_select), como a gravação do streaming.
 const outrasConcessoes = Object.entries(meta.grants ?? {}).filter(([op, v]) => op !== "select" && Array.isArray(v) && v.length);
 const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference) : null;
+// Chaves (F34): a coluna referenciada liga à página da relação de destino; nada é deduzido.
+const pk = new Set(x.chavePrimaria);
+const fkPorColuna = new Map(x.chavesEstrangeiras.map((f) => [f.column, f]));
+const lnkRef = (rel, col) => (relacaoPorId.has(rel) ? rotaDaColuna(rel, col) : null);
+const noModelo = modeloER.includes(x.id);
+const adr0056 = rotaDaReferencia("docs/adr/0056-chaves-declaradas-em-analytics.md");
+const semChave = x.chavePrimaria.length === 0 && x.chavesEstrangeiras.length === 0;
+// Verificações e testes que sustentam a auditoria (view_audits.*.checks e .data_tests).
+const sustentacao = auditoria ? [
+  ...(auditoria.checks ?? []).map((id) => ({ id, nome: id.split("::").slice(1).join("::") || id, origem: "pytest", resultado: pacote.checks[id]?.result ?? null, existe: id in pacote.checks })),
+  ...(auditoria.data_tests ?? []).map((id) => ({ id, nome: pacote.tests[id]?.test ?? id, origem: "dbt", resultado: pacote.tests[id]?.result ?? null, existe: id in pacote.tests })),
+] : [];
 ---
 <Base titulo={x.id} secao="governanca" descricao={`Relação ${x.id} no catálogo do portal.`}>
 <p class="migalhas"><a href={rota("governanca/")}>Governança</a> › <a href={rota(`governanca/?camada=${x.camada}#catalogo`)}>{x.camada}</a></p>
@@ -56,7 +69,14 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
   <dt><Conceito id="retencao">Retenção</Conceito></dt><dd><Ausente valor={meta.retention} texto="não declarada" /></dd>
   <dt><Conceito id="acesso-por-papel">Papéis com leitura</Conceito></dt><dd>{r.grants_select.length ? r.grants_select.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão de leitura</span>}</dd>
   {outrasConcessoes.length > 0 && <><dt>Outras concessões</dt><dd>{outrasConcessoes.map(([op, papeis]) => <div><code>{op}</code>: {papeis.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b])}</div>)}</dd></>}
-  <dt><Conceito id="chave">Chaves primária e estrangeiras</Conceito></dt><dd><span class="ausente">não declaradas no pacote da {procedencia.ref}</span></dd>
+  <dt><Conceito id="chave">Chave primária</Conceito></dt><dd>{x.chavePrimaria.length
+    ? x.chavePrimaria.map((c) => <a href={`#coluna-${c}`}><code>{c}</code></a>).reduce((a, b) => [a, ", ", b])
+    : <><span class="ausente">nenhuma declarada</span>{semChave && <span class="suave"> (no pacote da {procedencia.ref}, só {camadasComChave.join(", ")} declara chaves)</span>}</>}</dd>
+  <dt>Chaves estrangeiras</dt><dd>{x.chavesEstrangeiras.length
+    ? x.chavesEstrangeiras.map((f) => <div><a href={`#coluna-${f.column}`}><code>{f.column}</code></a> → {lnkRef(f.references_relation, f.references_column) ? <a href={lnkRef(f.references_relation, f.references_column)}><code>{f.references_relation}.{f.references_column}</code></a> : <code>{f.references_relation}.{f.references_column}</code>}</div>)
+    : <span class="ausente">nenhuma declarada</span>}</dd>
+  {x.referenciadaPor.length > 0 && <><dt>Referenciada por</dt><dd>{x.referenciadaPor.map((f) => <div>{lnkRef(f.relacao, f.column) ? <a href={lnkRef(f.relacao, f.column)}><code>{f.relacao}.{f.column}</code></a> : <code>{f.relacao}.{f.column}</code>}</div>)}</dd></>}
+  {noModelo && <><dt><Conceito id="entidade-e-relacionamento">Diagrama entidade-relacionamento</Conceito></dt><dd><a href={rotaDoER(x.id)}>Ver esta relação e as ligadas a ela por chave</a></dd></>}
   {citada.length > 0 && <><dt>Exemplo nas explicações</dt><dd>{citada.map((t) => <a href={t.href}>{t.titulo}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
   {x.perguntas.length > 0 && <><dt>Perguntas que a usam</dt><dd>{x.perguntas.map((q) => <a href={rotaDaPergunta(q)}>{q}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
 </dl>
@@ -69,7 +89,11 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
   <dt>Critérios</dt><dd>{auditoria.criteria.length ? auditoria.criteria.map((c) => <code>{c}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhum</span>}</dd>
   <dt>Achados</dt><dd><Ausente valor={auditoria.findings} texto="nenhum" /></dd>
   <dt>Consulta de referência</dt><dd>{auditoria.reference == null ? <span class="ausente">ausente</span> : refAuditoria ? <a href={refAuditoria}><code>{auditoria.reference}</code></a> : <code>{auditoria.reference}</code>}</dd>
+  <dt>O que a sustenta</dt><dd>{sustentacao.length
+    ? <ul class="sem-marcador">{sustentacao.map((v) => <li><span class="etiqueta">{v.origem}</span> <code>{v.nome}</code> {v.existe ? <Resultado resultado={v.resultado} /> : <span class="ausente">não encontrado no pacote</span>}</li>)}</ul>
+    : <span class="ausente">nenhuma verificação declarada</span>}</dd>
 </dl>
+<p class="suave">"O que a sustenta" lista as verificações do <code>pytest</code> e os testes do dbt que a origem declara para esta auditoria, com o resultado da execução registrada no pacote.</p>
 </>}
 
 <h2><Conceito id="linhagem">Linhagem</Conceito> imediata</h2>
@@ -93,7 +117,7 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
 <tbody>
 {colunas.map(({ nome, c, m, descricao, linhagem, metricas }) => (
   <tr id={`coluna-${nome}`}>
-    <th scope="row"><code>{nome}</code></th>
+    <th scope="row"><code>{nome}</code>{pk.has(nome) && <> <span class="etiqueta" title="chave primária">PK</span></>}{fkPorColuna.has(nome) && <> <span class="etiqueta" title={`chave estrangeira para ${fkPorColuna.get(nome).references_relation}`}>FK</span></>}{fkPorColuna.has(nome) && <div class="suave">{naoNulas.has(`${x.id}.${nome}`) ? "obrigatória (teste not_null)" : "sem teste not_null"}</div>}</th>
     <td><Ausente valor={c.data_type} texto="não declarado no pacote" /></td>
     <td>{c.sensitivity}{m.sensitivity_reason && <div class="suave">{m.sensitivity_reason}</div>}</td>
     <td class="md">
@@ -131,13 +155,14 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
 <h2><Conceito id="teste">Testes</Conceito></h2>
 {x.testes.length === 0 ? <p><span class="ausente">Nenhum teste declarado para esta relação.</span></p> : (
 <div class="rolagem"><table>
-<thead><tr><th scope="col">Teste</th><th scope="col">Tipo</th><th scope="col">Coluna</th><th scope="col">Declarado em</th><th scope="col">Resultado</th></tr></thead>
+<thead><tr><th scope="col">Teste</th><th scope="col">Tipo</th><th scope="col">Coluna</th><th scope="col">Referência</th><th scope="col">Declarado em</th><th scope="col">Resultado</th></tr></thead>
 <tbody>
 {x.testes.map((t) => (
   <tr>
     <td><code>{t.test}</code></td>
     <td>{t.kind}</td>
     <td>{t.column == null ? <span class="suave">relação</span> : <a href={`#coluna-${t.column}`}><code>{t.column}</code></a>}</td>
+    <td>{t.references_relation == null ? <span class="suave">—</span> : lnkRef(t.references_relation, t.references_column) ? <a href={lnkRef(t.references_relation, t.references_column)}><code>{t.references_relation}.{t.references_column}</code></a> : <code>{t.references_relation}.{t.references_column}</code>}</td>
     <td>{rotaDaReferencia(t.declared_in) ? <a href={rotaDaReferencia(t.declared_in)}><code>{t.declared_in}</code></a> : <code>{t.declared_in}</code>}</td>
     <td><Resultado resultado={t.result} />{t.result && !t.result.same_invocation_as_manifest && <div class="suave">execução diferente da do manifesto</div>}</td>
   </tr>
@@ -145,6 +170,7 @@ const refAuditoria = auditoria?.reference ? rotaDaReferencia(auditoria.reference
 </tbody></table></div>)}
 <p class="suave">
   Os resultados são os da execução registrada no pacote, não do estado atual do banco.
-  O destino dos testes <code>relationships</code> (relação e coluna referenciadas) não está no pacote da {procedencia.ref}.
+  Num teste <code>relationships</code>, a referência é a coluna de outra relação em que todo valor da coluna testada deve existir.
+  As chaves estrangeiras da ficha acima são as que a origem instala no banco ({adr0056 ? <a href={adr0056}>ADR-0056 da origem</a> : "ADR-0056 da origem"}); um teste <code>relationships</code> sem chave correspondente confere o valor, mas não instala a ligação.
 </p>
 </Base>
