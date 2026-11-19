@@ -1,0 +1,91 @@
+---
+// Roteiro de aprendizado, "Comece por aqui" (página de conceitos §10). Mostra só os degraus já feitos,
+// na ordem em que o Owner avançou. O mapa é gerado dos pré-requisitos do inventário (Mermaid, só nesta
+// página: D02, condição 3); a lista numerada é a alternativa em texto.
+import Base from "../../layouts/Base.astro";
+import Md from "../../components/Md.astro";
+import { roteiro, mapaDoRoteiroMermaid } from "../../lib/editorial.mjs";
+import { rota, data, procedencia, commitCurto } from "../../lib/portal.mjs";
+
+const TIPO = { relacao: "relação", coluna: "coluna", pergunta: "pergunta", metrica: "métrica", filtro: "filtro", arquivo: "arquivo da origem", pagina: "página do portal" };
+---
+<Base titulo="Comece por aqui" secao="conceitos" descricao="Roteiro de aprendizado: por onde começar a estudar o projeto de dados.">
+<p id="retorno" hidden></p>
+<p class="migalhas"><a href={rota("conceitos/")}>Conceitos e artefatos</a></p>
+<h1>Comece por aqui</h1>
+<p class="lead">
+  Um roteiro para quem está começando: cada degrau ensina um conjunto pequeno de termos, na ordem em que um depende do outro,
+  e termina com uma prática nas tabelas reais do projeto.
+</p>
+<p>
+  O roteiro cresce um degrau por vez, conforme o estudo avança. É uma sugestão: o catálogo, a linhagem e todas as explicações
+  continuam abertos a qualquer momento. Para cada termo, leia a explicação, volte aqui e siga para o próximo.
+</p>
+
+<nav aria-label="Degraus">
+  <ol>{roteiro.map((d) => <li><a href={`#degrau-${d.id}`}>{d.titulo}</a></li>)}</ol>
+</nav>
+
+{roteiro.map((d, i) => (
+  <section id={`degrau-${d.id}`}>
+    <h2>{d.titulo}</h2>
+    <div class="bloco portal"><span class="rotulo">Ao fim deste degrau</span><p>{d.objetivo}</p></div>
+    <Md html={d.introducaoHtml} />
+
+    {d.didatico && (
+      <div class="bloco didatico">
+        <span class="rotulo">Exemplo didático · simplificação, não é dado do projeto</span>
+        <p><strong>{d.didatico.titulo}.</strong></p>
+        <Md html={d.didaticoHtml} />
+      </div>
+    )}
+
+    <h3>Leia nesta ordem</h3>
+    <ol>
+      {d.termos.map((t) => (
+        <li>
+          <a href={t.termo.href}>{t.termo.titulo}</a>{!t.termo.escrito && <span class="suave"> (explicação pendente)</span>}
+          <span class="suave"> — {t.porque}</span>
+          {t.termo.prerequisitos.length > 0 && <div class="suave">Depois de: {t.termo.prerequisitos.map((p) => d.termos.find((x) => x.id === p)?.termo.titulo ?? p).join(", ")}</div>}
+        </li>
+      ))}
+    </ol>
+
+    <h3>Na prática</h3>
+    <p class="suave">Objetos reais, no pacote do commit <code>{commitCurto(procedencia.commit)}</code> ({procedencia.ref}).</p>
+    <ul>
+      {d.pratica.map((e) => (
+        <li><span class="etiqueta">{TIPO[e.tipo]}</span>{" "}{e.existe ? <a href={e.href}><code>{e.ref}</code></a> : <><code>{e.ref}</code> <span class="ausente">não encontrado no pacote fixado</span></>}{e.nota && <span class="suave"> — {e.nota}</span>}</li>
+      ))}
+    </ul>
+
+    {d.perguntasHtml.length > 0 && <>
+      <h3>Confira o que aprendeu</h3>
+      <p class="suave">As respostas estão nas páginas da prática e nas explicações acima.</p>
+      <ol>{d.perguntasHtml.map((q) => <li><Md html={q} em="span" /></li>)}</ol>
+    </>}
+
+    <p class="suave">
+      Degrau incluído em {data(d.feito_em)}.
+      {i + 1 < roteiro.length ? <> A seguir: <a href={`#degrau-${roteiro[i + 1].id}`}>{roteiro[i + 1].titulo}</a>.</> : " O próximo degrau entra quando este for estudado."}
+    </p>
+  </section>
+))}
+
+<h2 id="mapa">Mapa do roteiro</h2>
+<p>Cada seta vai de um termo para outro que fica mais fácil de entender depois dele. A lista numerada de cada degrau tem a mesma ordem, em texto.</p>
+<div id="mapa-roteiro" class="diagrama" data-definicao={mapaDoRoteiroMermaid}><p class="suave">Carregando o mapa…</p></div>
+<details><summary>Definição do mapa (Mermaid, gerada do inventário)</summary><pre><code>{mapaDoRoteiroMermaid}</code></pre></details>
+</Base>
+<script>
+import mermaid from "mermaid";
+const alvo = document.getElementById("mapa-roteiro");
+const escuro = matchMedia("(prefers-color-scheme: dark)").matches;
+mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: escuro ? "dark" : "neutral" });
+mermaid.render("mapa-roteiro-svg", alvo.dataset.definicao).then(({ svg }) => {
+  alvo.innerHTML = svg;
+  alvo.dataset.pronto = "1";
+}).catch((e) => {
+  alvo.textContent = `O mapa não pôde ser desenhado (${e.message}). A ordem está nas listas acima.`;
+});
+</script>

@@ -4,7 +4,7 @@
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Md from "../../components/Md.astro";
-import { termos, termoPorId, gruposComTermos } from "../../lib/editorial.mjs";
+import { termos, termoPorId, gruposComTermos, posicaoNoRoteiro, roteiro } from "../../lib/editorial.mjs";
 import { procedencia, commitCurto, rota, data } from "../../lib/portal.mjs";
 
 export function getStaticPaths() {
@@ -17,12 +17,24 @@ const d = t.entrada?.data;
 const TIPO = { relacao: "relação", coluna: "coluna", pergunta: "pergunta", metrica: "métrica", filtro: "filtro", arquivo: "arquivo da origem", pagina: "página do portal" };
 const prereq = t.prerequisitos.map((p) => termoPorId.get(p));
 const vizinhos = grupo.termos.filter((x) => x.id !== t.id);
+// Posição no roteiro de aprendizado (página de conceitos §10), quando o termo faz parte dele.
+const noRoteiro = posicaoNoRoteiro.get(t.id) ?? null;
+const degrau = noRoteiro ? roteiro[noRoteiro.degrau] : null;
 ---
 <Base titulo={t.titulo} secao="conceitos" descricao={d?.resumo}>
 <p id="retorno" hidden></p>
 <p class="migalhas"><a href={rota("conceitos/")}>Conceitos e artefatos</a> › <a href={rota(`conceitos/#grupo-${grupo.id}`)}>{grupo.titulo}</a></p>
 <h1>{t.titulo}</h1>
 {t.termos.length > 0 && <p class="termos-busca">Também: {t.termos.join(" · ")}</p>}
+{noRoteiro && (
+  <nav class="bloco portal" aria-label="Roteiro de aprendizado">
+    <span class="rotulo">Roteiro de aprendizado · <a href={degrau.href}>{degrau.titulo}</a>, termo {noRoteiro.ordem + 1} de {degrau.termos.length}</span>
+    {noRoteiro.anterior && <>Anterior: <a href={termoPorId.get(noRoteiro.anterior).href}>{termoPorId.get(noRoteiro.anterior).titulo}</a>. </>}
+    {noRoteiro.seguinte
+      ? <>A seguir: <a href={termoPorId.get(noRoteiro.seguinte).href}>{termoPorId.get(noRoteiro.seguinte).titulo}</a>.</>
+      : <>Último termo até aqui: <a href={degrau.href}>volte ao degrau</a> para a prática.</>}
+  </nav>
+)}
 {prereq.length > 0 && <p>Ajuda ler antes: {prereq.map((p) => <a href={p.href}>{p.titulo}</a>).reduce((a, b) => [a, ", ", b])}.</p>}
 
 {t.escrito ? (

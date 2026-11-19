@@ -1,6 +1,6 @@
 // Relatório da camada editorial, gerado no build: o que o conteúdo do portal cita e não está no
 // pacote fixado ou na cópia da origem. Lido pelos testes e pela verificação da E3 (itens 1, 11 e 14).
-import { termos, exemplosAusentes, definicoesAusentes, ancorasAusentes, limitacoes, percursos } from "../../lib/editorial.mjs";
+import { termos, exemplosAusentes, definicoesAusentes, ancorasAusentes, limitacoes, percursos, roteiro } from "../../lib/editorial.mjs";
 import { procedencia } from "../../lib/portal.mjs";
 
 export function GET() {
@@ -13,6 +13,7 @@ export function GET() {
     com_divergencia: termos.filter((t) => t.divergencias.length).map((t) => t.id),
     limitacoes: limitacoes.map((l) => l.id),
     percursos: percursos.map((p) => p.id),
+    roteiro: { degraus: roteiro.map((d) => ({ id: d.id, feito_em: d.feito_em, termos: d.termos.map((t) => t.id) })) },
     limitacoes_com_pagina_ausente: limitacoes.flatMap((l) => l.onde.filter((o) => !o.existe).map((o) => `${l.id}: ${o.pagina}`)),
     exemplos_ausentes: exemplosAusentes,
     definicoes_ausentes: definicoesAusentes,

@@ -68,4 +68,19 @@ const percursos = defineCollection({
   }),
 });
 
-export const collections = { grupos, inventario, conceitos, limitacoes, percursos };
+// Roteiro de aprendizado (página de conceitos §10): um degrau por vez, na ordem em que o Owner avança.
+const roteiro = defineCollection({
+  loader: file("src/conteudo/roteiro.yml"),
+  schema: z.object({
+    titulo: z.string(),
+    feito_em: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    objetivo: z.string(),
+    introducao: z.string(),
+    didatico: z.object({ titulo: z.string(), texto: z.string() }).optional(),
+    termos: z.array(z.object({ id: z.string(), porque: z.string() })).min(1),
+    pratica: z.array(z.object({ tipo: z.enum(TIPOS_DE_EXEMPLO), ref: z.string(), nota: z.string().optional() })).min(1),
+    perguntas: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { grupos, inventario, conceitos, limitacoes, percursos, roteiro };

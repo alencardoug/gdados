@@ -2,7 +2,7 @@
 // Página de conceitos e artefatos (PLANO §4; docs/pagina_de_conceitos.md): entrada própria, índice
 // por assunto e alfabético, definições da origem e situação de cada explicação do portal.
 import Base from "../../layouts/Base.astro";
-import { gruposComTermos, termos, limitacoes, percursos } from "../../lib/editorial.mjs";
+import { gruposComTermos, termos, limitacoes, percursos, roteiro } from "../../lib/editorial.mjs";
 import { caminhosCopiados, lerArquivo, rota, rotaDaReferencia, procedencia } from "../../lib/portal.mjs";
 import { semMarcacao } from "../../lib/markdown.mjs";
 
@@ -27,6 +27,12 @@ const TIPO = { relacao: "relação", coluna: "coluna", pergunta: "pergunta", met
   O inventário tem {termos.length} termos. {escritos} já têm explicação do portal; nos demais, a página mostra a definição da origem, quando existe,
   e marca a explicação como pendente. Veja também as <a href={rota("conceitos/limitacoes/")}>limitações conhecidas</a> ({limitacoes.length}).
 </p>
+{roteiro.length > 0 && (
+  <div class="bloco portal">
+    <span class="rotulo">Começando agora?</span>
+    <p><a href={rota("conceitos/roteiro/")}><strong>Comece por aqui</strong></a>: um roteiro de aprendizado, um degrau por vez, dos fundamentos até as tabelas reais do projeto.</p>
+  </div>
+)}
 <nav aria-label="Nesta página"><a href="#percursos">Percursos</a> · <a href="#por-assunto">Por assunto</a> · <a href="#alfabetica">Ordem alfabética</a> · <a href="#origem">Definições da origem</a></nav>
 
 <h2 id="percursos">Percursos de leitura</h2>

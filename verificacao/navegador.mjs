@@ -169,7 +169,7 @@ async function funcionais(nav, { view, pacote }) {
   // 8. Telas menores: nenhuma rolagem horizontal da página a 390 px.
   {
     const rotas = ["/", "/governanca/", `/governanca/relacao/${view}/`, "/governanca/pergunta/P01/", "/governanca/metricas/", "/governanca/linhagem/",
-      "/governanca/evidencias/", "/estrutura/", "/conceitos/", "/conceitos/grao/", "/conceitos/limitacoes/", "/procedencia/", "/origem/docs/arquitetura.md/"];
+      "/governanca/evidencias/", "/estrutura/", "/conceitos/", "/conceitos/grao/", "/conceitos/limitacoes/", "/conceitos/roteiro/", "/procedencia/", "/origem/docs/arquitetura.md/"];
     const larguras = {};
     for (const r of rotas) {
       const { contexto, pagina, erros } = await abrir(nav, r, { viewport: { width: 390, height: 844 }, cache: true });

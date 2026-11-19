@@ -32,6 +32,7 @@
   termos: [data dictionary]
   definicoes: [{ arquivo: docs/glossario.md, termo: "Dicionário de dados" }]
   leituras: ["docs/dicionario_de_dados.md#1-como-este-catálogo-é-mantido"]
+  prerequisitos: [metadado]
 - id: glossario
   titulo: Glossário de negócio e glossário técnico
   grupo: governanca
@@ -107,6 +108,7 @@
   grupo: modelagem
   termos: [natural key, surrogate key, primary key, foreign key, PK, FK, relationships]
   definicoes: [{ arquivo: docs/glossario.md, termo: "Chave substituta" }]
+  prerequisitos: [entidade-e-relacionamento]
 - id: normalizacao
   titulo: Normalização
   grupo: modelagem
@@ -146,6 +148,7 @@
   termos: [grain, granularidade]
   definicoes: [{ arquivo: docs/glossario.md, termo: "Grão" }]
   leituras: ["docs/modelo_de_dados.md#31-tabelas-fato--11"]
+  prerequisitos: [entidade-e-relacionamento, chave]
 - id: medida-e-metrica
   titulo: Medida e métrica
   grupo: dimensional

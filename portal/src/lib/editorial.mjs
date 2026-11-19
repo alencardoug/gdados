@@ -4,9 +4,10 @@ import { join } from "node:path";
 import { getCollection } from "astro:content";
 import {
   pacote, rota, rotaDaRelacao, rotaDaColuna, rotaDaPergunta, rotaDaMetrica, rotaDoFiltro, rotaDaReferencia,
-  arquivoCopiado, lerArquivo, separarAncora, renderizarDaOrigem,
+  arquivoCopiado, lerArquivo, separarAncora, renderizarDaOrigem, renderizarEmLinha,
 } from "./portal.mjs";
 import { trechoDeDefinicao, exemploExiste, separarColuna } from "./definicoes.mjs";
+import { verificarRoteiro, posicoesNoRoteiro, mapaDoRoteiro } from "./roteiro.mjs";
 
 const grupos = (await getCollection("grupos")).map((g) => ({ id: g.id, ...g.data }));
 const inventario = (await getCollection("inventario")).map((i) => ({ id: i.id, ...i.data }));
@@ -135,6 +136,29 @@ export const percursos = (await getCollection("percursos")).map((p) => {
     }),
   };
 });
+
+// Roteiro de aprendizado (página de conceitos §10): pré-requisito com ciclo, fora do roteiro ou num
+// degrau posterior recusa a build; prática ausente no pacote segue a regra dos exemplos.
+const degrausDoRoteiro = (await getCollection("roteiro")).map((d) => ({ id: d.id, ...d.data }));
+const prerequisitosPorTermo = new Map(inventario.map((i) => [i.id, i.prerequisitos]));
+const errosDoRoteiro = verificarRoteiro(degrausDoRoteiro, prerequisitosPorTermo);
+if (errosDoRoteiro.length) throw new Error(`roteiro inválido:\n  ${errosDoRoteiro.join("\n  ")}`);
+export const posicaoNoRoteiro = posicoesNoRoteiro(degrausDoRoteiro);
+export const roteiro = await Promise.all(degrausDoRoteiro.map(async (d, i) => ({
+  ...d,
+  numero: i + 1,
+  href: rota(`conceitos/roteiro/#degrau-${d.id}`),
+  introducaoHtml: await renderizarDaOrigem(d.introducao, ""),
+  didaticoHtml: d.didatico ? await renderizarDaOrigem(d.didatico.texto, "") : null,
+  perguntasHtml: await Promise.all(d.perguntas.map((q) => renderizarEmLinha(q))),
+  termos: d.termos.map((t) => ({ ...t, termo: termoPorId.get(t.id) })),
+  pratica: d.pratica.map((e) => {
+    const existe = exemploExiste(e, { pacote, arquivoCopiado, paginaExiste });
+    if (!existe) exemplosAusentes.push(`roteiro ${d.id}: ${e.tipo} ${e.ref}`);
+    return { ...e, existe, href: existe ? hrefDoExemplo(e) : null };
+  }),
+})));
+export const mapaDoRoteiroMermaid = mapaDoRoteiro(degrausDoRoteiro, prerequisitosPorTermo, new Map(inventario.map((i) => [i.id, i.titulo])));
 
 /** Explicações que usam um objeto do pacote como exemplo (ligação no sentido objeto → conceito). */
 export function conceitosQueCitam(tipo, ref) {
