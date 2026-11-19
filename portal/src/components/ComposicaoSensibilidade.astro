@@ -1,11 +1,11 @@
 ---
 import Conceito from "./Conceito.astro";
 const { columns } = Astro.props;
-const groups = Object.groupBy(Object.values(columns), (c) => c.sensitivity ?? "ausente");
+const groups = Object.groupBy(Object.keys(columns), (name) => columns[name].sensitivity ?? "ausente");
 const order = ["public", "internal", "confidential", "personal"];
 const categories = [...order.filter((s) => groups[s]), ...Object.keys(groups).filter((s) => !order.includes(s)).sort()];
 ---
-<div class="composition">
+<div class="composition" id="legenda-sensibilidade">
   <dt><Conceito id="sensibilidade">Sensibilidade das colunas</Conceito></dt>
   <dd>
     {categories.length ? <>
@@ -13,9 +13,44 @@ const categories = [...order.filter((s) => groups[s]), ...Object.keys(groups).fi
         {categories.map((s) => <span data-class={s} style={`flex-grow:${groups[s].length}`} />)}
       </div>
       <ul aria-label="Colunas por classificação" role="list">
-        {categories.map((s) => <li><i aria-hidden="true" data-class={s}></i><code>{s}</code> <b>{groups[s].length}</b></li>)}
+        {categories.map((s) => <li><a href={`#coluna-${groups[s][0]}`} data-highlight={s} aria-controls="tabela-colunas">
+          <i aria-hidden="true" data-class={s}></i><code>{s}</code> <b>{groups[s].length}</b>
+        </a></li>)}
       </ul>
+      <small>Escolha uma classe para ir à primeira coluna correspondente.</small>
     </> : <span class="ausente">Nenhuma coluna declarada</span>}
     <small>O acesso está nos <a href="#acesso">papéis com leitura</a>.</small>
   </dd>
 </div>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>("[data-highlight]");
+  const rows = document.querySelectorAll<HTMLTableRowElement>("#tabela-colunas tr[data-sensitivity]");
+  const clear = document.querySelector<HTMLButtonElement>("#limpar-destaque")!;
+  const status = document.querySelector<HTMLElement>("#estado-destaque")!;
+  let active: HTMLAnchorElement | null = null;
+
+  function highlight(link: HTMLAnchorElement | null) {
+    active?.removeAttribute("aria-current");
+    active = link;
+    active?.setAttribute("aria-current", "true");
+    const category = active?.dataset.highlight;
+    let count = 0;
+    for (const row of rows) {
+      const matches = row.dataset.sensitivity === category;
+      row.classList.toggle("highlighted", matches);
+      if (matches) count++;
+    }
+    status.textContent = active ? `${count} ${count === 1 ? "coluna em destaque" : "colunas em destaque"} · ${category}` : "";
+    clear.hidden = !active;
+  }
+  for (const link of links) {
+    link.addEventListener("click", (event) => {
+      if (!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) highlight(link);
+    });
+  }
+  clear.addEventListener("click", () => {
+    active?.focus();
+    highlight(null);
+  });
+</script>

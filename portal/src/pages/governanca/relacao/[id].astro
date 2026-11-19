@@ -134,7 +134,11 @@ const sustentacao = auditoria ? [
 </dl>
 
 <h2 id="colunas">Colunas</h2>
-<div class="rolagem"><table>
+<div class="highlight-controls">
+  <span role="status" id="estado-destaque"></span>
+  <button type="button" id="limpar-destaque" hidden>Limpar destaque</button>
+</div>
+<div class="rolagem"><table id="tabela-colunas" aria-labelledby="colunas">
 {columnNotes.length > 0 && <caption class="table-notes"><div>Para todas as colunas
   {columnNotes.map(([label, note]) => <span><b>{label}</b> · {note}</span>)}
 </div></caption>}
@@ -146,7 +150,7 @@ const sustentacao = auditoria ? [
 </tr></thead>
 <tbody>
 {colunas.map(({ nome, c, m, descricao, linhagem, metricas }) => (
-  <tr id={`coluna-${nome}`}>
+  <tr id={`coluna-${nome}`} data-sensitivity={c.sensitivity ?? "ausente"} tabindex="-1">
     <th scope="row"><Identificador value={nome} />{pk.has(nome) && <> <span class="etiqueta" title="chave primária">PK</span></>}{fkPorColuna.has(nome) && <> <span class="etiqueta" title={`chave estrangeira para ${fkPorColuna.get(nome).references_relation}`}>FK</span></>}{fkPorColuna.has(nome) && <div class="suave">{naoNulas.has(`${x.id}.${nome}`) ? "obrigatória (teste not_null)" : "sem teste not_null"}</div>}</th>
     {!typeNote && <td><Ausente valor={c.data_type} texto="não declarado no pacote" /></td>}
     {showSensitivity && <td>{!sensitivityNote && <Ausente valor={c.sensitivity} texto="não declarada" />}{m.sensitivity_reason && <div class="suave">{m.sensitivity_reason}</div>}</td>}

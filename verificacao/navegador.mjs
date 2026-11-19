@@ -182,7 +182,9 @@ async function funcionais(nav, { view, pacote }) {
   }
 
   // 8. A amostra do legado tem JSON aninhado, ênfase da camada e rolagem local.
-  const sampleChecks = [];
+  const sampleChecks = [], highlightChecks = [];
+  const legacyColumns = Object.entries(pacote.relations["raw_legacy.support_agents"].columns);
+  const classRows = (category) => legacyColumns.filter(([, c]) => c.sensitivity === category).map(([name]) => `coluna-${name}`);
   for (const theme of ["light", "dark"]) {
     const { contexto, pagina, erros } = await abrir(nav, "/governanca/relacao/raw_legacy.support_agents/", {
       viewport: { width: 390, height: 844 }, cache: true,
@@ -207,11 +209,36 @@ async function funcionais(nav, { view, pacote }) {
     await pagina.keyboard.press("Enter");
     const closed = await json.evaluate((e) => !e.open);
     sampleChecks.push({ theme, focused, scrolled, sticky: Math.abs(before.x - after.x) <= 1, opened, closed, width });
+
+    const legend = pagina.locator("#legenda-sensibilidade");
+    const selectedRows = () => pagina.locator("#tabela-colunas tr.highlighted").evaluateAll((rows) => rows.map((r) => r.id));
+    await legend.locator('[data-highlight="public"]').click();
+    const byClick = await selectedRows();
+    const personal = legend.locator('[data-highlight="personal"]');
+    await personal.focus();
+    await pagina.keyboard.press("Shift+Tab");
+    await pagina.keyboard.press("Tab");
+    const keyFocus = await personal.evaluate((e) => e.matches(":focus-visible") && getComputedStyle(e).outlineStyle !== "none");
+    await pagina.keyboard.press("Enter");
+    const byKeyboard = await selectedRows();
+    const selectedClass = await personal.getAttribute("aria-current");
+    const firstTarget = await pagina.evaluate(() => document.activeElement.id);
+    const reset = pagina.locator("#limpar-destaque");
+    await reset.focus();
+    await pagina.keyboard.press("Space");
+    const cleared = (await selectedRows()).length === 0 && await reset.isHidden()
+      && await personal.evaluate((e) => document.activeElement === e && !e.hasAttribute("aria-current"));
+    highlightChecks.push({ theme, byClick, byKeyboard, keyFocus, selectedClass, firstTarget, cleared });
     errosDeConsole.push(...erros);
     await contexto.close();
   }
   add(8, "Amostra em 390 px nos dois temas: foco pelo teclado, primeira coluna fixa e JSON recolhível",
     sampleChecks.every((r) => r.focused && r.scrolled && r.sticky && r.opened && r.closed && r.width <= 390), sampleChecks);
+
+  add(8, "Legenda em 390 px nos dois temas destaca a classe por clique e Enter e devolve o foco ao limpar",
+    highlightChecks.every((r) => JSON.stringify(r.byClick) === JSON.stringify(classRows("public")) &&
+      JSON.stringify(r.byKeyboard) === JSON.stringify(classRows("personal")) && r.firstTarget === classRows("personal")[0] &&
+      r.keyFocus && r.selectedClass === "true" && r.cleared), highlightChecks);
 
   // 12. Ida e volta: do recorte da linhagem à explicação e de volta ao mesmo recorte.
   {

@@ -129,7 +129,7 @@ export function verificarEstatica({ dist, origem }) {
     { fluxos: expectedFlows.size, pares: esperado.size, ausencias_divergentes: missingIncoming.map(([layer]) => layer) });
 
   const mapErrors = [], barErrors = [], orderErrors = [], neighborLayerErrors = [];
-  const noteErrors = [], nameErrors = [];
+  const noteErrors = [], nameErrors = [], sensitivityTargetErrors = [];
   let summarizedTypes = 0;
   const samples = lerJson(join(origem, "amostras_de_registros.json")).relations;
   for (const [id, r] of Object.entries(R)) {
@@ -176,6 +176,19 @@ export function verificarEstatica({ dist, origem }) {
     const bar = countsIn(/<span data-class="([^"]+)" style="flex-grow:(\d+)"/g);
     if (!isDeepStrictEqual(legend, expectedCounts) || !isDeepStrictEqual(bar, expectedCounts)) barErrors.push(id);
 
+    const columnEntries = Object.entries(r.columns);
+    const rowClasses = [...page.matchAll(/<tr id="coluna-([^"]+)" data-sensitivity="([^"]+)"/g)]
+      .map(([, name, category]) => [name, category]);
+    const legendTargets = [...page.matchAll(/href="#coluna-([^"]+)" data-highlight="([^"]+)" aria-controls="tabela-colunas"/g)]
+      .map(([, name, category]) => [category, name]);
+    const firstByClass = new Map();
+    for (const [name, col] of columnEntries) {
+      const category = col.sensitivity ?? "ausente";
+      if (!firstByClass.has(category)) firstByClass.set(category, name);
+    }
+    if (!isDeepStrictEqual(rowClasses, columnEntries.map(([name, c]) => [name, c.sensitivity ?? "ausente"])) ||
+        legendTargets.length !== firstByClass.size || !isDeepStrictEqual(new Map(legendTargets), firstByClass)) sensitivityTargetErrors.push(id);
+
     const dictionary = page.slice(page.indexOf('id="colunas"'), page.indexOf('id="amostra"'));
     const missingTypes = Object.values(r.columns).filter((c) => c.data_type == null).length;
     const allMissing = missingTypes > 0 && missingTypes === Object.keys(r.columns).length;
@@ -211,6 +224,8 @@ export function verificarEstatica({ dist, origem }) {
     { relacoes: Object.keys(R).length, divergentes: neighborLayerErrors });
   add(6, "Barras e legendas reproduzem a classificação de cada conjunto de colunas", barErrors.length === 0,
     { relacoes: Object.keys(R).length, divergentes: barErrors });
+  add(8, "Sem executar JavaScript cada classe tem contagem e link para a primeira coluna correspondente", !sensitivityTargetErrors.length && !barErrors.length,
+    { fichas: Object.keys(R).length, divergentes: sensitivityTargetErrors });
   add(6, "Tipo inteiramente ausente recebe uma nota e tipos parcialmente ausentes conservam seus avisos", !noteErrors.length,
     { fichas_com_nota: summarizedTypes, divergentes: noteErrors });
   add(8, "Nomes do cartão e do dicionário preservam o identificador e só oferecem quebras nos separadores", !nameErrors.length,

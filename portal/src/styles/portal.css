@@ -218,6 +218,12 @@ code.identifier, .amostra code.identifier { white-space: normal; overflow-wrap: 
 .composition [data-class="personal"] { background: var(--class-personal); }
 .composition ul, .neighbors ul { list-style: none; margin: 0; padding: 0; }
 .composition ul { display: flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; }
+.composition li a { display: inline-block; padding: 0.15rem 0.4rem; border: 1px solid var(--borda); border-radius: 0.3rem; text-underline-offset: 0.15em; }
+.composition a[aria-current] { border-color: var(--track); background: var(--track-surface); }
+.highlight-controls { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+#tabela-colunas tr.highlighted > :is(td, th) { background: var(--track-surface); }
+#tabela-colunas tr.highlighted > th { box-shadow: inset 4px 0 var(--track); }
+#tabela-colunas tr:focus-visible > th { outline: 3px solid var(--realce); outline-offset: -3px; }
 .composition i { display: inline-block; width: 0.65rem; height: 0.65rem; border-radius: 50%; margin-right: 0.25rem; }
 .composition code, .relation-flow code { background: transparent; padding: 0; }
 .relation-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; padding-block: 0.6rem; border-bottom: 1px solid var(--borda); }
