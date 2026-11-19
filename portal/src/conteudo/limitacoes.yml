@@ -105,15 +105,3 @@
   responsavel: origem
   situacao: Encaminhado à origem pelo gdados em 17/11/2026.
 
-- id: ponto-de-reposicao-fixo
-  titulo: Ponto de reposição fixo na pergunta dos SKUs abaixo dele
-  descricao: >-
-    A view dos SKUs abaixo do ponto de reposição compara o disponível com um ponto fixo, igual para
-    todo par de produto e armazém. A origem registrou como achado F36 (`docs/achados_nl_sql.md`,
-    na `v2.2.0`) que, com o estoque regenerado, esse ponto quase não distingue mais os pares: na
-    medição dela de 18/11/2026, 94% ficam abaixo dele. O portal mostra a view como o pacote a
-    declara e não muda a regra.
-  onde:
-    - { rotulo: Pergunta P12, pagina: "governanca/pergunta/P12/" }
-  responsavel: origem
-  situacao: Achado F36 da origem, com a correção prevista numa fase própria dela.
