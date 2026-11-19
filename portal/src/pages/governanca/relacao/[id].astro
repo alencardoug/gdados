@@ -10,8 +10,9 @@ import Resultado from "../../../components/Resultado.astro";
 import {
   relacoes, relacaoPorId, procedencia, pacote, rota, rotaDaRelacao, rotaDaColuna, rotaDaPergunta, rotaDaMetrica,
   rotaDaReferencia, mdDoPacote, mdDoPacoteEmLinha, relacaoDaColuna, nomeDaColuna, metricasPorColuna, commitCurto,
-  camadasComChave, naoNulas, modeloER, rotaDoER,
+  camadasComChave, naoNulas, modeloER, rotaDoER, amostras, dataHora,
 } from "../../../lib/portal.mjs";
+import { MARCADOR_PESSOAL } from "../../../lib/origem.mjs";
 
 export function getStaticPaths() {
   return relacoes.map((x) => ({ params: { id: x.id } }));
@@ -45,6 +46,11 @@ const lnkRef = (rel, col) => (relacaoPorId.has(rel) ? rotaDaColuna(rel, col) : n
 const noModelo = modeloER.includes(x.id);
 const adr0056 = rotaDaReferencia("docs/adr/0056-chaves-declaradas-em-analytics.md");
 const semChave = x.chavePrimaria.length === 0 && x.chavesEstrangeiras.length === 0;
+// Amostra de registros (D06; ADR-0058 da origem): exibida como exportada, sem reordenar nem completar.
+const amostra = amostras.relations[x.id];
+const mascaradas = new Set(amostra.masked_columns);
+const adr0058 = rotaDaReferencia("docs/adr/0058-amostras-de-registros-para-o-publico.md");
+const jsonDaCelula = (v) => JSON.stringify(v, null, 2);
 // Verificações e testes que sustentam a auditoria (view_audits.*.checks e .data_tests).
 const sustentacao = auditoria ? [
   ...(auditoria.checks ?? []).map((id) => ({ id, nome: id.split("::").slice(1).join("::") || id, origem: "pytest", resultado: pacote.checks[id]?.result ?? null, existe: id in pacote.checks })),
@@ -150,6 +156,40 @@ const sustentacao = auditoria ? [
   <strong>valor gerado</strong> é um valor criado na transformação, como uma constante ou um rótulo de sistema.
   Os três são finais válidos de um caminho de linhagem. Nenhum deles indica quebra de linhagem.
   O tipo da coluna só vem declarado em <code>analytics</code> e <code>consumption</code>.
+</p>
+
+<h2 id="amostra">Amostra de registros</h2>
+{amostra.row_count === 0
+  ? <p><span class="ausente">A relação estava vazia no build da amostra.</span></p>
+  : <>
+<p>
+  {amostra.rows.length === amostra.row_count ? `Todas as ${amostra.row_count} linhas` : `${amostra.rows.length} de ${amostra.row_count.toLocaleString("pt-BR")} linhas`},
+  {amostra.order.defect_first ? " primeiro as que têm defeito registrado do legado, depois as demais," : ""} na ordem da chave
+  {amostra.order.key.map((c) => <code>{c}</code>).reduce((a, b) => [a, ", ", b])}.
+</p>
+<div class="rolagem"><table class="amostra">
+<thead><tr>{amostra.columns.map((c) => <th scope="col"><a href={`#coluna-${c}`}><code>{c}</code></a>{mascaradas.has(c) && <div class="suave">personal</div>}</th>)}</tr></thead>
+<tbody>
+{amostra.rows.map((linha) => (
+  <tr>{linha.map((v) => (
+    <td>{v === null
+      ? <span class="suave">nulo</span>
+      : v === MARCADOR_PESSOAL
+        ? <span class="etiqueta" title="valor de coluna personal mascarado pela origem">mascarado</span>
+        : typeof v === "object"
+          ? <details><summary>JSON</summary><pre>{jsonDaCelula(v)}</pre></details>
+          : <code>{String(v)}</code>}</td>
+  ))}</tr>
+))}
+</tbody></table></div>
+</>}
+<p class="suave">
+  Exportada pela origem em {dataHora(amostras.exported_at)}, do build do commit <code>{amostras.provenance.built_from_commit.slice(0, 7)}</code>
+  (invocação <code>{amostras.provenance.invocation_id}</code>, procedência <code>{amostras.provenance.status}</code>), ambiente <code>{amostras.environment}</code>,
+  dados até {amostras.as_of_date ?? <span class="ausente">data ausente</span>}. A amostra retrata esse build, não o banco de agora.
+  Todo valor de coluna <code>personal</code> aparece como <span class="etiqueta">mascarado</span>, também nas folhas dos JSON do legado
+  ({adr0058 ? <a href={adr0058}>ADR-0058 da origem</a> : "ADR-0058 da origem"}); o nulo continua nulo. A máscara é uma concessão ao público anônimo, não uma mudança de classificação.
+  {amostra.order.defect_first && " Nesta relação, o conteúdo que um defeito do legado deslocou para uma coluna não pessoal aparece como está, por decisão do Owner."}
 </p>
 
 <h2><Conceito id="teste">Testes</Conceito></h2>

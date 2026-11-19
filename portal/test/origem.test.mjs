@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { PASTA_DA_ORIGEM, carregarOrigem, conferirProcedencia, validarPacote, ErroDaOrigem } from "../src/lib/origem.mjs";
+import { PASTA_DA_ORIGEM, carregarOrigem, conferirProcedencia, validarPacote, validarAmostras, ErroDaOrigem } from "../src/lib/origem.mjs";
 
 const ler = (n) => JSON.parse(readFileSync(join(PASTA_DA_ORIGEM, n), "utf8"));
 const esquema = ler("pacote_de_metadados.schema.json");
@@ -48,4 +48,43 @@ test("cópia alterada depois do registro recusa a build", () => {
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
+});
+
+// Amostras de registros (D06): esquema do mesmo commit e o que se confere sem o armazém.
+const esquemaDasAmostras = ler("amostras_de_registros.schema.json");
+const pacoteFixado = () => carregarOrigem().pacote;
+const amostrasFixadas = () => structuredClone(carregarOrigem().amostras);
+const comPessoal = (a) => Object.entries(a.relations).find(([, s]) => s.masked_columns.length && s.rows.length);
+
+test("as amostras fixadas cobrem o pacote e são válidas", () => {
+  const a = carregarOrigem().amostras;
+  assert.deepEqual(Object.keys(a.relations).sort(), Object.keys(pacoteFixado().relations).sort());
+  assert.equal(a.provenance.status, "verified");
+});
+
+test("amostras sem uma relação do pacote recusam a build", () => {
+  const a = amostrasFixadas();
+  delete a.relations[Object.keys(a.relations)[0]];
+  assert.throws(() => validarAmostras(a, esquemaDasAmostras, pacoteFixado()), /sem amostra/);
+});
+
+test("valor personal sem máscara recusa a build", () => {
+  const a = amostrasFixadas();
+  const [id, s] = comPessoal(a);
+  const i = s.columns.indexOf(s.masked_columns[0]);
+  s.rows[0][i] = "Fulano de Tal";
+  assert.throws(() => validarAmostras(a, esquemaDasAmostras, pacoteFixado()), new RegExp(`${id}, linha 1: .* não está mascarada`));
+});
+
+test("coluna mascarada diferente da classificação recusa a build", () => {
+  const a = amostrasFixadas();
+  const [, s] = comPessoal(a);
+  s.masked_columns = [];
+  assert.throws(() => validarAmostras(a, esquemaDasAmostras, pacoteFixado()), /mascaradas diferentes/);
+});
+
+test("amostras fora do esquema recusam a build", () => {
+  const a = amostrasFixadas();
+  a.provenance.status = "not_verified";
+  assert.throws(() => validarAmostras(a, esquemaDasAmostras, pacoteFixado()), /não seguem o esquema/);
 });

@@ -2,9 +2,10 @@
 // Painel de procedência (mapeamento §1, provenance): de onde vêm os dados exibidos e em que estado.
 import Base from "../layouts/Base.astro";
 import Ausente from "../components/Ausente.astro";
-import { procedencia, pacote, dataHora, rotaDoArquivo, caminhosCopiados } from "../lib/portal.mjs";
+import { procedencia, pacote, amostras, dataHora, rotaDoArquivo, caminhosCopiados } from "../lib/portal.mjs";
 const p = pacote.provenance;
 const w = p.warehouse;
+const a = amostras.provenance;
 ---
 <Base titulo="Procedência" descricao="De onde vêm os metadados exibidos pelo portal.">
 <p class="migalhas"><a href="../">Início</a></p>
@@ -20,7 +21,7 @@ const w = p.warehouse;
   <dt>Commit</dt><dd><code>{procedencia.commit}</code></dd>
   <dt>Data do commit</dt><dd>{dataHora(procedencia.commit_date)}</dd>
   <dt>Copiado em</dt><dd>{dataHora(procedencia.copied_at)}</dd>
-  <dt>Arquivos conferidos</dt><dd>{procedencia.files.length}: o pacote, o esquema, o exemplo e {caminhosCopiados.length} arquivos lidos por commit</dd>
+  <dt>Arquivos conferidos</dt><dd>{procedencia.files.length}: o pacote, o esquema e o exemplo dele, as amostras de registros e o esquema delas, e {caminhosCopiados.length} arquivos lidos por commit</dd>
 </dl>
 <h2>Geração do pacote na origem</h2>
 <dl class="ficha">
@@ -46,6 +47,23 @@ const w = p.warehouse;
   </> : <>
     <dt>Motivo</dt><dd><Ausente valor={w.reason} /></dd>
   </>}
+</dl>
+<h2>Amostras de registros</h2>
+<p>
+  Até cinco linhas de cada relação, exportadas pela origem num arquivo ao lado do pacote, no mesmo commit (decisão D06 do gdados).
+  A build valida o arquivo contra o esquema do mesmo commit e confere que cobre as mesmas relações e colunas do pacote e que todo valor escalar de coluna <code>personal</code> está mascarado.
+  A amostra retrata o build que cita, não o armazém de cada momento: após outro build da origem, o banco pode diferir dela.
+</p>
+<dl class="ficha">
+  <dt>Formato</dt><dd>{amostras.format}</dd>
+  <dt>Exportada em</dt><dd>{dataHora(amostras.exported_at)}</dd>
+  <dt>Estado do armazém</dt><dd><span class={`estado ${a.status}`}>{a.status}</span></dd>
+  <dt>Construído do commit</dt><dd><code>{a.built_from_commit}</code></dd>
+  <dt>Construído em</dt><dd>{dataHora(a.built_at)}</dd>
+  <dt>Invocação</dt><dd><code>{a.invocation_id}</code></dd>
+  <dt>Ambiente</dt><dd><code>{amostras.environment}</code></dd>
+  <dt>Dados até</dt><dd><Ausente valor={amostras.as_of_date} /></dd>
+  <dt>Máscara</dt><dd>marcador <code>{amostras.masking.marker}</code>, regra {amostras.masking.rule}: {amostras.masking.personal_columns}</dd>
 </dl>
 <h2>Arquivos copiados</h2>
 <div class="rolagem"><table>

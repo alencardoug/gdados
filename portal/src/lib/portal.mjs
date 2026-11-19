@@ -7,8 +7,8 @@ import { criarRenderizador } from "./markdown.mjs";
 import { camadasPorCaminhoMaisLongo } from "../cliente/camadas.js";
 import { chavesEstrangeiras, colunasNaoNulas, relacoesDoModelo } from "./er.mjs";
 
-const { procedencia, pacote, arquivos } = carregarOrigem();
-export { procedencia, pacote };
+const { procedencia, pacote, amostras, arquivos } = carregarOrigem();
+export { procedencia, pacote, amostras };
 
 // ---------- endereços ----------
 const BASE = import.meta.env?.BASE_URL ?? "/";

@@ -145,3 +145,7 @@ footer.procedencia p { margin: 0.25rem 0; }
 .indice-alfabetico { columns: 16rem; padding-left: 1.2rem; }
 .bloco > .rotulo code, .bloco > .rotulo a { text-transform: none; letter-spacing: 0; }
 .legenda .amostra.losango { background: #475569; border-radius: 0; transform: rotate(45deg) scale(0.8); }
+
+/* Amostra de registros (D06): células compactas; o JSON do legado abre sob demanda. */
+table.amostra td, table.amostra th { white-space: nowrap; vertical-align: top; }
+table.amostra pre { white-space: pre; margin: 0.3em 0 0; font-size: 0.85em; }
