@@ -3,6 +3,7 @@
 // Cada verificação devolve { item, nome, ok, detalhe }; "item" é o número da E3 no PLANO.
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { isDeepStrictEqual } from "node:util";
 // Exceção à independência: a lista dos identificadores mascarados (só hashes) tem um dono, o portal.
 import { mascarar } from "../portal/src/lib/mascara.mjs";
 
@@ -97,6 +98,61 @@ export function verificarEstatica({ dist, origem }) {
   const contagemDiferente = [...esperado].filter(([k, n]) => publicado.has(k) && publicado.get(k) !== n).map(([k]) => k);
   add(2, "Nenhuma ligação fabricada no grafo por relação", !aMais.length && !aMenos.length && !contagemDiferente.length,
     { arestas: publicado.size, a_mais: aMais, a_menos: aMenos, contagem_diferente: contagemDiferente });
+
+  // Orientação: confere o que o leitor recebe, inclusive a direção e o destino de cada link.
+  const layers = Object.groupBy(Object.values(R), (r) => r.schema);
+  const homeHtml = html(dist, "/");
+  const stations = [...homeHtml.matchAll(/<a href="[^"]*\?camada=([^"#]+)#catalogo">([\s\S]*?)<\/a>/g)]
+    .map(([, layer, body]) => [decodeURIComponent(layer), textoDe(body).trim(), Number(body.match(/class="layer-count">(\d+)/)?.[1])]);
+  const mapMatches = stations.length === Object.keys(layers).length && Object.entries(layers).every(([c, xs]) =>
+    stations.some(([target, text, n]) => target === c && text.startsWith(c + " ") && n === xs.length));
+  add(6, "Cada camada abre seu catálogo e mostra o número de relações do pacote", mapMatches,
+    { camadas: stations.length, relacoes: Object.keys(R).length });
+
+  const mapErrors = [], barErrors = [], orderErrors = [];
+  const samples = lerJson(join(origem, "amostras_de_registros.json")).relations;
+  for (const [id, r] of Object.entries(R)) {
+    const page = html(dist, `/governanca/relacao/${id}/`);
+    const orientation = page.match(/<section aria-labelledby="linhagem">([\s\S]*?)<\/section>/)?.[1] ?? "";
+    const currentLayers = [...orientation.matchAll(/\?camada=([^"#]+)#catalogo" aria-current="location"/g)].map((m) => decodeURIComponent(m[1]));
+    const inputs = [], outputs = [], rows = [];
+    for (const [edge, n] of esperado) {
+      const [source, target] = edge.split("→");
+      if (target === id) { inputs.push(source); rows.push(`Insumo ${source} ${n}`); }
+      if (source === id) { outputs.push(target); rows.push(`Consumidor ${target} ${n}`); }
+    }
+    const flow = orientation.split('class="lineage-table"')[0];
+    const [before, after = ""] = flow.split('class="current-relation"');
+    const neighbors = (fragment) => [...fragment.matchAll(/href="[^"]*\/relacao\/([^"/]+)\/"><code>([^<]+)<\/code>/g)]
+      .map(([, href, name]) => href === name ? href : `${name} → ${href}`).sort();
+    const tableRows = [...orientation.matchAll(/<tr><td>(Insumo|Consumidor)<\/td>([\s\S]*?)<\/tr>/g)]
+      .map(([row]) => textoDe(row).trim()).sort();
+    if (!isDeepStrictEqual(currentLayers, [r.schema]) || !isDeepStrictEqual(neighbors(before), inputs.sort()) ||
+        !isDeepStrictEqual(neighbors(after), outputs.sort()) || !isDeepStrictEqual(tableRows, rows.sort())) mapErrors.push(id);
+
+    const classes = Object.groupBy(Object.values(r.columns), (c) => c.sensitivity ?? "ausente");
+    const expectedCounts = Object.fromEntries(Object.entries(classes).map(([c, xs]) => [c, xs.length]));
+    const countsIn = (re) => Object.fromEntries([...page.matchAll(re)].map(([, c, n]) => [c, Number(n)]));
+    const legend = countsIn(/<i [^>]*data-class="[^"]+"[^>]*><\/i><code>([^<]+)<\/code> <b>(\d+)<\/b>/g);
+    const bar = countsIn(/<span data-class="([^"]+)" style="flex-grow:(\d+)"/g);
+    if (!isDeepStrictEqual(legend, expectedCounts) || !isDeepStrictEqual(bar, expectedCounts)) barErrors.push(id);
+
+    const a = samples[id];
+    if (a.row_count === 0) continue;
+    const sampleOrder = textoDe(page.match(/id="amostra">[^<]*<\/h2><p>([\s\S]*?)<\/p>/)?.[1] ?? "").trim();
+    const byPrimaryKey = isDeepStrictEqual(a.order.key, r.primary_key);
+    const byAllColumns = isDeepStrictEqual(a.order.key, a.columns);
+    if (sampleOrder.includes("chave primária") !== byPrimaryKey ||
+        sampleOrder.includes("todas as colunas") !== (!byPrimaryKey && byAllColumns) ||
+        sampleOrder.includes("defeito registrado") !== a.order.defect_first ||
+        ((byPrimaryKey || !byAllColumns) && !sampleOrder.includes(a.order.key.join(" , ")))) orderErrors.push(id);
+  }
+  add(2, "Minimapas e tabelas reproduzem a camada e os vizinhos imediatos de cada relação", mapErrors.length === 0,
+    { relacoes: Object.keys(R).length, arestas: esperado.size, divergentes: mapErrors });
+  add(6, "Barras e legendas reproduzem a classificação de cada conjunto de colunas", barErrors.length === 0,
+    { relacoes: Object.keys(R).length, divergentes: barErrors });
+  add(6, "Ordem de exportação da amostra e chave primária têm rótulos fiéis", orderErrors.length === 0,
+    { amostras: Object.keys(samples).length, divergentes: orderErrors });
 
   // 2. Receita: a coluna de receita líquida da view da P01 chega às duas origens.
   const p01 = pacote.questions.P01;

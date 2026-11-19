@@ -181,6 +181,38 @@ async function funcionais(nav, { view, pacote }) {
     add(8, "Telas de 390 px sem rolagem horizontal da página", Object.values(larguras).every((w) => w <= 390), larguras);
   }
 
+  // 8. A amostra do legado tem JSON aninhado, ênfase da camada e rolagem local.
+  const sampleChecks = [];
+  for (const theme of ["light", "dark"]) {
+    const { contexto, pagina, erros } = await abrir(nav, "/governanca/relacao/raw_legacy.support_agents/", {
+      viewport: { width: 390, height: 844 }, cache: true,
+    });
+    await pagina.emulateMedia({ colorScheme: theme });
+    const shortcut = pagina.locator('.relation-nav a[href="#amostra"]');
+    await shortcut.focus();
+    await pagina.keyboard.press("Enter");
+    await pagina.keyboard.press("Tab");
+    const region = pagina.locator(".sample-scroll");
+    const focused = await region.evaluate((e) => e === document.activeElement && e.matches(":focus-visible") && getComputedStyle(e).outlineStyle !== "none");
+    const firstCell = region.locator("tbody tr:first-child td:first-child");
+    const before = await firstCell.boundingBox();
+    await region.evaluate((e) => { e.scrollLeft = e.scrollWidth; });
+    const after = await firstCell.boundingBox();
+    const scrolled = await region.evaluate((e) => e.scrollLeft > 0);
+    const json = region.locator(".sample-json").first();
+    await json.locator(":scope > summary").focus();
+    await pagina.keyboard.press("Enter");
+    const opened = await json.evaluate((e) => e.open);
+    const width = await pagina.evaluate(() => document.documentElement.scrollWidth);
+    await pagina.keyboard.press("Enter");
+    const closed = await json.evaluate((e) => !e.open);
+    sampleChecks.push({ theme, focused, scrolled, sticky: Math.abs(before.x - after.x) <= 1, opened, closed, width });
+    errosDeConsole.push(...erros);
+    await contexto.close();
+  }
+  add(8, "Amostra em 390 px nos dois temas: foco pelo teclado, primeira coluna fixa e JSON recolhível",
+    sampleChecks.every((r) => r.focused && r.scrolled && r.sticky && r.opened && r.closed && r.width <= 390), sampleChecks);
+
   // 12. Ida e volta: do recorte da linhagem à explicação e de volta ao mesmo recorte.
   {
     const { contexto, pagina, erros } = await abrir(nav, `/governanca/linhagem/?modo=relacao&r=${view}&e=analytics.fact_sales_order_item`, { pronto: "#linhagem[data-pronto]", cache: true });
