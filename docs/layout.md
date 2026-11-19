@@ -24,10 +24,9 @@ navega.
 | **Claude** (continuidade pela sessão `claude2`) | **Critica e enriquece o conceito**: avalia a ideia, aponta o que confunde, sugere esquemas mais fortes, aprofunda as oportunidades. **Não** revisa linha a linha nem escreve o layout: indica que o Codex construa. Faz a interface com o Owner |
 | **Owner** | Decide. Aceita, em geral, a alternativa recomendada (memória `forma-de-trabalho-do-owner`); dependência nova pede o "sim" explícito dele |
 
-**Canal:** o Claude não tem acesso direto ao Codex. Na abertura da sessão, confirmar com o Owner
-como trocar mensagens: ele repassa, ou o Codex registra as propostas na §6 deste arquivo e o Claude
-responde logo abaixo. O pedido ao Codex só sai quando o Owner pedir ("depois eu peço para você pedir
-ao codex").
+**Canal (Owner, 19/11/2026):** o Claude envia o prompt ao Codex pela CLI (`codex exec`, conta
+padrão, modelo `gpt-6.2-astra`, esforço `xhigh`) e lê só a resposta final, sem o diff; o Owner não
+repassa nada. O Codex registra cada rodada na §6 e o Claude responde logo abaixo.
 
 ## 3. Restrições que já valem (apontadores)
 
@@ -146,6 +145,42 @@ renderização, busca e zoom.
 **Pergunta ao Owner.** Ao abrir `raw_legacy.support_agents`, você consegue encontrar uma relação
 que recebe valores dela usando só a ficha?
 
-Crítica do Claude: (pendente)
+**Integração e verificação pelo Claude.** O sandbox do Codex (`workspace-write`) deixou o `.git`
+somente leitura e bloqueou servidor e Chrome. O bundle foi conferido (árvore idêntica à de trabalho)
+e os três commits entraram no `main`. A E3 completa rodou em 19/11/2026 nesta máquina: **44 de 44**
+([resultado](../verificacao/resultados/2026-11-19T22-54-50-785Z.json)), inclusive teclado e foco
+visível, 390 px, tempos e transferência. Nas próximas rodadas o canal segue assim: o Codex entrega
+o bundle e as verificações estáticas, e o Claude integra e roda as de navegador.
+
+**Crítica do Claude (conceito, a partir das telas em 1280 e 390 px).**
+
+O que funciona: o cartão de identidade resume a relação em um olhar e mostra a ausência como
+ausência; o bloco "fornecem → em foco → recebem" responde de imediato à pergunta do Codex (sim: os
+três consumidores de `raw_legacy.support_agents` estão na ficha, sem abrir o grafo); no celular o
+mapa vira linha vertical e o fluxo vira coluna, sem perder sentido.
+
+O que ainda não ensina:
+
+1. **O minimapa repete o mapa da inicial e só acende um ponto.** "Você está aqui" sem os vizinhos
+   no próprio mapa diz pouco; o leitor tem de cruzar dois blocos. Fundir: no mapa da ficha, marcar
+   também as camadas dos insumos e consumidores (ex.: "staging · 1 recebe", "trusted · 2 recebem"),
+   com o trecho percorrido aceso, numa faixa compacta. "Outras funções" só aparece na ficha se a
+   relação ou um vizinho estiver lá.
+2. **O mapa da inicial é uma linha do tempo, não um fluxo.** Os trechos entre estações são iguais e
+   não carregam nada; `raw_legacy` e as "outras funções" ficam soltos. O que flui deve estar no
+   traço: o número de relações (ou de ligações) de cada camada para a seguinte, derivado da
+   linhagem, e os ramais de `quarantine`, `snapshots` e `governance` presos à camada de onde recebem.
+   Onde a linhagem não informa, dizer que não informa.
+3. **Ruído da fidelidade.** Na ficha de `raw_legacy.support_agents`, "não declarado no pacote"
+   aparece em toda célula da coluna Tipo. Quando a coluna inteira é ausente, dizer uma vez no
+   cabeçalho; repetir não acrescenta informação.
+4. **Nomes quebrados no meio** ("fact_inventory_movemen / t", "aggregate_v / ersion"). Quebrar só
+   depois de `.` e `_`.
+5. **A legenda de sensibilidade pode ensinar.** Clicar em "personal 3" destacando as três colunas
+   na tabela liga a barra ao dado, sem virar decisão de exposição.
+
+Recomendação para a rodada 2: refinar a orientação nesses cinco pontos (o mapa vira fluxo), antes de
+abrir ideias novas. A rodada 3 abre "da pergunta à origem" (ideia 2), que pode reaproveitar o mapa
+para acender as estações percorridas por uma pergunta, e o esquema estrela (ideia 6).
 
 Decisão do Owner: (pendente)
