@@ -237,6 +237,25 @@ indica o próximo. A proposta abaixo vira o alvo final, não a primeira entrega.
 - marcação de "já li" guardada só no navegador de quem lê, sem conta nem servidor, como
   conveniência que pode se perder.
 
+**Degrau 1, fundamentos (18/11/2026, "pode fazer" do Owner, que escolheu o assunto).** Feito em
+`portal/src/conteudo/roteiro.yml` (coleção `roteiro`) e na página `/conceitos/roteiro/`, "Comece por
+aqui", ligada do índice de conceitos e da página inicial:
+
+- objetivo: ler uma tabela do projeto e dizer o que cada linha representa, que coluna a identifica,
+  que colunas apontam para outras tabelas e onde está a descrição de cada coluna;
+- introdução sobre tabela, linha e coluna, com um exemplo didático rotulado (sem dados do projeto);
+- termos, nesta ordem: entidade e relacionamento, chave, grão, metadado e dicionário de dados. Os
+  pré-requisitos foram preenchidos só para eles (`chave`, `grao` e `dicionario-de-dados`);
+- prática em `analytics.dim_brand`, `analytics.fact_cart_event` e no recorte dela no diagrama
+  entidade-relacionamento; quatro perguntas para conferir o que aprendeu;
+- em cada termo do roteiro, a posição no degrau, o anterior e o seguinte;
+- mapa gerado dos pré-requisitos (Mermaid, só nessa página) e a lista numerada como alternativa;
+- a build recusa termo desconhecido ou repetido, ciclo nos pré-requisitos e termo que dependa de outro
+  fora do roteiro ou num degrau posterior (`portal/src/lib/roteiro.mjs`, `portal/test/roteiro.test.mjs`).
+
+Ficam para degraus seguintes: o "já li" no navegador, os percursos da §5 como trilhas e o preenchimento
+dos pré-requisitos dos demais termos. O próximo degrau espera o Owner estudar este e indicar o assunto.
+
 **Condições:**
 
 - a ordem é decisão editorial do gdados, não da origem, e passa pela revisão do Owner (E4.3);

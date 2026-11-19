@@ -124,9 +124,10 @@ O histórico desta conversa não é necessário para compreender o escopo docume
 **Publicação (E5, 18/11/2026):** o portal sai em <https://governadados.web.app> a cada push no
 `main`, pelo workflow `.github/workflows/deploy.yml`, depois do build e dos testes.
 
-**Próximo passo:** o primeiro degrau do roteiro, que aguarda o "pode fazer" do Owner (página de
-conceitos §10). Seguem pendentes do Owner a D06 (amostras) e a meta de zoom no grafo inteiro
-(relatório da E3, §3). Para avaliar o portal localmente: `cd portal && npm run build && npm run preview`. Para
+**Próximo passo:** o Owner estuda o degrau 1 do roteiro ("Comece por aqui", `/conceitos/roteiro/`,
+feito em 18/11/2026) e indica o assunto do degrau 2 (página de conceitos §10). A D06 (amostras) teve a
+exceção aberta e espera a proposta da origem, pedida pela caixa de correio dela, e o aceite do Owner.
+A meta de zoom do grafo inteiro foi para 100 ms (E4.4). Para avaliar o portal localmente: `cd portal && npm run build && npm run preview`. Para
 repetir a verificação: [`verificacao/README.md`](verificacao/README.md).
 
 Os caches e temporários de npm, `uv` e Playwright ficam em `.cache/` (variáveis em
