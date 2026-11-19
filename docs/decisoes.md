@@ -530,5 +530,19 @@ expor).
 preenchimento: tipo, domínio de valores e significado de cada valor, valores não observados e
 impossíveis e significado do nulo. Não equivale a ver linhas reais.
 
-**Pendente:** decisão do Owner entre manter a regra (com ou sem a alternativa) ou abrir a exceção
-pelos passos acima.
+**Decisão (18/11/2026, Owner, sessão do gdados):** abrir a exceção pelos passos acima, e não a
+alternativa sem exceção. Andamento:
+
+- (a) **feito:** a regra do [AGENTS.md](../AGENTS.md) passou a admitir amostras como exportação
+  versionada da origem, lida por commit nas condições desta decisão, nunca lida de banco;
+- (b) **pedido à origem** em 18/11/2026, pela caixa de correio dela e registrado no
+  [alinhamento, §7](alinhamento_entre_projetos.md#7-para-a-origem): avaliar e **propor** a exportação
+  (arquivo, forma, data e commit, linhas por relação, tratamento das colunas `personal` e dos
+  *payloads* do legado). A geração fica para depois do aceite do Owner à proposta, porque o arquivo
+  iria ao repositório público da origem e ao site;
+- (c) e (d) **aguardam a proposta da origem:** o tratamento das colunas `personal` e dos *payloads*
+  é da governança da origem (Governança §4: classificar não é expor), e o que vai ao site público é
+  decisão do Owner na D04. O portal não decide exposição pela classificação.
+
+**Pendente:** a proposta da origem e o aceite do Owner; depois, a leitura no portal (página da
+relação), a cópia pela D03 e a revisão do item 10 da E3.

@@ -47,7 +47,10 @@ novo autorizado no GCP (Q14), e o "Extras" não deve ser ligado a uma conta de f
 - Não transformar a classificação de sensibilidade em decisão de exposição ou permissão.
 - Não apresentar uma coluna gerada ou uma seed como quebra de linhagem.
 - Preservar limitações e decisões pendentes do projeto de dados; o portal não as resolve por conta própria.
-- Não copiar segredos, arquivos `.env`, estados Terraform, credenciais ou amostras de registros para o portal.
+- Não copiar segredos, arquivos `.env`, estados Terraform ou credenciais para o portal. Amostras de
+  registros só entram como exportação versionada da origem, lida por commit e nas condições da
+  [D06](docs/decisoes.md#d06--amostras-de-registros-no-portal) (exceção aberta pelo Owner em
+  18/11/2026); nunca lidas de banco.
 
 ## Diagramas
 
