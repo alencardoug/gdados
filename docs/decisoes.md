@@ -211,20 +211,21 @@ a E4 mostrarem que o layout próprio não basta, a extensão é avaliada e regis
 
 **Estado:** decidida em 14/11/2026 (resposta central §1 e §3, A4 a A6). Em 17/11/2026, o pacote foi
 fixado na `v2.1.0` da origem, por instrução do Owner. Implementada no portal no mesmo dia. Em
-18/11/2026, refixado na `v2.2.0`.
+18/11/2026, refixado na `v2.2.0`; em 19/11/2026, na `v2.3.0`.
 
 **Contrato:** o formato 1 do pacote da origem, especificado antes da geração por decisão do Owner
 (Q13) e gerado pela origem desde 14/11/2026.
 
-**Commit fixado:** `f5a5173`, tag `v2.2.0` do `mvp_eng_dados_2`, o fechamento da reabertura da base,
-fixado em 18/11/2026. A origem o marca em `docs/consumidores.md` §6 como o marco a fixar; o aviso dela
-é `data/medicoes/base_consumidores/avisos/aviso_gdados_20261118.md`, fora do Git. A validação e o que
-mudou no pacote estão na [Verificação §11](verificacao_de_viabilidade.md#11-pacote-refixado-na-v220-18112026).
+**Commit fixado:** `2bceb47`, tag `v2.3.0` do `mvp_eng_dados_2`, o fechamento da fase do ponto de
+reposição, fixado em 19/11/2026. O aviso da origem é
+`data/medicoes/base_consumidores/avisos/aviso_gdados_20261119.md`, fora do Git. A validação e o que
+mudou no pacote estão na [Verificação §12](verificacao_de_viabilidade.md#12-pacote-refixado-na-v230-19112026).
 
 | Data | Commit | Motivo |
 |---|---|---|
 | 17/11/2026 | `eb11709` (`v2.1.0`) | Fechamento da fase da base dos consumidores ([Verificação §10](verificacao_de_viabilidade.md#10-pacote-fixado-na-v210-17112026)); antes, `32397cc` só publicava a especificação, o esquema e o exemplo |
 | 18/11/2026 | `f5a5173` (`v2.2.0`) | F32, F33 e F34 entregues, com campos aditivos no formato 1 |
+| 19/11/2026 | `2bceb47` (`v2.3.0`) | F36 corrigido (ponto de reposição por par), `analytics.dim_sku_location` nova e as amostras de registros da D06 |
 
 | Arquivo da origem no commit fixado | O que é |
 |---|---|
@@ -232,6 +233,8 @@ mudou no pacote estão na [Verificação §11](verificacao_de_viabilidade.md#11-
 | `docs/pacote_de_metadados.schema.json` | Esquema JSON Schema 2020-12; o pacote é validado com o **deste** commit |
 | `docs/pacote_de_metadados.md` | Especificação: campos, regras que o consumidor pode presumir, o que a versão 1 não leva |
 | `docs/pacote_de_metadados.exemplo.json` | Recorte ilustrativo de 13/11/2026; não é regenerado. Serve a testes de mecanismo, não a conteúdo exibido |
+| `docs/amostras_de_registros.json` | Amostras de registros da [D06](#d06--amostras-de-registros-no-portal), desde a `v2.3.0`; retratam o build que o cabeçalho cita |
+| `docs/amostras_de_registros.schema.json` | Esquema das amostras; elas são validadas com o **deste** commit |
 
 O site deve funcionar sem conexão com bancos ou credenciais no navegador.
 
@@ -299,11 +302,9 @@ origem (F32); a entrada `custo_gcp` em `environments` e a nota de `registro_fase
 `source_system` em `quarantine.rejected_shipment_deliveries` (F35). O portal lê os quatro primeiros
 grupos; o diagrama entidade-relacionamento sai das chaves ([D02](#d02--diagramas-e-grafos)).
 
-**Próxima troca do commit fixado:** a origem anunciou no aviso de 18/11/2026 uma fase própria para o
-F36 (o ponto de reposição fixo da P12), que termina numa tag nova com a P12 corrigida e o Registro da
-fase GCP sanitizado na fonte (`ebd8157`, depois da `v2.2.0`). Quando ela for anunciada, o gdados refixa
-por este comando, valida contra o esquema do mesmo commit, revisa `portal/src/conteudo/limitacoes.yml`
-e repete a verificação. Até lá, o commit fixado continua `f5a5173`.
+**Próxima troca do commit fixado:** quando a origem anunciar outra tag, pela regra acima: refixar por
+este comando, validar o pacote e as amostras contra os esquemas do mesmo commit, revisar
+`portal/src/conteudo/limitacoes.yml` e repetir a verificação.
 
 **Leitura que não precisa ser refeita (resposta da origem, §3):**
 
@@ -329,6 +330,16 @@ portal passou a mostrar as chaves e o destino dos `relationships` na página de 
 verificações das auditorias e o diagrama entidade-relacionamento; as limitações resolvidas (F32, F33,
 F34) saíram da lista, e entraram a cardinalidade não declarada e o F36. A verificação da E3, repetida sobre `ea70367`, passou nas 39
 verificações ([relatório da E3](relatorio_e3.md), §7).
+
+**Refixação na `v2.3.0` (19/11/2026):** `scripts/copiar_pacote.sh v2.3.0`, com o comando passando a
+copiar também as amostras de registros e o esquema delas (D06) e a lista ganhando a ADR-0058;
+`npm run validar`, os testes e a build passaram. O que mudou: a P12 com o ponto de reposição de cada
+par (F36; a limitação `ponto-de-reposicao-fixo` saiu da lista), `analytics.dim_sku_location` com
+chave primária e duas estrangeiras, e o Registro da fase GCP com marcadores no lugar dos projetos
+alheios e da conta de faturamento, na fonte. A troca na exibição da D04 continua, como defesa para
+uma refixação que traga os identificadores de volta. Verificação na
+[Verificação §12](verificacao_de_viabilidade.md#12-pacote-refixado-na-v230-19112026) e no
+[relatório da E3](relatorio_e3.md), §8.
 
 ## D04 — Identidade e audiência da publicação
 
@@ -505,7 +516,8 @@ de conceitos (E1), não vira requisito do pacote nem do portal do BI.
 
 ## D06 — Amostras de registros no portal
 
-**Estado:** pendente do Owner, aberta em 17/11/2026 (E4.2).
+**Estado:** aberta em 17/11/2026 (E4.2); **decidida em 19/11/2026**, com o aceite do Owner à proposta da
+origem, e implementada no mesmo dia, na `v2.3.0`.
 
 **Pedido do Owner:** mostrar as cinco primeiras linhas de cada tabela, com todas as colunas, para ver
 exemplos de preenchimento na própria página da relação.
@@ -540,9 +552,28 @@ alternativa sem exceção. Andamento:
   (arquivo, forma, data e commit, linhas por relação, tratamento das colunas `personal` e dos
   *payloads* do legado). A geração fica para depois do aceite do Owner à proposta, porque o arquivo
   iria ao repositório público da origem e ao site;
-- (c) e (d) **aguardam a proposta da origem:** o tratamento das colunas `personal` e dos *payloads*
-  é da governança da origem (Governança §4: classificar não é expor), e o que vai ao site público é
-  decisão do Owner na D04. O portal não decide exposição pela classificação.
+- (b) **proposta recebida e aceita pelo Owner em 19/11/2026** (D95 e ADR-0058 da origem, com três
+  retificações no mesmo dia; `resposta_gdados_20261119.md`, fora do Git): um arquivo próprio,
+  `docs/amostras_de_registros.json`, ao lado do pacote e lido pelo mesmo commit, com esquema ao
+  lado; até cinco linhas de cada relação do pacote da mesma publicação, todas as colunas, na ordem
+  da chave declarada; nas relações do legado de uma lista fechada, as linhas com defeito registrado
+  primeiro, e o conteúdo que o defeito deslocou para coluna não pessoal aparece como está (decisão
+  do Owner). Chegou na `v2.3.0`;
+- (c) **decidido pela origem, com o aceite do Owner:** todo valor de coluna `personal` vira o
+  marcador `<personal>`, também nas folhas dos *payloads* JSON do legado; o nulo continua nulo. A
+  prova da máscara é da origem, por ocorrência, no momento da exportação;
+- (d) **decidido pelo Owner** ao aceitar a opção 3(a) da proposta: a máscara é a concessão ao público
+  anônimo, que é a audiência da D04. O portal mostra a amostra como exportada e não muda a máscara
+  nem a classificação.
 
-**Pendente:** a proposta da origem e o aceite do Owner; depois, a leitura no portal (página da
-relação), a cópia pela D03 e a revisão do item 10 da E3.
+**Implementação (19/11/2026):** o comando da D03 copia as amostras e o esquema delas. A leitura
+(`portal/src/lib/origem.mjs`) recusa a build se o formato não for 1, se o arquivo não seguir o
+esquema do mesmo commit, se o conjunto de relações ou as colunas de alguma relação diferirem do
+pacote, se as colunas mascaradas diferirem das `personal` ou se um valor escalar de coluna `personal`
+não for o marcador nem nulo. Os valores JSON são mascarados por folha pela origem, que os prova; o
+portal não refaz essa prova. A página de cada relação mostra a amostra, com a ordem usada, o total de
+linhas, as colunas mascaradas e a procedência da exportação (data, commit do build, invocação, ambiente
+e `as_of_date`); o painel de procedência mostra o cabeçalho. A amostra retrata o build que cita, não o
+banco de agora. Os testes ficam em `portal/test/origem.test.mjs`.
+
+**Pendente:** nada. A cada tag nova, as amostras são refixadas com o pacote (D03).

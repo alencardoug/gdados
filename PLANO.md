@@ -134,7 +134,10 @@ em 18/11/2026: a `v2.2.0`, com as chaves de `analytics` (F34), que o portal pass
    na `v2.2.0` ([Verificação §11](docs/verificacao_de_viabilidade.md#11-pacote-refixado-na-v220-18112026)):
    o portal passou a mostrar as chaves, o destino dos `relationships`, o que sustenta cada auditoria e
    o diagrama entidade-relacionamento (D02), e a verificação da E3 foi repetida
-   ([relatório](docs/relatorio_e3.md), §7). A próxima tag, com a correção do F36, segue a mesma regra.
+   ([relatório](docs/relatorio_e3.md), §7). **Feito de novo** em 19/11/2026 na `v2.3.0`, com o F36
+   corrigido e as amostras de registros da D06
+   ([Verificação §12](docs/verificacao_de_viabilidade.md#12-pacote-refixado-na-v230-19112026);
+   [relatório](docs/relatorio_e3.md), §8). As próximas tags seguem a mesma regra.
 6. **E4**, avaliação pelo Owner; **E5** só depois dela, com a D04 decidida à luz da Q14.
 
 ### E0 — Avaliar e fechar as decisões
@@ -258,7 +261,7 @@ disponível. Pedidos e pendências da avaliação:
 | # | Pedido ou pendência | Situação | Dono |
 |---|---|---|---|
 | E4.1 | Roteiro de aprendizado: por onde começar, do conteúdo isolado ao que depende de outros e dos termos técnicos | Avaliado como viável sem dependência nova; em 18/11/2026 o Owner definiu construir **um degrau por vez**, conforme aprende. **Degrau 1, fundamentos, feito em 18/11/2026** (`/conceitos/roteiro/`); o seguinte espera o Owner estudá-lo e indicar o assunto | [Página de conceitos §10](docs/pagina_de_conceitos.md#10-roteiro-de-aprendizado-pedido-de-17112026) |
-| E4.2 | As cinco primeiras linhas de cada tabela, com todas as colunas | **Exceção aberta pelo Owner em 18/11/2026:** regra do AGENTS.md ajustada e proposta pedida à origem; a geração e a exibição esperam o aceite do Owner à proposta | [D06](docs/decisoes.md#d06--amostras-de-registros-no-portal) |
+| E4.2 | As cinco primeiras linhas de cada tabela, com todas as colunas | **Feito em 19/11/2026:** o Owner aceitou a proposta da origem, as amostras chegaram na `v2.3.0`, com o campo `personal` mascarado, e aparecem na página de cada relação | [D06](docs/decisoes.md#d06--amostras-de-registros-no-portal) |
 | E4.3 | Revisão conceitual das explicações e dos percursos | Em 18/11/2026 o Owner aprovou o conteúdo e o portal para a fase atual; a revisão continua a cada degrau do roteiro (E4.1) | [Página de conceitos §8](docs/pagina_de_conceitos.md#8-critérios-de-avaliação-local) |
 | E4.4 | Meta de zoom no grafo inteiro, cumprida na mediana e não em toda rodada | **Decidido em 18/11/2026:** o Owner afrouxou a meta do grafo inteiro para 100 ms; os recortes continuam em 50 ms | [Relatório da E3](docs/relatorio_e3.md), §3; [D02](docs/decisoes.md#d02--diagramas-e-grafos) |
 | E4.5 | Identificadores de projetos GCP e prefixo de conta de faturamento nos textos copiados | Feito em 18/11/2026: os três projetos sem relação e o prefixo de faturamento aparecem como marcador | [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação); relatório da E3, §5 |

@@ -142,3 +142,23 @@ a 150 ms, como margem, não meta.
 
 O diagrama entidade-relacionamento não tem meta própria na E3; foi conferido no Chrome nesta data (recorte
 padrão, recorte de `analytics.dim_date`, modelo inteiro e link direto `?er=`), sem erro no console.
+
+## 8. Repetição na `v2.3.0` (19/11/2026)
+
+| Campo | Valor |
+|---|---|
+| Versão avaliada | gdados `d64cf8e`; a árvore tinha só documentos de `docs/` e da raiz sem commit, fora da build |
+| Pacote | `mvp_eng_dados_2` `v2.3.0` (`2bceb47`), 97 arquivos conferidos, com as amostras de registros da D06 |
+| Ambiente | O mesmo da §1: Node 24.18.0, cinco repetições por medida |
+| Resultado bruto | [`verificacao/resultados/2026-11-19T22-16-09-476Z.json`](../verificacao/resultados/2026-11-19T22-16-09-476Z.json) |
+
+**As 39 verificações automáticas passaram.** Uma rodada anterior foi interrompida por esta sessão,
+sem resultado guardado, porque `limitacoes.yml` mudou durante as builds.
+
+Destaques, mediana com CPU normal: build em 6,2 s; 46 testes de unidade; 31.794 links e âncoras de
+`dist/` resolvem; as 283 relações e as 16 perguntas têm página; três builds com o mesmo SHA-256 de
+`dist/` (`a102960…`); nenhum identificador mascarado pela D04 em `dist/`, nenhum e-mail fora dos
+domínios de exemplo. Governança com primeira renderização em 220 ms e 142 KB; busca em até 59 ms
+por tecla; recorte da linhagem em 254 ms; grafo inteiro em 564 ms, zoom em 50 ms (meta de 100 ms).
+A página de relação medida tem 7,8 KB; com as amostras, a maior página de relação de `dist/`
+(`trusted.legacy_eligible_records`) tem 22 KB comprimida [medido fora da verificação, com gzip].

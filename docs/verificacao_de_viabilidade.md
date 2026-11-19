@@ -445,3 +445,67 @@ O aviso diz que a sanitização dos identificadores GCP foi feita na origem depo
 o arquivo da `v2.2.0` ainda tem o texto antigo, e a troca na exibição do portal continua (D04). O
 achado F36 da origem (ponto de reposição fixo da P12) está aberto e virou limitação conhecida no
 portal. Não foram executados comandos do projeto na origem, e nada foi escrito fora do gdados.
+
+## 12. Pacote refixado na `v2.3.0` (19/11/2026)
+
+| Campo | Valor |
+|---|---|
+| Repositório | `/home/doug/Projetos/mvp_eng_dados_2` |
+| Commit fixado | `2bceb47` (`2bceb477f9f854c034b58353ce252334b149b330`), tag `v2.3.0`, de 19/11/2026 15:46 -03:00; presente em `origin/main` na leitura |
+| Origem do pedido | Aviso `aviso_gdados_20261119.md` da pasta de avisos da origem (fora do Git), deixado na caixa de correio do gdados com a resposta à D06 e a correção dela |
+| Natureza | `git show` e `git log` na origem, pelo `scripts/copiar_pacote.sh v2.3.0`; validação das cópias dentro do gdados |
+
+| Arquivo em `2bceb47` | Blob Git | SHA-256 da cópia | Bytes |
+|---|---|---|---:|
+| `docs/pacote_de_metadados.json` | `7aaddc5` | `10142f39fd7fc82589932215395e0a396411beeddfcdfc3bad48990dfde8adb7` | 5.511.290 |
+| `docs/pacote_de_metadados.schema.json` | `578008b` | `ccbea528be9c80e93c40df7d04b1aa3ad8c9c5c6390c0c9890c20926347632d1` | 54.989 |
+| `docs/pacote_de_metadados.exemplo.json` | `e912fcf` | `6c8643c30c1de67b1610e60da68c197ac5924bda416709feaaea1ddbb1a8af60` | 23.738 |
+| `docs/amostras_de_registros.json` | `5a87dba` | `c81664679f3d808d38a2aab7d4d877fc66ab6fa14891328db024c7dca7133f14` | 736.503 |
+| `docs/amostras_de_registros.schema.json` | `3d830af` | `94278d1b7140b725b02df86cffe2824af2b319f56a9d4a3b5b6613a781cb03ac` | 2.952 |
+
+### 12.1 Validação
+
+Pelo comando da D03 (`npm run validar`, os testes e a build, com ajv, D01): os 97 arquivos copiados
+conferem com `origem/procedencia.json`, `format` é 1 no pacote e nas amostras, e os dois passam nos
+esquemas do mesmo commit. O esquema do pacote não mudou. A lista de arquivos lidos por commit ganhou
+a ADR-0058 da origem, citada na página de cada relação.
+
+### 12.2 O que mudou no pacote
+
+Contagens lidas do pacote em 19/11/2026; descrevem o que ele declara, não o banco.
+
+| Parte | Em `2bceb47` | Diferença para `f5a5173` |
+|---|---|---|
+| `provenance.dbt` | manifesto de `2026-11-19T17:04:03Z` e `run_results` de `2026-11-19T17:07:26Z`, mesma invocação | execução nova |
+| `provenance.warehouse` | `verified`, construído do commit `bcc2d5c`, invocação `1cb3cd4e…` | build novo |
+| `relations` | 283: 194 modelos, 81 *sources*, 4 *snapshots* e 4 *seeds*; 4.238 colunas | `analytics.dim_sku_location` nova |
+| `relations.*.primary_key` e `foreign_keys` | 27 relações com chave primária e 60 estrangeiras, todas em `analytics` | +1 e +2: `dim_sku_location` (`sku_location_key`) aponta para `dim_product` e `dim_warehouse` |
+| `tests` | 901, todos `pass` | +17 |
+| `lineage` | 202 relações | +1 |
+| `checks` | 1.889: 1.870 `pass` e 19 `skipped` | +43 |
+| `description_gaps`, `view_audits`, `open_items`, `environments` | 0; 16 `audited`; D43, V1, V2, V3, V5, V6 e V7; 10 | sem mudança |
+| `metrics`, `filters`, `view_rules`, `questions`, `crossings` | 44, 6, 16, 16 e 4 | sem mudança de quantidade |
+
+A P12 (`consumption.skus_below_reorder_point`) passa a usar o ponto de reposição de cada par (F36,
+ADR-0057 da origem); o aviso declara 2.868 → 213 linhas, e o `row_count` das amostras registra 213
+no build que elas citam.
+
+### 12.3 As amostras de registros
+
+Lidas em 19/11/2026 do arquivo fixado; descrevem o build que ele cita (`bcc2d5c`, invocação
+`1cb3cd4e-0637-4229-875c-82d073080540`, procedência `verified`, exportado em
+`2026-11-19T17:31:37Z`, `as_of_date` `2026-09-01`, ambiente `local`), não o banco de agora.
+
+- Cobertura igual ao conjunto de relações do pacote: 283; uma vazia no build
+  (`trusted.f31_legacy_sale_exceptions`, `row_count: 0`).
+- Colunas de cada relação iguais às do pacote; as 165 mascaradas são exatamente as `personal`.
+- Todo valor escalar de coluna `personal` é `<personal>` ou nulo. Os valores JSON das colunas
+  `personal` (os *payloads* do legado) mantêm a estrutura, com as folhas pessoais mascaradas pela
+  origem; o portal não refaz essa prova, que é da origem, por ocorrência.
+- 83 relações com `defect_first`, a lista fechada do ADR-0058.
+
+### 12.4 Limites
+
+A troca dos identificadores GCP na exibição (D04) continua no portal, mas a cópia da `v2.3.0` não
+cita nenhum deles: a origem os trocou por marcadores na fonte. Não foram executados comandos do
+projeto na origem, e nada foi escrito fora do gdados.

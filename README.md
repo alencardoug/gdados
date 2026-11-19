@@ -13,7 +13,9 @@ mesmo commit. No mesmo dia começou a aplicação, em `portal/` (Astro): as trê
 pacote validado no build. A camada editorial da página de conceitos tem formato, inventário e a
 primeira redação das explicações, a revisar pelo Owner. Em 18/11/2026 o pacote foi refixado na
 `v2.2.0`, e o portal passou a mostrar as chaves e o diagrama entidade-relacionamento; no mesmo dia
-começou a publicação em <https://governadados.web.app>.
+começou a publicação em <https://governadados.web.app>. Em 19/11/2026 o pacote foi refixado na
+`v2.3.0`, e cada relação passou a mostrar uma amostra de registros, com o campo pessoal mascarado
+(D06).
 
 ## Escopo
 
@@ -117,16 +119,17 @@ O histórico desta conversa não é necessário para compreender o escopo docume
   "Extras", sem faturamento, e o site vazio `governadados.web.app`; o deploy fica para a E5;
 - em 18/11/2026 a origem publicou a `v2.2.0` (F32 a F34) e o gdados a refixou e validou
   ([Verificação §11](docs/verificacao_de_viabilidade.md#11-pacote-refixado-na-v220-18112026)); a
-  verificação da E3 foi repetida ([relatório](docs/relatorio_e3.md), §7). A origem prepara outra tag,
-  sem data, com a correção do F36 ([alinhamento, O9](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2));
-  quando for anunciada, refixar e revalidar pela D03 e repetir a verificação.
+  verificação da E3 foi repetida ([relatório](docs/relatorio_e3.md), §7);
+- em 19/11/2026 a origem publicou a `v2.3.0`, com o F36 corrigido e as amostras de registros da D06,
+  aceitas pelo Owner; o gdados a refixou e validou
+  ([Verificação §12](docs/verificacao_de_viabilidade.md#12-pacote-refixado-na-v230-19112026)) e
+  repetiu a verificação da E3 ([relatório](docs/relatorio_e3.md), §8).
 
 **Publicação (E5, 18/11/2026):** o portal sai em <https://governadados.web.app> a cada push no
 `main`, pelo workflow `.github/workflows/deploy.yml`, depois do build e dos testes.
 
 **Próximo passo:** o Owner estuda o degrau 1 do roteiro ("Comece por aqui", `/conceitos/roteiro/`,
-feito em 18/11/2026) e indica o assunto do degrau 2 (página de conceitos §10). A D06 (amostras) teve a
-exceção aberta e espera a proposta da origem, pedida pela caixa de correio dela, e o aceite do Owner.
+feito em 18/11/2026) e indica o assunto do degrau 2 (página de conceitos §10). A D06 (amostras) foi entregue na `v2.3.0`.
 A meta de zoom do grafo inteiro foi para 100 ms (E4.4). Para avaliar o portal localmente: `cd portal && npm run build && npm run preview`. Para
 repetir a verificação: [`verificacao/README.md`](verificacao/README.md).
 
