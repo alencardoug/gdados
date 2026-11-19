@@ -1,4 +1,5 @@
 ---
+import MapaCamadas from "../components/MapaCamadas.astro";
 import Base from "../layouts/Base.astro";
 import { procedencia, pacote, rota, commitCurto, relacoes, camadas } from "../lib/portal.mjs";
 const n = (x) => Object.keys(x).length;
@@ -6,11 +7,13 @@ const n = (x) => Object.keys(x).length;
 <Base titulo="Início" descricao="Portal de leitura e explicação da governança do projeto de dados.">
 <h1>Portal de engenharia e governança de dados</h1>
 <p class="lead">
-  Este portal ajuda a entender o projeto de dados <code>{procedencia.repository}</code>: das origens às views de consumo,
-  a organização do código e os ambientes local e GCP. Ele mostra o pacote de metadados do commit
-  <code>{commitCurto(procedencia.commit)}</code> (<code>{procedencia.ref}</code>) como está, sem consultar bancos.
-  As definições pertencem à origem. Organizar e explicar essas definições é papel do portal.
+  Acompanhe os dados de <code>{procedencia.repository}</code> da entrada até as views que respondem às perguntas de negócio.
 </p>
+<section aria-labelledby="mapa">
+  <h2 id="mapa">Mapa das camadas</h2>
+  <p>As estações mostram a função de cada camada. Escolha uma para abrir suas relações no catálogo.</p>
+  <MapaCamadas />
+</section>
 <ul class="cartoes">
   <li>
     <h2><a href={rota("governanca/")}>Governança</a></h2>
@@ -27,7 +30,7 @@ const n = (x) => Object.keys(x).length;
   </li>
 </ul>
 <h2>O que o pacote traz</h2>
-<p class="suave">Contagens do pacote copiado, calculadas no build. Elas mudam quando o commit fixado muda.</p>
+<p class="suave">As definições vêm da origem. O portal lê o pacote <code>{procedencia.ref}</code> (<code>{commitCurto(procedencia.commit)}</code>) e calcula estas contagens no build.</p>
 <div class="rolagem"><table>
 <thead><tr><th>Seção</th><th>Itens</th></tr></thead>
 <tbody>

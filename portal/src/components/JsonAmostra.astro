@@ -1,0 +1,16 @@
+---
+import { MARCADOR_PESSOAL } from "../lib/origem.mjs";
+const { value, label = "JSON" } = Astro.props;
+const entries = Object.entries(value);
+const isArray = Array.isArray(value);
+const unit = isArray ? (entries.length === 1 ? "item" : "itens") : (entries.length === 1 ? "campo" : "campos");
+---
+<details class="sample-json">
+  <summary><code>{label}</code> · {entries.length} {unit}</summary>
+  {entries.length ? <ul>{entries.map(([key, v]) => <li>
+    {v !== null && typeof v === "object" ? <Astro.self value={v} label={key} /> : <>
+      <code>{key}</code>: {v === MARCADOR_PESSOAL ? <span class="etiqueta">mascarado</span>
+        : v === null ? <span class="suave">nulo</span> : <code>{JSON.stringify(v)}</code>}
+    </>}
+  </li>)}</ul> : <code>{isArray ? "[]" : "{}"}</code>}
+</details>

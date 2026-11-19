@@ -168,8 +168,9 @@ export const relacaoPorId = new Map(relacoes.map((x) => [x.id, x]));
 
 /** Valores distintos para os filtros do catálogo, na ordem do pipeline quando houver. */
 const mediana = (v) => v.sort((a, b) => a - b)[Math.floor(v.length / 2)];
-export const camadas = [...agrupar(relacoes, (x) => x.camada)]
-  .map(([c, xs]) => ({ camada: c, posicao: mediana(xs.map((x) => camadaNoGrafo.get(x.id))), n: xs.length }))
+export const relationsByLayer = agrupar(relacoes, (x) => x.camada);
+export const camadas = [...relationsByLayer]
+  .map(([c, xs]) => ({ camada: c, posicao: mediana(xs.map((x) => camadaNoGrafo.get(x.id))) }))
   .sort((a, b) => a.posicao - b.posicao || a.camada.localeCompare(b.camada))
   .map((c) => c.camada);
 export const dominios = [...new Set(relacoes.map((x) => x.r.meta?.domain ?? null))].sort((a, b) =>

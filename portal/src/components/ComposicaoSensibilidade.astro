@@ -1,0 +1,21 @@
+---
+import Conceito from "./Conceito.astro";
+const { columns } = Astro.props;
+const groups = Object.groupBy(Object.values(columns), (c) => c.sensitivity ?? "ausente");
+const order = ["public", "internal", "confidential", "personal"];
+const categories = [...order.filter((s) => groups[s]), ...Object.keys(groups).filter((s) => !order.includes(s)).sort()];
+---
+<div class="composition">
+  <dt><Conceito id="sensibilidade">Sensibilidade das colunas</Conceito></dt>
+  <dd>
+    {categories.length ? <>
+      <div class="sensitivity-bar" aria-hidden="true">
+        {categories.map((s) => <span data-class={s} style={`flex-grow:${groups[s].length}`} />)}
+      </div>
+      <ul aria-label="Colunas por classificação" role="list">
+        {categories.map((s) => <li><i aria-hidden="true" data-class={s}></i><code>{s}</code> <b>{groups[s].length}</b></li>)}
+      </ul>
+    </> : <span class="ausente">Nenhuma coluna declarada</span>}
+    <small>O acesso está nos <a href="#acesso">papéis com leitura</a>.</small>
+  </dd>
+</div>

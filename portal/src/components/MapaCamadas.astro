@@ -1,0 +1,53 @@
+---
+import { relationsByLayer, rota } from "../lib/portal.mjs";
+interface Props { currentLayer?: string }
+const { currentLayer } = Astro.props;
+// Funções editoriais a partir da Arquitetura §2. A ordem organiza a leitura por função.
+const stages = [
+  { role: "Entrada", layers: ["raw", "raw_legacy"] },
+  { role: "Preparo", layers: ["staging"] },
+  { role: "Validação", layers: ["trusted"] },
+  { role: "Análise", layers: ["analytics"] },
+  { role: "Consumo", layers: ["consumption"] },
+];
+const otherRoles = [
+  { role: "Rejeitados", layers: ["quarantine"] },
+  { role: "Histórico", layers: ["snapshots"] },
+  { role: "Auditoria", layers: ["governance"] },
+];
+const descriptions: Record<string, string> = {
+  raw: "Cópia da origem principal", raw_legacy: "Capturas do legado",
+  staging: "Padroniza tipos e valores", trusted: "Aplica regras de negócio",
+  analytics: "Organiza fatos e dimensões", consumption: "Entrega views de leitura",
+  quarantine: "Guarda rejeições e motivos", snapshots: "Preserva versões das dimensões",
+  governance: "Registra execuções e controles",
+};
+const known = new Set([...stages, ...otherRoles].flatMap((g) => g.layers));
+const otherLayers = [...relationsByLayer.keys()].filter((c) => !known.has(c));
+if (otherLayers.length) otherRoles.push({ role: "Outras camadas do pacote", layers: otherLayers });
+const lanes = [
+  { label: "Da entrada ao consumo", groups: stages },
+  { label: "Outras funções", groups: otherRoles },
+];
+---
+<div class:list={["layer-map", { compact: currentLayer }]}>
+  {lanes.map(({ label, groups }) => {
+    const present = groups.filter((g) => g.layers.some((c) => relationsByLayer.has(c)));
+    return present.length > 0 && <div class="layer-band">
+      <p class="band-name">{label}</p>
+      <ul aria-label={label} class="stops" role="list">
+        {present.map((g) => <li>
+          <span class="layer-role">{g.role}</span>
+          {g.layers.filter((c) => relationsByLayer.has(c)).map((c) => {
+            const n = relationsByLayer.get(c).length;
+            return <a href={rota(`governanca/?camada=${encodeURIComponent(c)}#catalogo`)} aria-current={currentLayer === c ? "location" : undefined}>
+              <code>{c}</code>
+              {currentLayer === c && <strong class="current-label">Você está aqui</strong>}
+              {!currentLayer && <>{descriptions[c] && <span class="layer-description">{descriptions[c]}</span>}<span class="layer-count">{n} {n === 1 ? "relação" : "relações"}</span></>}
+            </a>;
+          })}
+        </li>)}
+      </ul>
+    </div>;
+  })}
+</div>
