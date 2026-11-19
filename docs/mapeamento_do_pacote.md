@@ -4,14 +4,15 @@
 |---|---|
 | Etapa | E1, parte independente da stack ([plano](../PLANO.md), §5) |
 | Data | 17/11/2026 |
-| Pacote | Cópia em `origem/`; commit e SHA-256 em `origem/procedencia.json` (hoje `v2.1.0`, `eb11709`) |
+| Pacote | Cópia em `origem/`; commit e SHA-256 em `origem/procedencia.json` (hoje `v2.2.0`, `f5a5173`) |
 | Regras de leitura | [D03](decisoes.md#d03--pacote-e-atualização-de-metadados): formato, ausência, estado, chave desconhecida, coleções de tamanho variável |
 
 Este documento diz de onde cada página tira cada informação e como trata a falta dela. Os
 significados dos campos são os da especificação da origem (`docs/pacote_de_metadados.md` no commit
 fixado); aqui não se redefine nenhum. As contagens citadas descrevem o pacote de `eb11709`
-([Verificação §10.2](verificacao_de_viabilidade.md#102-o-que-o-pacote-declara)) e servem só para
-dimensionar; o código e o texto editorial não as fixam.
+([Verificação §10.2](verificacao_de_viabilidade.md#102-o-que-o-pacote-declara)), com as mudanças da
+`v2.2.0` na [Verificação §11.2](verificacao_de_viabilidade.md#112-o-que-mudou-no-pacote), e servem só
+para dimensionar; o código e o texto editorial não as fixam.
 
 ## 1. Seções do pacote
 
@@ -22,6 +23,7 @@ artefatos. Toda página mostra o rodapé de procedência.
 |---|---|---|---|
 | `provenance` | Todas | Rodapé e painel de procedência: commit fixado (de `origem/procedencia.json`), data de cópia, versão do dbt, adaptador, `manifest_generated_at`, `run_results_generated_at`, `invocation_id` e procedência do armazém | `warehouse.status` exibido como está; com `not_verified`, o `reason`. `tree_dirty_at_generation: true` é explicado como normal do fluxo, não como defeito |
 | `relations` | G, E, C | Catálogo: tipo (`resource_type`), materialização, descrição, grão, papéis com leitura (`grants_select`), `meta` (domínio, dono, escritores, retenção) e colunas com descrição, tipo, sensibilidade e `meta` | `null` = ausente. `data_type` só vem declarado em `analytics` e `consumption`; nas demais camadas, "tipo não declarado no pacote", não um tipo inferido. Domínio e dono faltam nas *sources* de `raw` e `raw_legacy` |
+| `relations.*.primary_key`, `relations.*.foreign_keys` (desde a `v2.2.0`) | G, E, C | Ficha da relação (chave primária, estrangeiras e quem a referencia), marcas PK e FK nas colunas e diagrama entidade-relacionamento | Lista vazia = nenhuma chave declarada; a ficha diz em que camadas o pacote declara chaves. A cardinalidade não vem no pacote; a regra do diagrama está na [D02](decisoes.md#d02--diagramas-e-grafos) |
 | `relations.*.columns.*.meta` | G, C | `value_domain`, `values` (valor → significado, sempre texto) e `null_meaning` como tabela de valores; `description_inherited`/`description_from` como origem da descrição; `sensitivity_reason` | Chaves de `meta` variam por coluna (repassadas do dbt); o portal mostra as que conhece e ignora as outras |
 | `lineage` | G | Linhagem por coluna: `leaves` (insumo imediato) e `origins` com `kind` (`source`, `seed`, `generated`) | `seed` e `generated` são terminais válidos, nunca quebra de linhagem. As *sources* não têm entrada: são origem |
 | `crossings` | G, E | Travessias fora do dbt, ligadas às camadas de destino; o texto é Markdown | Sem precisão por coluna: a ligação é por camada, como o pacote declara |
@@ -30,9 +32,9 @@ artefatos. Toda página mostra o rodapé de procedência.
 | `filters` | G, C | Filtros citados pelas medidas: rótulo, predicado, relação e ligação ao conceito do glossário | O conceito é link relativo a `provenance.link_base`; resolvido como texto lido por commit (§3) |
 | `view_rules` | G, C | Montagem de cada view: grão, fontes, combinação, papel de cada coluna; na view conferida por referência, o teste e o motivo | `combine: null` com uma fonte; `sources: []` na view por referência |
 | `description_gaps` | G | Marca "sem descrição" na relação ou coluna e lista de faltas | É a falta **declarada**, não inventário físico do banco |
-| `tests` | G | Testes de cada relação e coluna, com tipo, origem da declaração e resultado | `result: null` = sem resultado. Os três estados da especificação: declarado, executado com sucesso numa data, problema em aberto |
+| `tests` | G, E | Testes de cada relação e coluna, com tipo, origem da declaração, resultado e, nos `relationships`, a coluna referenciada (`references_relation`, `references_column`, desde a `v2.2.0`) | `result: null` = sem resultado. Os três estados da especificação: declarado, executado com sucesso numa data, problema em aberto |
 | `checks` | G, E | Verificações do `pytest` por módulo, com o resumo e o resultado | `skipped` exibido como tal; a causa não está no pacote. `layer: null` = não declarada |
-| `view_audits` | G | Estado da auditoria de cada view, commit, critérios, referência e achados | Estado exibido como está |
+| `view_audits` | G | Estado da auditoria de cada view, commit, critérios, referência, achados e, desde a `v2.2.0`, o que a sustenta: `checks` (ids em `checks`) e `data_tests` (ids em `tests`), com o resultado | Estado exibido como está; id sem entrada correspondente aparece como "não encontrado" |
 | `open_items` | G, C | Decisões e verificações em aberto, com estado e âncora no documento | `objects: null` = não declarado; o portal não liga o item a objetos por conta própria |
 | `environments` | E | Lista de artefatos da página de estrutura e ambientes, com repositório, caminho, forma de entrega, congelamento e nota | `not_available` exibido como indisponível, com a nota. A lista é lida, não fixada no código |
 
@@ -57,7 +59,8 @@ artefatos. Toda página mostra o rodapé de procedência.
 - **Infraestrutura e documentos:** cada entrada de `environments`, lida por commit (§3).
 - **Comparação local ↔ GCP:** declaração (`terraform`, mapa de paridade) e evidência datada
   (`registro_fase_gcp`); `evidencias_gcp` indisponível.
-- **Lógica:** entidades e grãos de `relations`; os relacionamentos dependem da lacuna L1 (§4).
+- **Lógica:** entidades e grãos de `relations`; relacionamentos de `primary_key` e `foreign_keys`, em
+  diagrama por recorte e tabela (L1 fechada na `v2.2.0`, §4).
 
 ### 2.3 Conceitos e artefatos
 
@@ -86,7 +89,7 @@ Esses textos chegam ao portal pela cópia da D03, em `origem/arquivos/`, a parti
 
 | # | Lacuna | Efeito | Encaminhamento |
 |---|---|---|---|
-| L1 | O pacote não traz o destino das chaves estrangeiras: os testes `relationships` (76) informam a relação e a coluna testadas, mas não a relação e a coluna referenciadas; as PKs e FKs declaradas em `analytics` (ADR-0056 da origem) também não constam | Sem isso, o diagrama entidade-relacionamento da página de estrutura teria de inferir a ligação pelo nome do teste, o que o portal não faz | **Aceito pela origem como F34** (17/11/2026), para a tag seguinte à `v2.1.0`. Até lá, a página mostra entidades e grãos e marca os relacionamentos como "não declarados na `v2.1.0`"; quando os campos existirem, passa a lê-los sem mudar a regra de não inferir |
+| L1 | O pacote não traz o destino das chaves estrangeiras: os testes `relationships` (76) informam a relação e a coluna testadas, mas não a relação e a coluna referenciadas; as PKs e FKs declaradas em `analytics` (ADR-0056 da origem) também não constam | Sem isso, o diagrama entidade-relacionamento da página de estrutura teria de inferir a ligação pelo nome do teste, o que o portal não faz | **Fechada na `v2.2.0`** (F34, 18/11/2026): o portal lê `primary_key`, `foreign_keys` e o destino dos `relationships`, sem inferir nada pelo nome dos testes |
 
 Não são lacunas a pedir, porque o formato as declara: `data_type` fora de `analytics` e `consumption`,
 `open_items.*.objects`, `checks.*.layer`, evidências do GCP e domínio e dono das *sources*.

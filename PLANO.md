@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Estado | E0 fechada em 14/11/2026; pacote fixado na `v2.1.0` da origem em 17/11/2026; E1 e E2 autorizadas; aplicação iniciada em `portal/` e E3 feita em 17/11/2026 ([relatório](docs/relatorio_e3.md)); E4 com o Owner; publicação pendente (D04) |
+| Estado | E0 fechada em 14/11/2026; pacote fixado na `v2.1.0` da origem em 17/11/2026 e refixado na `v2.2.0` em 18/11/2026; aplicação em `portal/`; E3 feita em 17/11/2026 ([relatório](docs/relatorio_e3.md)) e repetida na `v2.2.0`; E4 com o Owner; E5 autorizada e publicada em 18/11/2026 (D04) |
 | Data | 10/11/2026; E0, E1 e E5 revistas em 14/11/2026; sequência, E1, E2 e E3 replanejadas em 17/11/2026 |
 | Base da proposta | [Verificação de viabilidade](docs/verificacao_de_viabilidade.md) |
 | Decisões | [Registro de decisões](docs/decisoes.md) |
@@ -102,8 +102,8 @@ dia, a origem aceitou os itens do gdados, abriu uma fase curta de correções qu
 nova, sem data, e liberou a E1 à E3 contra a `v2.1.0` sem espera
 ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O portal
 trabalha com o pacote como está; um pacote novo só entra pela troca do commit fixado na D03, com
-nova validação, e o código não fixa contagens nem identificadores do pacote atual. Campos que a
-tag nova trará, como as chaves de `analytics` (F34), aparecem como "não declarados na `v2.1.0`" até lá.
+nova validação, e o código não fixa contagens nem identificadores do pacote atual. A tag nova saiu
+em 18/11/2026: a `v2.2.0`, com as chaves de `analytics` (F34), que o portal passou a ler.
 
 1. **Provas da D01 e da D02.** **Feitas** em 17/11/2026; o Owner adotou Astro e Mermaid com
    Cytoscape.js no mesmo dia ([D01](docs/decisoes.md#d01--estrutura-da-aplicação),
@@ -130,7 +130,11 @@ tag nova trará, como as chaves de `analytics` (F34), aparecem como "não declar
    ressalva do zoom no grafo inteiro e o achado dos identificadores GCP para a D04
    ([relatório](docs/relatorio_e3.md); verificação em `verificacao/`).
 5. **Na tag nova da origem**, quando anunciada: refixar e revalidar pela D03, sem esperar por ela
-   nas etapas anteriores. As mudanças previstas são aditivas no formato 1.
+   nas etapas anteriores. As mudanças previstas são aditivas no formato 1. **Feito** em 18/11/2026
+   na `v2.2.0` ([Verificação §11](docs/verificacao_de_viabilidade.md#11-pacote-refixado-na-v220-18112026)):
+   o portal passou a mostrar as chaves, o destino dos `relationships`, o que sustenta cada auditoria e
+   o diagrama entidade-relacionamento (D02), e a verificação da E3 foi repetida
+   ([relatório](docs/relatorio_e3.md), §7). A próxima tag, com a correção do F36, segue a mesma regra.
 6. **E4**, avaliação pelo Owner; **E5** só depois dela, com a D04 decidida à luz da Q14.
 
 ### E0 — Avaliar e fechar as decisões

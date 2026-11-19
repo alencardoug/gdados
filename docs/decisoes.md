@@ -194,24 +194,39 @@ desenhar rótulos abaixo de 8 px na tela (`textureOnViewport`, `hideEdgesOnViewp
 normal, mas duas de cinco rodadas passaram de 50 ms ([relatório da E3](relatorio_e3.md), §3). A meta
 volta ao Owner na E4.
 
+**Diagrama entidade-relacionamento (18/11/2026):** com as chaves da `v2.2.0` (D03), a página de
+estrutura desenha o modelo em Mermaid (`erDiagram`), gerado por `portal/src/lib/er.mjs`, com testes. Como
+na linhagem, abre num recorte (condição 1): a relação escolhida e as ligadas a ela por chave, e só as
+ligações dela; o padrão é a relação com mais chaves estrangeiras próprias, e o modelo inteiro fica como
+opção. O endereço `estrutura/?er=<relação>#entidades` abre o recorte de uma relação. O desenho fica no
+tamanho natural, com rolagem horizontal, porque reduzido o modelo inteiro fica ilegível. A cardinalidade
+não é declarada pelo pacote: a ponta de quem aponta é "zero ou mais", e a ponta apontada é "exatamente
+um" só com teste `not_null` declarado na coluna, senão "zero ou um". A tabela das chaves estrangeiras é
+a alternativa textual. Nada é deduzido do nome de colunas ou testes.
+
 **Pendente:** nada nesta decisão. `cytoscape-dagre` e `cytoscape-elk` não foram adotados; se a E3 ou
 a E4 mostrarem que o layout próprio não basta, a extensão é avaliada e registrada aqui antes de entrar.
 
 ## D03 — Pacote e atualização de metadados
 
 **Estado:** decidida em 14/11/2026 (resposta central §1 e §3, A4 a A6). Em 17/11/2026, o pacote foi
-fixado na `v2.1.0` da origem, por instrução do Owner. Implementada no portal no mesmo dia.
+fixado na `v2.1.0` da origem, por instrução do Owner. Implementada no portal no mesmo dia. Em
+18/11/2026, refixado na `v2.2.0`.
 
 **Contrato:** o formato 1 do pacote da origem, especificado antes da geração por decisão do Owner
 (Q13) e gerado pela origem desde 14/11/2026.
 
-**Commit fixado:** `eb11709`, tag `v2.1.0` do `mvp_eng_dados_2`, o fechamento da fase da base dos
-consumidores. A origem o marca em `docs/consumidores.md` §6 como o marco a preferir; o aviso dela é
-`data/medicoes/base_consumidores/avisos/aviso_gdados_20261117.md`, fora do Git. O commit anterior,
-`32397cc`, só publicava a especificação, o esquema e o exemplo. A validação de 17/11/2026 e o
-inventário do pacote estão na [Verificação §10](verificacao_de_viabilidade.md#10-pacote-fixado-na-v210-17112026).
+**Commit fixado:** `f5a5173`, tag `v2.2.0` do `mvp_eng_dados_2`, o fechamento da reabertura da base,
+fixado em 18/11/2026. A origem o marca em `docs/consumidores.md` §6 como o marco a fixar; o aviso dela
+é `data/medicoes/base_consumidores/avisos/aviso_gdados_20261118.md`, fora do Git. A validação e o que
+mudou no pacote estão na [Verificação §11](verificacao_de_viabilidade.md#11-pacote-refixado-na-v220-18112026).
 
-| Arquivo da origem em `eb11709` | O que é |
+| Data | Commit | Motivo |
+|---|---|---|
+| 17/11/2026 | `eb11709` (`v2.1.0`) | Fechamento da fase da base dos consumidores ([Verificação §10](verificacao_de_viabilidade.md#10-pacote-fixado-na-v210-17112026)); antes, `32397cc` só publicava a especificação, o esquema e o exemplo |
+| 18/11/2026 | `f5a5173` (`v2.2.0`) | F32, F33 e F34 entregues, com campos aditivos no formato 1 |
+
+| Arquivo da origem no commit fixado | O que é |
 |---|---|
 | `docs/pacote_de_metadados.json` | O pacote, fonte do portal |
 | `docs/pacote_de_metadados.schema.json` | Esquema JSON Schema 2020-12; o pacote é validado com o **deste** commit |
@@ -262,7 +277,7 @@ se aplica (medida, diferença), e não deve ser exibido como ausência de inform
 `zero_denominator` antigo **não é lido**: a origem o mantém só por compatibilidade e o retira no
 próximo formato, que o portal recusará até ser adaptado.
 
-**Conteúdo:** em `eb11709`, o formato 1 traz `provenance`, `relations` (com `grain` e
+**Conteúdo:** em `eb11709` (em `f5a5173`, com os acréscimos do parágrafo seguinte), o formato 1 traz `provenance`, `relations` (com `grain` e
 `grants_select`), `lineage` (o `lineage --json` sem alteração), `crossings`, `questions`,
 `metrics`, `filters`, `view_rules`, `description_gaps`, `tests`, `checks` (resultados do `pytest`),
 `open_items` (decisões e verificações em aberto), `view_audits` e `environments`. Continuam fora:
@@ -275,16 +290,20 @@ texto que o portal exibe são anunciadas em `docs/consumidores.md` §5 da origem
 **Evidências GCP:** registradas pela origem como L10. Em `eb11709` aparecem como `not_available` em
 `environments` (`evidencias_gcp`); se entram e como são sanitizadas, é decisão pendente da origem.
 
-**Próxima troca do commit fixado:** a resposta da origem de 17/11/2026
-(`resposta_gdados_20261117.md`, fora do Git) anuncia uma fase curta de correções que termina numa
-tag nova, sem data, com mudanças aditivas no formato 1: `description_gaps` sem relações faltando
-(F32); entrada nova em `environments` para a Capacidade §2.14 e nota de `registro_fase_gcp`
-atualizada (F33); `view_audits` com os ids das verificações em `checks`; na especificação, a chave
-de uma view como a união das colunas `grain` e `identity` de `view_rules`, com
-`relations.*.grain` nulo nas views; `open_items` com outra composição, em que cada item só sai com
-evidência e aceite (a V6 pode continuar aberta); e as chaves de `analytics` e o destino dos testes
-`relationships` (F34; `resposta_gdados_20261117b.md`), com nomes finais na especificação da tag. Quando a tag for anunciada em Consumidores §6, o gdados refixa por este comando e
-valida contra o esquema do mesmo commit. Até lá, o commit fixado continua `eb11709`.
+**Acréscimos da `v2.2.0` (18/11/2026), todos aditivos no formato 1:** `relations.*.primary_key` e
+`relations.*.foreign_keys` (`column`, `references_relation`, `references_column`), pela regra que
+instala as chaves no banco (ADR-0056 da origem), e o destino de cada teste `relationships` em
+`tests.*.references_relation` e `references_column` (F34); `description_gaps` vazio, com teste na
+origem (F32); a entrada `custo_gcp` em `environments` e a nota de `registro_fase_gcp` atualizada
+(F33); `view_audits.*.checks` e `data_tests`, as verificações que sustentam cada auditoria; e
+`source_system` em `quarantine.rejected_shipment_deliveries` (F35). O portal lê os quatro primeiros
+grupos; o diagrama entidade-relacionamento sai das chaves ([D02](#d02--diagramas-e-grafos)).
+
+**Próxima troca do commit fixado:** a origem anunciou no aviso de 18/11/2026 uma fase própria para o
+F36 (o ponto de reposição fixo da P12), que termina numa tag nova com a P12 corrigida e o Registro da
+fase GCP sanitizado na fonte (`ebd8157`, depois da `v2.2.0`). Quando ela for anunciada, o gdados refixa
+por este comando, valida contra o esquema do mesmo commit, revisa `portal/src/conteudo/limitacoes.yml`
+e repete a verificação. Até lá, o commit fixado continua `f5a5173`.
 
 **Leitura que não precisa ser refeita (resposta da origem, §3):**
 
@@ -303,6 +322,13 @@ leem `on_zero_denominator`. Os testes ficam em `portal/test/origem.test.mjs`.
 
 **Pendente:** nada na implementação. A troca do commit fixado segue a regra acima quando a tag nova
 for anunciada.
+
+**Refixação na `v2.2.0` (18/11/2026):** `scripts/copiar_pacote.sh v2.2.0`; `npm run validar`, os testes e
+a build passaram contra o pacote novo. A lista `scripts/arquivos_da_origem.txt` ganhou a ADR-0056. O
+portal passou a mostrar as chaves e o destino dos `relationships` na página de cada relação, as
+verificações das auditorias e o diagrama entidade-relacionamento; as limitações resolvidas (F32, F33,
+F34) saíram da lista, e entraram a cardinalidade não declarada e o F36. A verificação da E3, repetida sobre `ea70367`, passou nas 39
+verificações ([relatório da E3](relatorio_e3.md), §7).
 
 ## D04 — Identidade e audiência da publicação
 

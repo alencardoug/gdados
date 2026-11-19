@@ -11,7 +11,9 @@ e reconferida em 13 e 14/11/2026. E0 fechada pelo Owner em 14/11/2026; E1 e E2 a
 17/11/2026 o pacote de metadados da origem foi fixado na `v2.1.0` e validado contra o esquema do
 mesmo commit. No mesmo dia começou a aplicação, em `portal/` (Astro): as três páginas leem o
 pacote validado no build. A camada editorial da página de conceitos tem formato, inventário e a
-primeira redação das explicações, a revisar pelo Owner.
+primeira redação das explicações, a revisar pelo Owner. Em 18/11/2026 o pacote foi refixado na
+`v2.2.0`, e o portal passou a mostrar as chaves e o diagrama entidade-relacionamento; no mesmo dia
+começou a publicação em <https://governadados.web.app>.
 
 ## Escopo
 
@@ -47,8 +49,8 @@ A explicação didática pertence ao portal e será ligada a essas definições;
 e os exemplos não a tornam uma nova autoridade sobre regras, métricas ou decisões da origem.
 
 Fonte vigente desde 13/11/2026: `../mvp_eng_dados_2`, lida por commit fixado (D92 da origem,
-commit `040a796`). Desde 17/11/2026 o commit fixado é `eb11709`, a tag `v2.1.0`, com o pacote no
-formato 1; o registro e as trocas futuras ficam na
+commit `040a796`). Desde 18/11/2026 o commit fixado é `f5a5173`, a tag `v2.2.0` (antes, `eb11709`,
+a `v2.1.0`), com o pacote no formato 1; o registro e as trocas futuras ficam na
 [D03](docs/decisoes.md#d03--pacote-e-atualização-de-metadados). O `../mvp_eng_dados_1`,
 arquivado no ponto `v2.0.0` (`f86b9fb`), fica como referência histórica. As avaliações de 10 e 13/11/2026 foram feitas sobre ele e continuam
 válidas como fotografias datadas daqueles commits
@@ -72,10 +74,10 @@ npm run preview   # serve dist/ localmente
 
 A build lê só `origem/`, versionada no gdados; não precisa do checkout da origem nem de banco.
 
-O destino indicado em 10/11/2026 foi **GitHub → Firebase Hosting**, seguindo o padrão do Linkedia.
-Em 14/11/2026 o Owner proibiu recursos novos no GCP, e um projeto Firebase é um deles; a hospedagem
-volta ao Owner na E5 ([D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação)). A primeira
-entrega deverá ser validada e avaliada localmente, conforme o [plano](PLANO.md).
+A publicação é **GitHub → Firebase Hosting**, no projeto "Extras", sem faturamento, aberto pelo Owner
+em 18/11/2026 como exceção à Q14: cada push no `main` passa pelo build e pelos testes e publica em
+<https://governadados.web.app> ([D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação)).
+Toda mudança é validada localmente antes do push, conforme o [plano](PLANO.md).
 
 
 ## Retomar em uma nova sessão
@@ -84,20 +86,20 @@ Abra a sessão com `/home/doug/Projetos/gdados` como diretório de trabalho. O a
 `AGENTS.md` e os documentos apontados ali, além da especificação da página de conceitos.
 O histórico desta conversa não é necessário para compreender o escopo documentado.
 
-**Estado em 17/11/2026, ao fim da sessão:**
+**Estado em 18/11/2026, ao fim da sessão:**
 
-- a pasta é um repositório Git local, sem remoto (o remoto depende da D04). Commits em Conventional
-  Commits, em português, um assunto por commit; a árvore ficou limpa;
-- o pacote da origem está fixado na `v2.1.0` (`eb11709`), copiado e versionado em `origem/` por
+- a pasta é um repositório Git com remoto público `alencardoug/gdados` (D04). Commits em Conventional
+  Commits, em português, um assunto por commit;
+- o pacote da origem está fixado na `v2.2.0` (`f5a5173`, desde 18/11/2026), copiado e versionado em `origem/` por
   `scripts/copiar_pacote.sh`, com os textos lidos por commit em `origem/arquivos/` (inclusive o
   Glossário Técnico); `scripts/copiar_pacote.sh --verificar` confere os SHA-256 (D03);
 - o portal está em `portal/` (Astro 7; dependências na D01). A build valida a cópia e o pacote e
-  gera 474 páginas: governança (catálogo, relação, perguntas, métricas, linhagem com travessias,
-  estado e evidência), estrutura e ambientes, conceitos e artefatos, arquivos da origem e procedência.
-  São 28 testes de unidade em `portal/test/`;
+  gera 475 páginas: governança (catálogo, relação com chaves, perguntas, métricas, linhagem com
+  travessias, estado e evidência), estrutura e ambientes (com o diagrama entidade-relacionamento),
+  conceitos e artefatos, arquivos da origem e procedência. São 35 testes de unidade em `portal/test/`;
 - a camada editorial está em `portal/src/conteudo/` (formato na
   [página de conceitos §9](docs/pagina_de_conceitos.md#9-formato-da-camada-editorial-17112026)):
-  62 termos com a primeira redação das explicações, 4 percursos e 11 limitações conhecidas. Três
+  62 termos com a primeira redação das explicações, 4 percursos e 10 limitações conhecidas. Três
   divergências do Glossário Técnico da origem foram encaminhadas no
   [alinhamento, §7](docs/alinhamento_entre_projetos.md#7-para-a-origem);
 - a E3 foi feita com a verificação em `verificacao/`: 38 verificações automáticas passaram, com uma
@@ -113,9 +115,11 @@ O histórico desta conversa não é necessário para compreender o escopo docume
   hospedagem gratuita foram registradas na
   [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação). O Owner criou o projeto
   "Extras", sem faturamento, e o site vazio `governadados.web.app`; o deploy fica para a E5;
-- a origem prepara uma tag nova, sem data, com F32, F33, F34 e outras mudanças aditivas
-  ([alinhamento, O8](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2)). O gdados
-  não espera por ela; quando for anunciada, refixar e revalidar pela D03 e repetir a verificação.
+- em 18/11/2026 a origem publicou a `v2.2.0` (F32 a F34) e o gdados a refixou e validou
+  ([Verificação §11](docs/verificacao_de_viabilidade.md#11-pacote-refixado-na-v220-18112026)); a
+  verificação da E3 foi repetida ([relatório](docs/relatorio_e3.md), §7). A origem prepara outra tag,
+  sem data, com a correção do F36 ([alinhamento, O9](docs/alinhamento_entre_projetos.md#3-dependências-do-mvp_eng_dados_2));
+  quando for anunciada, refixar e revalidar pela D03 e repetir a verificação.
 
 **Publicação (E5, 18/11/2026):** o portal sai em <https://governadados.web.app> a cada push no
 `main`, pelo workflow `.github/workflows/deploy.yml`, depois do build e dos testes.

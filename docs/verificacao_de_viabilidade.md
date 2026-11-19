@@ -11,6 +11,7 @@
 | Fonte vigente | Desde 13/11/2026, `/home/doug/Projetos/mvp_eng_dados_2`, por commit fixado (§8) |
 | Reconferência na fonte vigente | 14/11/2026, sobre `32397cc` do `mvp_eng_dados_2` (§9) |
 | Pacote fixado | 17/11/2026, `v2.1.0` (`eb11709`) do `mvp_eng_dados_2`; pacote validado contra o esquema do mesmo commit (§10) |
+| Pacote refixado | 18/11/2026, `v2.2.0` (`f5a5173`); pacote validado contra o esquema do mesmo commit (§11) |
 
 As §1 a §6 descrevem a avaliação de 10/11/2026 e permanecem como fotografia daquela data.
 O que mudou depois está na §7. As duas avaliações citam `8e606d9` e `f86b9fb`, que só existem no
@@ -394,3 +395,53 @@ testes reexecutados nesta sessão.
 
 Não foram executados `make`, dbt, testes, consultas a banco ou ao GCP na origem. Nenhum arquivo do
 `mvp_eng_dados_2` foi alterado. As escritas ficaram em `.cache/`, dentro do gdados.
+
+## 11. Pacote refixado na `v2.2.0` (18/11/2026)
+
+| Campo | Valor |
+|---|---|
+| Repositório | `/home/doug/Projetos/mvp_eng_dados_2` |
+| Commit fixado | `f5a5173` (`f5a517355336ed2b039bd43642bdb4ec07bc7a31`), tag anotada `v2.2.0`, de 18/11/2026 20:37 -03:00; presente em `origin/main` na leitura |
+| Origem do pedido | Aviso `aviso_gdados_20261118.md` da pasta de avisos da origem (fora do Git), deixado na caixa de correio do gdados pela sessão da origem a pedido do Owner |
+| Natureza | `git show` e `git log` na origem, pelo `scripts/copiar_pacote.sh v2.2.0`; validação das cópias dentro do gdados |
+
+| Arquivo em `f5a5173` | Blob Git | SHA-256 da cópia | Bytes |
+|---|---|---|---:|
+| `docs/pacote_de_metadados.json` | `fb2485a` | `d450b35bcf6654cdbbd82d488828044735bac5dde29ff8ce51da468490c103b1` | 5.467.819 |
+| `docs/pacote_de_metadados.schema.json` | `578008b` | `ccbea528be9c80e93c40df7d04b1aa3ad8c9c5c6390c0c9890c20926347632d1` | 54.989 |
+| `docs/pacote_de_metadados.exemplo.json` | `e912fcf` | `6c8643c30c1de67b1610e60da68c197ac5924bda416709feaaea1ddbb1a8af60` | 23.738 |
+
+### 11.1 Validação
+
+Pelo comando da D03 (`npm run validar` e a build, com ajv, D01): os 94 arquivos copiados conferem
+com `origem/procedencia.json`, `format` é 1 e o pacote passa no esquema do mesmo commit. A lista de
+arquivos lidos por commit ganhou a ADR-0056 da origem, citada nas páginas que mostram as chaves.
+
+### 11.2 O que mudou no pacote
+
+Contagens lidas do pacote em 18/11/2026; descrevem o que ele declara, não o banco.
+
+| Parte | Em `f5a5173` | Diferença para `eb11709` |
+|---|---|---|
+| `provenance.dbt` | manifesto de `2026-11-18T22:15:51Z` e `run_results` de `2026-11-18T22:19:03Z`, mesma invocação | execução nova |
+| `provenance.warehouse` | `verified`, construído do commit `7e5065a` | build novo |
+| `relations` | 282: 193 modelos, 81 *sources*, 4 *snapshots* e 4 *seeds*; 4.226 colunas | `trusted.f31_legacy_sale_exceptions` nova (seed) |
+| `relations.*.primary_key` e `foreign_keys` (F34) | 26 relações com chave primária e 58 chaves estrangeiras, todas em `analytics`; listas vazias nas demais | campos novos |
+| `tests` | 884, todos `pass`; os 76 `relationships` trazem `references_relation` e `references_column` (58 em `analytics`, 18 em `staging`) | campos novos |
+| `lineage` | 201 relações e 3.026 colunas | +1 relação |
+| `description_gaps` | 0 (F32) | eram 123 relações |
+| `checks` | 1.846: 1.827 `pass` e 19 `skipped` | +93 |
+| `view_audits` | 16 `audited`; `checks` (26 ids) e `data_tests` (1 id) | campos novos |
+| `open_items` | 7, todos `deferred`: D43, V1, V2, V3, V5, V6 e V7 | D63 e D64 saíram |
+| `environments` | 10: nove `read_by_commit` e `evidencias_gcp` `not_available` | `custo_gcp` nova; nota de `registro_fase_gcp` atualizada (F33) |
+| `metrics`, `filters`, `view_rules`, `questions`, `crossings` | 44, 6, 16, 16 e 4 | sem mudança de quantidade |
+
+Conferido no build: toda chave estrangeira aponta para a chave primária do destino
+(`portal/test/er.test.mjs`).
+
+### 11.3 Limites
+
+O aviso diz que a sanitização dos identificadores GCP foi feita na origem depois da tag (`ebd8157`);
+o arquivo da `v2.2.0` ainda tem o texto antigo, e a troca na exibição do portal continua (D04). O
+achado F36 da origem (ponto de reposição fixo da P12) está aberto e virou limitação conhecida no
+portal. Não foram executados comandos do projeto na origem, e nada foi escrito fora do gdados.

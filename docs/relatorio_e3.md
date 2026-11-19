@@ -4,7 +4,7 @@
 |---|---|
 | Data | 17/11/2026 |
 | Versão avaliada | gdados `9f33546`, árvore limpa |
-| Pacote | `mvp_eng_dados_2` `v2.1.0` (`eb11709`), copiado em 17/11/2026 às 16:26 (Brasília) |
+| Pacote | `mvp_eng_dados_2` `v2.1.0` (`eb11709`), copiado em 17/11/2026 às 16:26 (Brasília); repetição na `v2.2.0` na §7 |
 | Ambiente | Esta máquina; Chrome 156.0.8078.79 via Playwright 1.64.1; Node 24.18.0; build servida localmente com gzip, cache desligado |
 | Resultado bruto | [`verificacao/resultados/2026-11-17T20-21-17-148Z.json`](../verificacao/resultados/2026-11-17T20-21-17-148Z.json) |
 | Como repetir | [`verificacao/README.md`](../verificacao/README.md) |
@@ -111,6 +111,33 @@ D04, na E5.
   tema escuro não foram verificados, e nenhuma auditoria automática de acessibilidade foi rodada.
 - O item 8 verificou 13 páginas representativas a 390 px, não todas as 474.
 - A fidelidade é ao pacote do commit fixado. Quando a tag nova da origem for fixada (D03), a
-  verificação deve ser repetida.
+  verificação deve ser repetida; a repetição na `v2.2.0` está na §7.
 - Testes automatizados conferem estrutura, ligações e fidelidade; não provam a compreensão do leitor
   (página de conceitos §8).
+
+## 7. Repetição na `v2.2.0` (18/11/2026)
+
+| Campo | Valor |
+|---|---|
+| Versão avaliada | gdados `ea70367`, árvore limpa |
+| Pacote | `mvp_eng_dados_2` `v2.2.0` (`f5a5173`), 94 arquivos conferidos |
+| Ambiente | O mesmo da §1: Chrome 156.0.8078.79, Node 24.18.0, cinco repetições por medida |
+| Resultado bruto | [`verificacao/resultados/2026-11-19T00-45-06-228Z.json`](../verificacao/resultados/2026-11-19T00-45-06-228Z.json) |
+
+**As 39 verificações automáticas passaram** (a 39ª é a da D04, acrescentada depois da §1). Uma rodada
+anterior, com a árvore ainda suja, achou a página de estrutura com 439 px a 390 px de largura: o
+seletor do diagrama entidade-relacionamento, novo, se alargava pela opção mais longa. Corrigido em
+`ea70367` antes desta rodada. O resultado da rodada suja não foi guardado.
+
+Destaques, mediana com CPU normal: build em 6,0 s; 35 testes de unidade; 27.100 links e âncoras de
+`dist/` resolvem; as 282 relações e as 16 perguntas têm página; três builds com o mesmo SHA-256 de
+`dist/` (`a9fd8bc…`); nenhum identificador mascarado pela D04 em `dist/`. Governança com primeira
+renderização em 188 ms e 141 KB; busca em até 55 ms por tecla; recorte da linhagem em 247 ms;
+grafo inteiro em 566 ms; estrutura, agora com dois diagramas Mermaid, em 671 KB comprimidos.
+
+**Zoom no grafo inteiro:** mediana de 50 ms, no limite da meta (rodadas: 33, 50, 50, 50,1 e 50 ms).
+A ressalva da §3 continua para a E4. Com CPU 4× mais lenta, a busca chega a 153 ms por tecla e o zoom
+a 150 ms, como margem, não meta.
+
+O diagrama entidade-relacionamento não tem meta própria na E3; foi conferido no Chrome nesta data (recorte
+padrão, recorte de `analytics.dim_date`, modelo inteiro e link direto `?er=`), sem erro no console.
