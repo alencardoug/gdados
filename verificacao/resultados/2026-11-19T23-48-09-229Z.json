@@ -1,0 +1,1254 @@
+{
+  "instante": "2026-11-19T23:48:09.229Z",
+  "gdados": {
+    "commit": "475e8b1263e880ad85f899bc382544640e124f91",
+    "arvore_limpa": true
+  },
+  "origem": {
+    "repository": "mvp_eng_dados_2",
+    "ref": "v2.3.0",
+    "commit": "2bceb477f9f854c034b58353ce252334b149b330",
+    "copied_at": "2026-11-19T22:12:12+00:00"
+  },
+  "node": "v24.18.0",
+  "resultados": [
+    {
+      "item": 1,
+      "nome": "Cópia da origem confere os SHA-256 e o pacote é válido contra o esquema do mesmo commit",
+      "ok": true,
+      "detalhe": "pacote válido: formato 1, mvp_eng_dados_2 v2.3.0 (2bceb47), 97 arquivos conferidos; amostras válidas: 283 relações, exportadas em 2026-11-19T17:31:37.592589+00:00"
+    },
+    {
+      "item": 1,
+      "nome": "Testes de unidade do portal",
+      "ok": true,
+      "detalhe": [
+        "ℹ tests 53",
+        "ℹ pass 53",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "item": 1,
+      "nome": "Links internos e âncoras de dist/ resolvem",
+      "ok": true,
+      "detalhe": {
+        "links_conferidos": 36738,
+        "quebrados": [],
+        "total_quebrados": 0
+      }
+    },
+    {
+      "item": 1,
+      "nome": "Toda relação do pacote tem página",
+      "ok": true,
+      "detalhe": {
+        "relacoes": 283,
+        "sem_pagina": []
+      }
+    },
+    {
+      "item": 1,
+      "nome": "Toda pergunta do pacote tem página",
+      "ok": true,
+      "detalhe": {
+        "perguntas": 16,
+        "sem_pagina": []
+      }
+    },
+    {
+      "item": 2,
+      "nome": "Nenhuma ligação fabricada no grafo por relação",
+      "ok": true,
+      "detalhe": {
+        "arestas": 469,
+        "a_mais": [],
+        "a_menos": [],
+        "contagem_diferente": []
+      }
+    },
+    {
+      "item": 2,
+      "nome": "Traços, ramais, saltos e tabela contam os pares dirigidos entre as camadas",
+      "ok": true,
+      "detalhe": {
+        "fluxos": 16,
+        "pares": 469,
+        "ausencias_divergentes": []
+      }
+    },
+    {
+      "item": 2,
+      "nome": "Minimapas e tabelas reproduzem a camada e os vizinhos imediatos de cada relação",
+      "ok": true,
+      "detalhe": {
+        "relacoes": 283,
+        "arestas": 469,
+        "divergentes": []
+      }
+    },
+    {
+      "item": 2,
+      "nome": "Faixas das fichas só acendem os sentidos com vizinhos e contam cada camada",
+      "ok": true,
+      "detalhe": {
+        "relacoes": 283,
+        "divergentes": []
+      }
+    },
+    {
+      "item": 2,
+      "nome": "Receita líquida da P01 chega a raw e raw_legacy pelo caminho das folhas, igual às origens declaradas",
+      "ok": true,
+      "detalhe": {
+        "coluna": "consumption.monthly_revenue_by_channel_and_category.net_revenue_amount",
+        "origens_pelo_caminho": [
+          "raw.order_items.discount_amount",
+          "raw.order_items.quantity",
+          "raw.order_items.unit_price",
+          "raw_legacy.order_items.discount_amount",
+          "raw_legacy.order_items.quantity",
+          "raw_legacy.order_items.unit_price"
+        ],
+        "origens_declaradas": [
+          "raw.order_items.discount_amount",
+          "raw.order_items.quantity",
+          "raw.order_items.unit_price",
+          "raw_legacy.order_items.discount_amount",
+          "raw_legacy.order_items.quantity",
+          "raw_legacy.order_items.unit_price"
+        ],
+        "camadas": [
+          "raw",
+          "raw_legacy"
+        ]
+      }
+    },
+    {
+      "item": 3,
+      "nome": "Estoque chega ao lote, ao streaming e ao legado; travessias sem precisão por coluna",
+      "ok": true,
+      "detalhe": {
+        "origens_da_fato": [
+          "analytics.dim_date",
+          "raw.inventory_movements",
+          "raw.inventory_movements_stream",
+          "raw.product_variants",
+          "raw.warehouses",
+          "raw_legacy.inventory_movements",
+          "raw_legacy.product_variants",
+          "raw_legacy.warehouses",
+          "snapshots.scd_product",
+          "trusted.inventory_movements",
+          "trusted.product_skus",
+          "trusted.warehouses"
+        ],
+        "travessia_streaming": {
+          "id": "travessia:1",
+          "origem": "oltp.inventory_movements",
+          "destino": "raw.inventory_movements_stream",
+          "tipo": "relacao",
+          "mecanismo": "Debezium",
+          "relacoes": [
+            "raw.inventory_movements_stream"
+          ]
+        },
+        "travessia_raw": {
+          "id": "travessia:0",
+          "origem": "oltp — 36 tabelas",
+          "destino": "raw",
+          "tipo": "camada",
+          "mecanismo": "Airbyte",
+          "relacoes": 36
+        }
+      }
+    },
+    {
+      "item": 4,
+      "nome": "Seed e valor gerado aparecem como origem terminal, sem marca de ausência",
+      "ok": true,
+      "detalhe": {
+        "seed": "analytics.dim_geography.region: e entrega principal aterrissa aqui, em vez de sair do recorte por região. Nordeste Região Nordeste. Norte Região Norte. Sudeste Região Sudeste. Sul Região Sul. trusted.brazilian_states.region seed <tr",
+        "gerada": "analytics.dim_brand.source_system: co legado, tratado e empilhado aos dados principais. retail A origem transacional, o banco do marketplace. Airbyte e Beam transportam o mesmo `retail`. trusted.product_skus.source_system valor gerado "
+      }
+    },
+    {
+      "item": 5,
+      "nome": "Todos os itens de open_items com o estado do pacote; D66 lida no documento responsável",
+      "ok": true,
+      "detalhe": {
+        "itens": [
+          "D43 deferred",
+          "V1 deferred",
+          "V2 deferred",
+          "V3 deferred",
+          "V5 deferred",
+          "V6 deferred",
+          "V7 deferred"
+        ],
+        "faltando": [],
+        "d66_ligada": true
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Cada camada abre seu catálogo e mostra o número de relações do pacote",
+      "ok": true,
+      "detalhe": {
+        "camadas": 9,
+        "relacoes": 283
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Barras e legendas reproduzem a classificação de cada conjunto de colunas",
+      "ok": true,
+      "detalhe": {
+        "relacoes": 283,
+        "divergentes": []
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Tipo inteiramente ausente recebe uma nota e tipos parcialmente ausentes conservam seus avisos",
+      "ok": true,
+      "detalhe": {
+        "fichas_com_nota": 240,
+        "divergentes": []
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Ordem de exportação da amostra e chave primária têm rótulos fiéis",
+      "ok": true,
+      "detalhe": {
+        "amostras": 283,
+        "divergentes": []
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Contagens da página inicial iguais às do pacote",
+      "ok": true,
+      "detalhe": {
+        "contagens": {
+          "relations": 283,
+          "lineage": 202,
+          "questions": 16,
+          "metrics": 44,
+          "tests": 901,
+          "checks": 1889,
+          "open_items": 7,
+          "environments": 10
+        },
+        "divergentes": []
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Regras das métricas fiéis ao pacote; denominador zero lido de on_zero_denominator",
+      "ok": true,
+      "detalhe": {
+        "metricas": 44,
+        "razoes": 7,
+        "erros": [],
+        "cita_zero_denominator": false
+      }
+    },
+    {
+      "item": 6,
+      "nome": "Comparação de infraestrutura: toda entrada de environments, com o estado de entrega",
+      "ok": true,
+      "detalhe": {
+        "entradas": 10,
+        "faltando": [],
+        "indisponivel_marcado": true
+      }
+    },
+    {
+      "item": 7,
+      "nome": "Busca encontra perguntas, conceitos, relações e termos em inglês",
+      "ok": true,
+      "detalhe": {
+        "P13": "pergunta P13 — Qual a fração de entregas dentro do prazo prometido, por transpor",
+        "grain": "conceito Grãograin, granularidade",
+        "sensibilidade": "conceito Classificação de sensibilidadesensitivity, public, internal, confidenti",
+        "fact_shipment": "relação analytics.fact_shipmentGrão: uma remessa. Toda remessa de trusted.shipme",
+        "receita liquida": "coluna analytics.dim_customer.lifetime_net_revenue_amountAditiva entre clientes,",
+        "PII": "conceito Dado pessoal identificávelPII, personal, dado pessoal"
+      }
+    },
+    {
+      "item": 7,
+      "nome": "Filtro fica na URL e é restaurado ao voltar no histórico",
+      "ok": true,
+      "detalhe": {
+        "filtrado": "27 de 283 relações.",
+        "voltou": {
+          "url": "/governanca/?camada=analytics",
+          "situacao": "27 de 283 relações."
+        }
+      }
+    },
+    {
+      "item": 7,
+      "nome": "Links diretos abrem a coluna e o recorte expandido da linhagem",
+      "ok": true,
+      "detalhe": {
+        "alvo": "coluna-net_revenue_amount",
+        "recorte": {
+          "nos": 17,
+          "linhas": 19,
+          "arestas": 19
+        }
+      }
+    },
+    {
+      "item": 7,
+      "nome": "Nenhum erro ou aviso no console nas verificações funcionais",
+      "ok": true,
+      "detalhe": {
+        "erros": []
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Sem executar JavaScript cada classe tem contagem e link para a primeira coluna correspondente",
+      "ok": true,
+      "detalhe": {
+        "fichas": 283,
+        "divergentes": []
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Nomes do cartão e do dicionário preservam o identificador e só oferecem quebras nos separadores",
+      "ok": true,
+      "detalhe": {
+        "fichas": 283,
+        "divergentes": []
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Alternativa em tabela: uma linha por ligação do recorte",
+      "ok": true,
+      "detalhe": {
+        "nos": 17,
+        "linhas": 19,
+        "arestas": 19
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Navegação por teclado: atalho para o conteúdo e foco visível",
+      "ok": true,
+      "detalhe": {
+        "primeiro": {
+          "texto": "Pular para o conteúdo",
+          "href": "#conteudo"
+        },
+        "foco": {
+          "texto": "Governança",
+          "outline": "solid",
+          "largura": "3px"
+        }
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Telas de 390 px sem rolagem horizontal da página",
+      "ok": true,
+      "detalhe": {
+        "/": 390,
+        "/governanca/": 390,
+        "/governanca/relacao/consumption.monthly_revenue_by_channel_and_category/": 390,
+        "/governanca/pergunta/P01/": 390,
+        "/governanca/metricas/": 390,
+        "/governanca/linhagem/": 390,
+        "/governanca/evidencias/": 390,
+        "/estrutura/": 390,
+        "/conceitos/": 390,
+        "/conceitos/grao/": 390,
+        "/conceitos/limitacoes/": 390,
+        "/conceitos/roteiro/": 390,
+        "/procedencia/": 390,
+        "/origem/docs/arquitetura.md/": 390
+      }
+    },
+    {
+      "item": 8,
+      "nome": "Amostra em 390 px nos dois temas: foco pelo teclado, primeira coluna fixa e JSON recolhível",
+      "ok": true,
+      "detalhe": [
+        {
+          "theme": "light",
+          "focused": true,
+          "scrolled": true,
+          "sticky": true,
+          "opened": true,
+          "closed": true,
+          "width": 390
+        },
+        {
+          "theme": "dark",
+          "focused": true,
+          "scrolled": true,
+          "sticky": true,
+          "opened": true,
+          "closed": true,
+          "width": 390
+        }
+      ]
+    },
+    {
+      "item": 8,
+      "nome": "Legenda em 390 px nos dois temas destaca a classe por clique e Enter e devolve o foco ao limpar",
+      "ok": true,
+      "detalhe": [
+        {
+          "theme": "light",
+          "byClick": [
+            "coluna-team"
+          ],
+          "byKeyboard": [
+            "coluna-email",
+            "coluna-first_name",
+            "coluna-last_name"
+          ],
+          "keyFocus": true,
+          "selectedClass": "true",
+          "firstTarget": "coluna-email",
+          "cleared": true
+        },
+        {
+          "theme": "dark",
+          "byClick": [
+            "coluna-team"
+          ],
+          "byKeyboard": [
+            "coluna-email",
+            "coluna-first_name",
+            "coluna-last_name"
+          ],
+          "keyFocus": true,
+          "selectedClass": "true",
+          "firstTarget": "coluna-email",
+          "cleared": true
+        }
+      ]
+    },
+    {
+      "item": 9,
+      "nome": "Build completa a partir da cópia do pacote (meta 60 s)",
+      "ok": true,
+      "detalhe": {
+        "tempos_s": [
+          7.2,
+          7.08,
+          7.03
+        ],
+        "mediana_s": 7.08
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Governança: primeira renderização com conteúdo (meta 1500 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 204,
+        "cpu_4x": 276,
+        "unidade": "ms",
+        "meta": 1500,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Governança: dados transferidos (meta 1 MB)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 143969,
+        "cpu_4x": 143969,
+        "unidade": "B",
+        "meta": 1000000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Busca: maior tempo por tecla (meta 150 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 71.09999999962747,
+        "cpu_4x": 158.09999999962747,
+        "unidade": "ms",
+        "meta": 150,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Relação: dados transferidos (meta 1 MB)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 11291,
+        "cpu_4x": 11291,
+        "unidade": "B",
+        "meta": 1000000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Linhagem por relação: recorte inicial desenhado (meta 1000 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 278.6000000005588,
+        "cpu_4x": 766.2000000001863,
+        "unidade": "ms",
+        "meta": 1000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Linhagem: expandir um nível (meta 500 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 46.90000000037253,
+        "cpu_4x": 160.3999999994412,
+        "unidade": "ms",
+        "meta": 500,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Grafo inteiro desenhado com layout (meta 3000 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 621.1999999992549,
+        "cpu_4x": 2130.7999999998137,
+        "unidade": "ms",
+        "meta": 3000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Zoom e deslocamento no grafo inteiro: maior quadro (meta 100 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 66.5,
+        "cpu_4x": 150,
+        "unidade": "ms",
+        "meta": 100,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Zoom e deslocamento no maior recorte por coluna permitido: maior quadro (meta 50 ms)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 33.40000000000009,
+        "cpu_4x": 83.30000000000018,
+        "unidade": "ms",
+        "meta": 50,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Estrutura (com Mermaid): dados transferidos (meta 1 MB)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 673185,
+        "cpu_4x": 673185,
+        "unidade": "B",
+        "meta": 1000000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 9,
+      "nome": "Conceitos: dados transferidos (meta 1 MB)",
+      "ok": true,
+      "detalhe": {
+        "cpu_1x": 9387,
+        "cpu_4x": 9387,
+        "unidade": "B",
+        "meta": 1000000,
+        "mede_em": "CPU 1×; 4× registrado como margem"
+      }
+    },
+    {
+      "item": 10,
+      "nome": "Build reproduzível: três builds com o mesmo conteúdo em dist/",
+      "ok": true,
+      "detalhe": {
+        "sha256_de_dist": [
+          "04144cf21143fa6cbcba82e379e832fb95293bbdbcdcbecc0f57871f158a1981",
+          "04144cf21143fa6cbcba82e379e832fb95293bbdbcdcbecc0f57871f158a1981",
+          "04144cf21143fa6cbcba82e379e832fb95293bbdbcdcbecc0f57871f158a1981"
+        ]
+      }
+    },
+    {
+      "item": 10,
+      "nome": "Sem segredos, chaves, arquivos proibidos ou e-mails reais em dist/",
+      "ok": true,
+      "detalhe": {
+        "chaves": [],
+        "arquivos_proibidos": [],
+        "emails": []
+      }
+    },
+    {
+      "item": 10,
+      "nome": "Nenhum identificador mascarado pela D04 (projetos sem relação, conta de faturamento) em dist/",
+      "ok": true,
+      "detalhe": {
+        "arquivos": []
+      }
+    },
+    {
+      "item": 10,
+      "nome": "Projetos GCP do projeto de dados presentes em dist/ (mantidos pela D04; não é falha)",
+      "ok": true,
+      "detalhe": {
+        "projetos": {
+          "mvp-ed1-gcp": [
+            "origem/docs/capacidade_e_recuperacao.md",
+            "origem/docs/registro_fase_gcp.md",
+            "origem/terraform/terraform.tfvars.example"
+          ],
+          "mvp-ed1-estudo": [
+            "origem/docs/capacidade_e_recuperacao.md",
+            "origem/docs/registro_fase_gcp.md"
+          ]
+        }
+      }
+    },
+    {
+      "item": 11,
+      "nome": "Todo termo do inventário é achado na busca pelo nome em português, pelo identificador e pelas siglas",
+      "ok": true,
+      "detalhe": {
+        "termos": 62,
+        "explicados": 62,
+        "pendentes": 0,
+        "nao_achados": []
+      }
+    },
+    {
+      "item": 12,
+      "nome": "Exemplos, definições da origem, âncoras e percursos da camada editorial resolvem",
+      "ok": true,
+      "detalhe": {
+        "commit": "2bceb477f9f854c034b58353ce252334b149b330",
+        "percursos": [
+          "fluxo-continuo",
+          "governanca",
+          "pergunta",
+          "perspectivas"
+        ],
+        "exemplos_ausentes": [],
+        "definicoes_ausentes": [],
+        "ancoras_ausentes": []
+      }
+    },
+    {
+      "item": 12,
+      "nome": "Da explicação de volta ao mesmo recorte da linhagem",
+      "ok": true,
+      "detalhe": {
+        "antes": "/governanca/linhagem/?modo=relacao&r=consumption.monthly_revenue_by_channel_and_category&e=analytics.fact_sales_order_item",
+        "conceito": "/conceitos/linhagem/?de=%2Fgovernanca%2Flinhagem%2F%3Fmodo%3Drelacao%26r%3Dconsumption.monthly_revenue_by_channel_and_category%26e%3Danalytics.fact_sales_order_item",
+        "depois": "/governanca/linhagem/?modo=relacao&r=consumption.monthly_revenue_by_channel_and_category&e=analytics.fact_sales_order_item",
+        "nos": 17
+      }
+    }
+  ],
+  "desempenho": {
+    "navegador": "156.0.8078.79",
+    "repeticoes": 5,
+    "maior_recorte_por_coluna_permitido": {
+      "id": "analytics.fact_shipment_item",
+      "nos": 78
+    },
+    "cpu": {
+      "1": {
+        "catalogo.fcp_ms": 204,
+        "catalogo.bytes_comprimidos": 143969,
+        "catalogo.busca_max_ms": 71.09999999962747,
+        "relacao.bytes_comprimidos": 11291,
+        "linhagem_relacao.linhagem_pronta_ms": 278.6000000005588,
+        "linhagem_relacao.expandir_ms": 46.90000000037253,
+        "linhagem_tudo.linhagem_pronta_ms": 621.1999999992549,
+        "linhagem_tudo.quadro_max_ms": 66.5,
+        "linhagem_coluna.quadro_max_ms": 33.40000000000009,
+        "estrutura.bytes_comprimidos": 673185,
+        "conceitos.bytes_comprimidos": 9387,
+        "rodadas": [
+          {
+            "catalogo": {
+              "fcp_ms": 260,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 56.799999999813735,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 176,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 112,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 262.69999999925494,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 46.39999999944121,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 92,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 621.1999999992549,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 66.69999999999982
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 120,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 383.8999999994412,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 33.40000000000009
+            },
+            "estrutura": {
+              "fcp_ms": 196,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 742.8000000007451
+            },
+            "conceitos": {
+              "fcp_ms": 124,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 196,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 71.09999999962747,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 140,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 96,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 246.20000000018626,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 57.10000000055879,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 84,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 624.8999999994412,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 66.5
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 140,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 452.70000000018626,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 50
+            },
+            "estrutura": {
+              "fcp_ms": 156,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 696.2000000001863
+            },
+            "conceitos": {
+              "fcp_ms": 128,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 216,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 64.3999999994412,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 192,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 132,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 298.6000000005588,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 47.30000000074506,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 92,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 581.5999999996275,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 66.70000000000005
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 88,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 364.19999999925494,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 33.399999999999864
+            },
+            "estrutura": {
+              "fcp_ms": 156,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 775.1999999992549
+            },
+            "conceitos": {
+              "fcp_ms": 124,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 204,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 77.3999999994412,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 172,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 92,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 278.6000000005588,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 46.90000000037253,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 88,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 641.1000000005588,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 50
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 112,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 358.20000000018626,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 33.299999999999955
+            },
+            "estrutura": {
+              "fcp_ms": 228,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 720.5999999996275
+            },
+            "conceitos": {
+              "fcp_ms": 132,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 204,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 89.70000000018626,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 140,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 152,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 312,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 43.10000000055879,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 108,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 596.0999999996275,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 50.000000000000114
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 120,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 384.20000000018626,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 50.09999999999991
+            },
+            "estrutura": {
+              "fcp_ms": 152,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 774.1000000005588
+            },
+            "conceitos": {
+              "fcp_ms": 144,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          }
+        ]
+      },
+      "4": {
+        "catalogo.fcp_ms": 276,
+        "catalogo.bytes_comprimidos": 143969,
+        "catalogo.busca_max_ms": 158.09999999962747,
+        "relacao.bytes_comprimidos": 11291,
+        "linhagem_relacao.linhagem_pronta_ms": 766.2000000001863,
+        "linhagem_relacao.expandir_ms": 160.3999999994412,
+        "linhagem_tudo.linhagem_pronta_ms": 2130.7999999998137,
+        "linhagem_tudo.quadro_max_ms": 150,
+        "linhagem_coluna.quadro_max_ms": 83.30000000000018,
+        "estrutura.bytes_comprimidos": 673185,
+        "conceitos.bytes_comprimidos": 9387,
+        "rodadas": [
+          {
+            "catalogo": {
+              "fcp_ms": 224,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 171.90000000037253,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 344,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 216,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 766.2000000001863,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 166.40000000037253,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 240,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 2080.2999999998137,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 150
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 204,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 1163.300000000745,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 99.99999999999977
+            },
+            "estrutura": {
+              "fcp_ms": 264,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2232.0999999996275
+            },
+            "conceitos": {
+              "fcp_ms": 300,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 324,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 185.70000000018626,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 260,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 176,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 719.2000000001863,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 160.3999999994412,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 216,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 2134.9000000003725,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 183.19999999999982
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 212,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 1186.6000000005588,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 83.30000000000018
+            },
+            "estrutura": {
+              "fcp_ms": 240,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2236.7000000001863
+            },
+            "conceitos": {
+              "fcp_ms": 348,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 268,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 107.6000000005588,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 364,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 216,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 786.7000000001863,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 149.79999999981374,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 228,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 2130.7999999998137,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 149.9000000000001
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 192,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 1156.0999999996275,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 83.30000000000018
+            },
+            "estrutura": {
+              "fcp_ms": 320,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2295.5
+            },
+            "conceitos": {
+              "fcp_ms": 276,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 276,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 157.29999999981374,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 240,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 200,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 745.9000000003725,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 165,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 204,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 2061.7999999998137,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 150
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 276,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 1222.800000000745,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 83.30000000000018
+            },
+            "estrutura": {
+              "fcp_ms": 256,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2310.0999999996275
+            },
+            "conceitos": {
+              "fcp_ms": 316,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          },
+          {
+            "catalogo": {
+              "fcp_ms": 292,
+              "bytes_comprimidos": 143969,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null,
+              "busca_max_ms": 158.09999999962747,
+              "medidas_de_busca": 15
+            },
+            "relacao": {
+              "fcp_ms": 268,
+              "bytes_comprimidos": 11291,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            },
+            "linhagem_relacao": {
+              "fcp_ms": 196,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 787.0999999996275,
+              "travessias_prontas_ms": null,
+              "expandir_ms": 156,
+              "nos_antes": 5,
+              "nos_depois": 17
+            },
+            "linhagem_tudo": {
+              "fcp_ms": 228,
+              "bytes_comprimidos": 152368,
+              "linhagem_pronta_ms": 2165.0999999996275,
+              "travessias_prontas_ms": null,
+              "nos": 287,
+              "quadro_max_ms": 183.39999999999964
+            },
+            "linhagem_coluna": {
+              "fcp_ms": 228,
+              "bytes_comprimidos": 153411,
+              "linhagem_pronta_ms": 1184.2999999998137,
+              "travessias_prontas_ms": null,
+              "relacao": "analytics.fact_shipment_item",
+              "nos": 78,
+              "quadro_max_ms": 83.29999999999995
+            },
+            "estrutura": {
+              "fcp_ms": 272,
+              "bytes_comprimidos": 673185,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": 2234.100000000559
+            },
+            "conceitos": {
+              "fcp_ms": 300,
+              "bytes_comprimidos": 9387,
+              "linhagem_pronta_ms": null,
+              "travessias_prontas_ms": null
+            }
+          }
+        ]
+      }
+    }
+  }
+}

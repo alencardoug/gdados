@@ -216,6 +216,40 @@ transferência HTTP e tempos de interação desta rodada aguardam essa verifica�
 **Pergunta ao Owner.** No mapa da inicial, é fácil encontrar a entrega direta de
 `raw_legacy` para `trusted` ao lado do caminho que passa por `staging`?
 
-Crítica do Claude: (pendente)
+**Integração e verificação pelo Claude.** O Codex parou no meio da rodada pelo limite de uso da
+conta; a sessão foi retomada e concluída. Bundle conferido (árvore idêntica à de trabalho) e os
+quatro commits entraram no `main`. A E3 completa rodou em 19/11/2026 nesta máquina: **50 de 50**
+([resultado](../verificacao/resultados/2026-11-19T23-48-09-229Z.json)), inclusive o novo teste da
+legenda, 390 px nos dois temas, foco e tempos.
+
+**Crítica do Claude (telas em 1280 e 390 px).**
+
+O que funciona: a ficha ficou boa. A faixa "fornecem → você está aqui → recebem, agrupados por
+camada" é compacta e responde à pergunta da relação; a nota única de ausência limpou a tabela; a
+legenda de sensibilidade agora é um controle; os nomes não quebram mais no meio. A inicial deixou de
+ser linha do tempo: os números nos traços mostram o que passa.
+
+O que ainda engana ou não ensina:
+
+1. **O maior fluxo do mapa está escondido.** Respondendo à pergunta do Codex: não, não é fácil.
+   `raw_legacy → trusted` (76) é o segundo maior traço do portal e aparece como uma etiqueta em
+   "Outros fluxos diretos", enquanto `raw_legacy` desenhado como ramal lateral de `staging` (40) o
+   faz parecer secundário, do mesmo peso de `governance` (1). O legado é uma **entrada**, par de
+   `raw`. Desenhar duas linhas de entrada no topo (principal e legado), com o traço do legado
+   seguindo até `trusted` por fora de `staging`. Isso conta, sozinho, a história do projeto: o
+   legado pula o preparo porque chega como texto e é validado em `trusted`, se a origem declarar
+   assim (verificar na documentação da origem antes de escrever a frase).
+2. **A espessura deve carregar o número.** Hoje 1 e 81 têm o mesmo traço. Espessura proporcional
+   (com o número mantido) faz o leitor ver o fluxo antes de ler.
+3. **"Pares de relações" é abstrato para quem começa.** Mostrar um exemplo real ao lado da legenda
+   (um par real, tirado do pacote, com a frase "este par conta 1, quantas colunas passarem").
+4. **Fluxos internos como laço na estação.** `trusted → trusted 60` e `analytics → analytics 58`
+   são grandes e explicam algo importante (modelos que se apoiam em modelos da mesma camada). Como
+   etiqueta solta, perdem-se; um laço com o número na própria estação os mantém no desenho.
+5. **Estações com altura vazia.** `staging` e `trusted` ficam altas só para acompanhar os ramais;
+   no celular sobra uma caixa grande com o texto no meio. Alinhar o texto ao topo ou reduzir a
+   altura.
+
+Recomendação: uma rodada 2b curta só para a inicial (pontos 1 a 5), depois a rodada 3.
 
 Decisão do Owner: (pendente)
