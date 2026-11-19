@@ -3,28 +3,18 @@
 # "onde" usa caminhos do portal sem a base de publicação (ex.: governanca/linhagem/).
 # "situacao" registra o estado no pacote fixado; ao refixar (D03), revisar esta lista.
 
-- id: chaves-estrangeiras
-  titulo: Relacionamentos entre tabelas não declarados
+- id: cardinalidade-dos-relacionamentos
+  titulo: Cardinalidade dos relacionamentos não declarada
   descricao: >-
-    O pacote não traz o destino das chaves estrangeiras. Os testes `relationships` informam a
-    relação e a coluna testadas, mas não a relação e a coluna referenciadas, e as chaves primárias
-    e estrangeiras declaradas em `analytics` também não constam. Por isso o portal ainda não
-    desenha o diagrama entidade-relacionamento e não deduz as ligações pelo nome dos testes.
+    O pacote traz as chaves primárias e estrangeiras, mas não a cardinalidade de cada
+    relacionamento nem se a coluna aceita nulo. O diagrama entidade-relacionamento marca a ponta
+    da relação apontada como "exatamente um" só quando a coluna tem teste `not_null` declarado; sem
+    ele, como "zero ou um". A ponta de quem aponta é sempre "zero ou mais". A regra é do portal e
+    usa só o que o pacote declara.
   onde:
-    - { rotulo: Entidades e grãos, pagina: "estrutura/#logica" }
-  responsavel: origem
-  situacao: Aceito pela origem como F34 em 17/11/2026, para a versão seguinte do pacote.
-
-- id: relacoes-sem-descricao
-  titulo: Relações sem descrição
-  descricao: >-
-    Parte das relações declaradas não tem descrição. O pacote registra essa falta em
-    `description_gaps`, e o catálogo a mostra como "sem descrição declarada". É a falta
-    declarada pela origem, não um inventário feito pelo portal no banco.
-  onde:
-    - { rotulo: Catálogo, pagina: "governanca/#catalogo" }
-  responsavel: origem
-  situacao: Aceito pela origem como F32 em 17/11/2026, com descrição das relações e teste com teto zero.
+    - { rotulo: Relacionamentos, pagina: "estrutura/#entidades" }
+  responsavel: gdados
+  situacao: Comportamento declarado pelo formato 1 do pacote; as chaves chegaram na `v2.2.0` (F34).
 
 - id: tipo-das-colunas
   titulo: Tipo das colunas só em analytics e consumption
@@ -66,17 +56,6 @@
     - { rotulo: Ambientes e documentos, pagina: "estrutura/#ambientes" }
   responsavel: origem
   situacao: Pendência da origem (L10).
-
-- id: nota-do-custo-gcp
-  titulo: Nota desatualizada sobre o custo do GCP
-  descricao: >-
-    A nota do Registro da fase GCP no pacote ainda diz que o custo real entra quando o faturamento
-    fechar. O custo já foi lido e está no documento de Capacidade e Recuperação, §2.14. O portal
-    mostra a nota como o pacote a traz.
-  onde:
-    - { rotulo: Ambientes e documentos, pagina: "estrutura/#ambientes" }
-  responsavel: origem
-  situacao: Aceito pela origem como F33 em 17/11/2026, para a versão seguinte do pacote.
 
 - id: resultados-de-uma-execucao
   titulo: Resultados de uma execução, não do estado atual
@@ -125,3 +104,16 @@
     - { rotulo: Fato, pagina: "conceitos/fato/" }
   responsavel: origem
   situacao: Encaminhado à origem pelo gdados em 17/11/2026.
+
+- id: ponto-de-reposicao-fixo
+  titulo: Ponto de reposição fixo na pergunta dos SKUs abaixo dele
+  descricao: >-
+    A view dos SKUs abaixo do ponto de reposição compara o disponível com um ponto fixo, igual para
+    todo par de produto e armazém. A origem registrou como achado F36 (`docs/achados_nl_sql.md`,
+    na `v2.2.0`) que, com o estoque regenerado, esse ponto quase não distingue mais os pares: na
+    medição dela de 18/11/2026, 94% ficam abaixo dele. O portal mostra a view como o pacote a
+    declara e não muda a regra.
+  onde:
+    - { rotulo: Pergunta P12, pagina: "governanca/pergunta/P12/" }
+  responsavel: origem
+  situacao: Achado F36 da origem, com a correção prevista numa fase própria dela.

@@ -13,8 +13,14 @@ exemplos:
   - tipo: coluna
     ref: trusted.customers.source_system
     nota: o sistema de origem faz parte da identidade
+  - tipo: relacao
+    ref: analytics.dim_date
+    nota: uma dimensão referenciada pelas chaves estrangeiras de várias fatos
+  - tipo: pagina
+    ref: "estrutura/#entidades"
+    nota: o diagrama gerado das chaves primárias e estrangeiras do pacote
 fontes: []
-revisado_em: "2026-11-17"
+revisado_em: "2026-11-18"
 ---
 
 ## Qual problema resolve
@@ -40,6 +46,8 @@ toda junção, como diz a descrição da própria coluna.
 
 ## Escolha e limites do projeto
 
-A origem declara chaves primárias e estrangeiras em `analytics` (ADR-0056 da origem), mas o pacote
-fixado não as traz, nem o destino dos testes `relationships`. Por isso o portal ainda não mostra os
-relacionamentos do modelo dimensional ([limitação conhecida](../limitacoes/#chaves-estrangeiras)).
+A origem declara chaves primárias e estrangeiras só em `analytics` e as instala no banco a cada
+execução (ADR-0056 da origem). O pacote as traz em cada relação, e a página da relação mostra a chave
+primária, as estrangeiras e quem a referencia. Nas outras camadas, os testes `relationships` conferem
+que o valor existe na outra tabela, mas não correspondem a uma chave instalada. As ligações estão no
+diagrama entidade-relacionamento da página de estrutura (ver os exemplos acima).

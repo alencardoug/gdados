@@ -29,5 +29,5 @@ o [glossário](../glossario/) define os conceitos. São três peças complementa
 ## Escolha e limites do projeto
 
 O catálogo do portal mostra os objetos **declarados** no projeto dbt da origem, não um inventário
-lido do banco. Uma relação sem descrição aparece como tal (ver
-[limitações](../limitacoes/#relacoes-sem-descricao)).
+lido do banco. Uma relação sem descrição, registrada pela origem em `description_gaps`, aparece como
+"sem descrição declarada"; o portal não escreve a descrição que falta.
