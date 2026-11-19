@@ -129,6 +129,8 @@ export function verificarEstatica({ dist, origem }) {
     { fluxos: expectedFlows.size, pares: esperado.size, ausencias_divergentes: missingIncoming.map(([layer]) => layer) });
 
   const mapErrors = [], barErrors = [], orderErrors = [], neighborLayerErrors = [];
+  const noteErrors = [], nameErrors = [];
+  let summarizedTypes = 0;
   const samples = lerJson(join(origem, "amostras_de_registros.json")).relations;
   for (const [id, r] of Object.entries(R)) {
     const page = html(dist, `/governanca/relacao/${id}/`);
@@ -174,6 +176,25 @@ export function verificarEstatica({ dist, origem }) {
     const bar = countsIn(/<span data-class="([^"]+)" style="flex-grow:(\d+)"/g);
     if (!isDeepStrictEqual(legend, expectedCounts) || !isDeepStrictEqual(bar, expectedCounts)) barErrors.push(id);
 
+    const dictionary = page.slice(page.indexOf('id="colunas"'), page.indexOf('id="amostra"'));
+    const missingTypes = Object.values(r.columns).filter((c) => c.data_type == null).length;
+    const allMissing = missingTypes > 0 && missingTypes === Object.keys(r.columns).length;
+    if (allMissing) summarizedTypes++;
+    const typeNote = dictionary.match(/<caption[^>]*>([\s\S]*?)<\/caption>/)?.[1] ?? "";
+    if (typeNote.includes("Tipo</b> · não declarado no pacote") !== allMissing ||
+        (dictionary.match(/class="ausente">não declarado no pacote</g) ?? []).length !== (allMissing ? 0 : missingTypes)) noteErrors.push(id);
+
+    const nameMarkup = /<code class="identifier">([\s\S]*?)<\/code>/g;
+    const dictionaryNames = [...dictionary.matchAll(/<th scope="row"><code class="identifier">([\s\S]*?)<\/code>/g)]
+      .map(([, body]) => body.replace(/<[^>]+>/g, ""));
+    const validBreaks = [...page.matchAll(nameMarkup)].every(([, body]) => {
+      const parts = body.split(/<wbr\s*\/?>/).map((part) => part.match(/^<span>([^<]*)<\/span>$/)?.[1]);
+      return parts.every((part, i) => part != null && (i === parts.length - 1 || /[._]$/.test(part)));
+    });
+    const title = page.match(/<h1>([\s\S]*?)<\/h1>/)?.[1] ?? "";
+    if (!validBreaks || !title.includes('class="identifier"') || textoDe(title).trim() !== id ||
+        !isDeepStrictEqual(dictionaryNames.sort(), Object.keys(r.columns).sort())) nameErrors.push(id);
+
     const a = samples[id];
     if (a.row_count === 0) continue;
     const sampleOrder = textoDe(page.match(/id="amostra">[^<]*<\/h2><p>([\s\S]*?)<\/p>/)?.[1] ?? "").trim();
@@ -190,6 +211,10 @@ export function verificarEstatica({ dist, origem }) {
     { relacoes: Object.keys(R).length, divergentes: neighborLayerErrors });
   add(6, "Barras e legendas reproduzem a classificação de cada conjunto de colunas", barErrors.length === 0,
     { relacoes: Object.keys(R).length, divergentes: barErrors });
+  add(6, "Tipo inteiramente ausente recebe uma nota e tipos parcialmente ausentes conservam seus avisos", !noteErrors.length,
+    { fichas_com_nota: summarizedTypes, divergentes: noteErrors });
+  add(8, "Nomes do cartão e do dicionário preservam o identificador e só oferecem quebras nos separadores", !nameErrors.length,
+    { fichas: Object.keys(R).length, divergentes: nameErrors });
   add(6, "Ordem de exportação da amostra e chave primária têm rótulos fiéis", orderErrors.length === 0,
     { amostras: Object.keys(samples).length, divergentes: orderErrors });
 

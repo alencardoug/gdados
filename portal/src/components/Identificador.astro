@@ -1,5 +1,6 @@
 ---
+import { identifierParts } from "../lib/identificadores.mjs";
 interface Props { value: string }
-const parts = Astro.props.value.split(/(?<=[._])(?=.)/u);
+const parts = identifierParts(Astro.props.value);
 ---
 <code class="identifier">{parts.map((part, i) => <>{i > 0 && <wbr />}<span>{part}</span></>)}</code>

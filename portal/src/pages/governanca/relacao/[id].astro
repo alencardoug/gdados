@@ -1,6 +1,9 @@
 ---
 // Página de uma relação (PLANO §2.1): significado, ficha, colunas com sensibilidade e domínio de
 // valores, linhagem imediata, testes, auditoria e as perguntas que a usam.
+import Identificador from "../../../components/Identificador.astro";
+import { commonNotice, terminalNotice } from "../../../lib/notas-de-tabela.mjs";
+import { wrapInlineIdentifiers } from "../../../lib/identificadores.mjs";
 import MinimapaRelacao from "../../../components/MinimapaRelacao.astro";
 import ComposicaoSensibilidade from "../../../components/ComposicaoSensibilidade.astro";
 import JsonAmostra from "../../../components/JsonAmostra.astro";
@@ -30,11 +33,29 @@ const colunas = await Promise.all(
     nome,
     c,
     m: c.meta ?? {},
-    descricao: x.colunasSemDescricao.has(nome) ? null : await mdDoPacoteEmLinha(c.description),
+    descricao: x.colunasSemDescricao.has(nome) ? null : wrapInlineIdentifiers(await mdDoPacoteEmLinha(c.description)),
     linhagem: x.linhagem?.columns?.[nome] ?? null,
     metricas: metricasPorColuna.get(`${x.id}.${nome}`) ?? [],
   })),
 );
+const typeNote = commonNotice(colunas, ({ c }) => c.data_type == null ? "não declarado no pacote" : null);
+const sensitivityNote = commonNotice(colunas, ({ c }) => c.sensitivity == null ? "não declarada" : null);
+const descriptionNote = commonNotice(colunas, ({ nome, descricao }) => {
+  if (descricao != null) return null;
+  return x.colunasSemDescricao.has(nome) ? "sem descrição declarada" : "ausente";
+});
+const originNote = commonNotice(colunas, ({ linhagem }) => terminalNotice(linhagem, r.resource_type));
+const showSensitivity = !sensitivityNote || colunas.some(({ m }) => m.sensitivity_reason);
+const showDescription = !descriptionNote || colunas.some(({ m, metricas }) => metricas.length ||
+  m.description_from || m.description_reason || m.values || m.null_meaning || m.unknown_member || m.not_observed || m.impossible);
+const columnNotes = [
+  ["Tipo", typeNote], ["Sensibilidade", sensitivityNote], ["Descrição", descriptionNote],
+  ["Origens terminais", originNote === "é origem" ? "cada coluna é origem" : originNote],
+].filter(([, note]) => note);
+const testScopeNote = commonNotice(x.testes, (t) => t.column == null ? "todos se aplicam à relação" : null);
+const referenceNote = commonNotice(x.testes, (t) => t.references_relation == null ? "nenhuma declarada" : null);
+const resultNote = commonNotice(x.testes, (t) => t.result == null ? "sem resultado" : null);
+const testNotes = [["Coluna", testScopeNote], ["Referência", referenceNote], ["Resultado", resultNote]].filter(([, note]) => note);
 const ORIGEM = { source: "origem", seed: "seed", generated: "valor gerado" };
 const lnk = (coluna) => (relacaoPorId.has(relacaoDaColuna(coluna)) ? rotaDaColuna(relacaoDaColuna(coluna), nomeDaColuna(coluna)) : null);
 const tabelaDeValores = (obj) => Object.entries(obj ?? {});
@@ -67,19 +88,19 @@ const sustentacao = auditoria ? [
 <Base titulo={x.id} secao="governanca" descricao={`Relação ${x.id} no catálogo do portal.`}>
 <p class="migalhas"><a href={rota("governanca/")}>Governança</a> › <a href={rota(`governanca/?camada=${x.camada}#catalogo`)}>{x.camada}</a></p>
 <header class="identity-card">
-  <h1><code>{x.id.split(/(?<=[._])/).map((part) => <>{part}<wbr /></>)}</code></h1>
+  <h1><Identificador value={x.id} /></h1>
   <dl>
-    <div><dt><Conceito id="camada">Camada</Conceito></dt><dd><code>{r.schema}</code></dd></div>
+    <div><dt><Conceito id="camada">Camada</Conceito></dt><dd><Identificador value={r.schema} /></dd></div>
     <div><dt><Conceito id="grao">Grão</Conceito> · o que uma linha representa</dt><dd>
       {r.grain != null ? r.grain : viewGrain.length ? <>
-        Uma combinação de {viewGrain.map((c) => <code>{c}</code>).reduce((a, b) => [a, ", ", b])}
+        Uma combinação de {viewGrain.map((c) => <Identificador value={c} />).reduce((a, b) => [a, ", ", b])}
         <small>Grão de agregação na regra da view.</small>
       </> : <span class="ausente">não declarado no campo de grão</span>}
     </dd></div>
     <div><dt><Conceito id="chave">Chave primária</Conceito></dt><dd>{x.chavePrimaria.length
-      ? x.chavePrimaria.map((c) => <a href={`#coluna-${c}`}><code>{c}</code></a>).reduce((a, b) => [a, ", ", b])
+      ? x.chavePrimaria.map((c) => <a href={`#coluna-${c}`}><Identificador value={c} /></a>).reduce((a, b) => [a, ", ", b])
       : <span class="ausente">nenhuma declarada</span>}</dd></div>
-    <div><dt><Conceito id="responsavel">Responsável</Conceito></dt><dd><Ausente valor={meta.owner} texto="não declarado" /></dd></div>
+    <div><dt><Conceito id="responsavel">Responsável</Conceito></dt><dd>{typeof meta.owner === "string" ? <Identificador value={meta.owner} /> : <Ausente valor={meta.owner} texto="não declarado" />}</dd></div>
     <ComposicaoSensibilidade columns={r.columns} />
   </dl>
 </header>
@@ -101,12 +122,12 @@ const sustentacao = auditoria ? [
   <dt><Conceito id="dominio">Domínio</Conceito></dt><dd><Ausente valor={meta.domain} texto="não declarado" /></dd>
   <dt>Escritores</dt><dd><Ausente valor={meta.writers} texto="não declarados" /></dd>
   <dt><Conceito id="retencao">Retenção</Conceito></dt><dd><Ausente valor={meta.retention} texto="não declarada" /></dd>
-  <dt id="acesso"><Conceito id="acesso-por-papel">Papéis com leitura</Conceito></dt><dd>{r.grants_select.length ? r.grants_select.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão de leitura</span>}</dd>
-  {outrasConcessoes.length > 0 && <><dt>Outras concessões</dt><dd>{outrasConcessoes.map(([op, papeis]) => <div><code>{op}</code>: {papeis.map((g) => <code>{g}</code>).reduce((a, b) => [a, ", ", b])}</div>)}</dd></>}
+  <dt id="acesso"><Conceito id="acesso-por-papel">Papéis com leitura</Conceito></dt><dd>{r.grants_select.length ? r.grants_select.map((g) => <Identificador value={g} />).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão de leitura</span>}</dd>
+  {outrasConcessoes.length > 0 && <><dt>Outras concessões</dt><dd>{outrasConcessoes.map(([op, papeis]) => <div><Identificador value={op} />: {papeis.map((g) => <Identificador value={g} />).reduce((a, b) => [a, ", ", b])}</div>)}</dd></>}
   <dt>Chaves estrangeiras</dt><dd>{x.chavesEstrangeiras.length
-    ? x.chavesEstrangeiras.map((f) => <div><a href={`#coluna-${f.column}`}><code>{f.column}</code></a> → {lnkRef(f.references_relation, f.references_column) ? <a href={lnkRef(f.references_relation, f.references_column)}><code>{f.references_relation}.{f.references_column}</code></a> : <code>{f.references_relation}.{f.references_column}</code>}</div>)
+    ? x.chavesEstrangeiras.map((f) => <div><a href={`#coluna-${f.column}`}><Identificador value={f.column} /></a> → {lnkRef(f.references_relation, f.references_column) ? <a href={lnkRef(f.references_relation, f.references_column)}><Identificador value={`${f.references_relation}.${f.references_column}`} /></a> : <Identificador value={`${f.references_relation}.${f.references_column}`} />}</div>)
     : <><span class="ausente">nenhuma declarada</span>{semChave && camadasComChave.length > 0 && <span class="suave"> (neste pacote há chaves declaradas em {camadasComChave.join(", ")})</span>}</>}</dd>
-  {x.referenciadaPor.length > 0 && <><dt>Referenciada por</dt><dd>{x.referenciadaPor.map((f) => <div>{lnkRef(f.relacao, f.column) ? <a href={lnkRef(f.relacao, f.column)}><code>{f.relacao}.{f.column}</code></a> : <code>{f.relacao}.{f.column}</code>}</div>)}</dd></>}
+  {x.referenciadaPor.length > 0 && <><dt>Referenciada por</dt><dd>{x.referenciadaPor.map((f) => <div>{lnkRef(f.relacao, f.column) ? <a href={lnkRef(f.relacao, f.column)}><Identificador value={`${f.relacao}.${f.column}`} /></a> : <Identificador value={`${f.relacao}.${f.column}`} />}</div>)}</dd></>}
   {noModelo && <><dt><Conceito id="entidade-e-relacionamento">Diagrama entidade-relacionamento</Conceito></dt><dd><a href={rotaDoER(x.id)}>Ver esta relação e as ligadas a ela por chave</a></dd></>}
   {citada.length > 0 && <><dt>Exemplo nas explicações</dt><dd>{citada.map((t) => <a href={t.href}>{t.titulo}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
   {x.perguntas.length > 0 && <><dt>Perguntas que a usam</dt><dd>{x.perguntas.map((q) => <a href={rotaDaPergunta(q)}>{q}</a>).reduce((a, b) => [a, ", ", b])}</dd></>}
@@ -114,20 +135,28 @@ const sustentacao = auditoria ? [
 
 <h2 id="colunas">Colunas</h2>
 <div class="rolagem"><table>
-<thead><tr><th scope="col">Coluna</th><th scope="col">Tipo</th><th scope="col"><Conceito id="sensibilidade">Sensibilidade</Conceito></th><th scope="col">Descrição</th><th scope="col"><Conceito id="origem-terminal">Origens terminais</Conceito></th></tr></thead>
+{columnNotes.length > 0 && <caption class="table-notes"><div>Para todas as colunas
+  {columnNotes.map(([label, note]) => <span><b>{label}</b> · {note}</span>)}
+</div></caption>}
+<thead><tr>
+  <th scope="col">Coluna</th>{!typeNote && <th scope="col">Tipo</th>}
+  {showSensitivity && <th scope="col"><Conceito id="sensibilidade">Sensibilidade</Conceito></th>}
+  {showDescription && <th scope="col">Descrição</th>}
+  {!originNote && <th scope="col"><Conceito id="origem-terminal">Origens terminais</Conceito></th>}
+</tr></thead>
 <tbody>
 {colunas.map(({ nome, c, m, descricao, linhagem, metricas }) => (
   <tr id={`coluna-${nome}`}>
-    <th scope="row"><code>{nome}</code>{pk.has(nome) && <> <span class="etiqueta" title="chave primária">PK</span></>}{fkPorColuna.has(nome) && <> <span class="etiqueta" title={`chave estrangeira para ${fkPorColuna.get(nome).references_relation}`}>FK</span></>}{fkPorColuna.has(nome) && <div class="suave">{naoNulas.has(`${x.id}.${nome}`) ? "obrigatória (teste not_null)" : "sem teste not_null"}</div>}</th>
-    <td><Ausente valor={c.data_type} texto="não declarado no pacote" /></td>
-    <td><Ausente valor={c.sensitivity} texto="não declarada" />{m.sensitivity_reason && <div class="suave">{m.sensitivity_reason}</div>}</td>
-    <td class="md">
-      {x.colunasSemDescricao.has(nome) ? <span class="ausente">sem descrição declarada</span> : <Md html={descricao} em="span" />}
-      {m.description_from && <div class="suave">Descrição herdada de <code>{m.description_from}</code>.</div>}
+    <th scope="row"><Identificador value={nome} />{pk.has(nome) && <> <span class="etiqueta" title="chave primária">PK</span></>}{fkPorColuna.has(nome) && <> <span class="etiqueta" title={`chave estrangeira para ${fkPorColuna.get(nome).references_relation}`}>FK</span></>}{fkPorColuna.has(nome) && <div class="suave">{naoNulas.has(`${x.id}.${nome}`) ? "obrigatória (teste not_null)" : "sem teste not_null"}</div>}</th>
+    {!typeNote && <td><Ausente valor={c.data_type} texto="não declarado no pacote" /></td>}
+    {showSensitivity && <td>{!sensitivityNote && <Ausente valor={c.sensitivity} texto="não declarada" />}{m.sensitivity_reason && <div class="suave">{m.sensitivity_reason}</div>}</td>}
+    {showDescription && <td class="md">
+      {!descriptionNote && (x.colunasSemDescricao.has(nome) ? <span class="ausente">sem descrição declarada</span> : <Md html={descricao} em="span" />)}
+      {m.description_from && <div class="suave">Descrição herdada de <Identificador value={m.description_from} />.</div>}
       {m.description_reason && <div class="suave">Motivo da descrição própria: {m.description_reason}</div>}
-      {metricas.length > 0 && <div>Publica: {metricas.map((n) => <a href={rotaDaMetrica(n)}><code>{n}</code></a>).reduce((a, b) => [a, ", ", b])}</div>}
+      {metricas.length > 0 && <div>Publica: {metricas.map((n) => <a href={rotaDaMetrica(n)}><Identificador value={n} /></a>).reduce((a, b) => [a, ", ", b])}</div>}
       {m.values && (
-        <details><summary>Valores{m.value_domain && <> (domínio <code>{m.value_domain}</code>)</>}</summary>
+        <details><summary>Valores{m.value_domain && <> (domínio <Identificador value={m.value_domain} />)</>}</summary>
           <table><tbody>{tabelaDeValores(m.values).map(([v, s]) => <tr><td><code>{v}</code></td><td>{s}</td></tr>)}</tbody></table>
         </details>
       )}
@@ -135,22 +164,19 @@ const sustentacao = auditoria ? [
       {m.unknown_member && <div><span class="etiqueta">membro desconhecido</span> <code>{m.unknown_member}</code></div>}
       {m.not_observed && <details><summary>Valores não observados no dado atual</summary><table><tbody>{tabelaDeValores(m.not_observed).map(([v, s]) => <tr><td><code>{v}</code></td><td>{s}</td></tr>)}</tbody></table></details>}
       {m.impossible && <details><summary>Valores impossíveis</summary><table><tbody>{tabelaDeValores(m.impossible).map(([v, s]) => <tr><td><code>{v}</code></td><td>{s}</td></tr>)}</tbody></table></details>}
-    </td>
-    <td>
-      {linhagem == null
-        ? (r.resource_type === "source" ? <span class="suave">é origem</span> : <span class="ausente">sem linhagem no pacote</span>)
-        : linhagem.origins.length === 0
-          ? <span class="ausente">nenhuma origem declarada</span>
-          : <ul class="sem-marcador">{linhagem.origins.map((o) => <li>{lnk(o.column) ? <a href={lnk(o.column)}><code>{o.column}</code></a> : <code>{o.column}</code>} <span class="etiqueta">{ORIGEM[o.kind] ?? o.kind}</span></li>)}</ul>}
-    </td>
+    </td>}
+    {!originNote && <td>
+      {terminalNotice(linhagem, r.resource_type)
+        ? <span class={linhagem == null && r.resource_type === "source" ? "suave" : "ausente"}>{terminalNotice(linhagem, r.resource_type)}</span>
+        : <ul class="sem-marcador">{linhagem.origins.map((o) => <li>{lnk(o.column) ? <a href={lnk(o.column)}><Identificador value={o.column} /></a> : <Identificador value={o.column} />} <span class="etiqueta">{ORIGEM[o.kind] ?? o.kind}</span></li>)}</ul>}
+    </td>}
   </tr>
 ))}
 </tbody></table></div>
 <p class="suave">
-  Tipos de origem terminal: <strong>origem</strong> é uma coluna de <em>source</em>; <strong>seed</strong> é uma tabela de referência versionada no projeto;
+  Tipos de <Conceito id="origem-terminal">origem terminal</Conceito>: <strong>origem</strong> é uma coluna de <em>source</em>; <strong>seed</strong> é uma tabela de referência versionada no projeto;
   <strong>valor gerado</strong> é um valor criado na transformação, como uma constante ou um rótulo de sistema.
   Os três são finais válidos de um caminho de linhagem. Nenhum deles indica quebra de linhagem.
-  O tipo da coluna só vem declarado em <code>analytics</code> e <code>consumption</code>.
 </p>
 
 <h2 id="amostra">Amostra de registros</h2>
@@ -160,13 +186,13 @@ const sustentacao = auditoria ? [
 <p>
   {amostra.row_count === 1 ? "A única linha do build." : amostra.rows.length === amostra.row_count ? `Todas as ${amostra.row_count} linhas do build.` : `${amostra.rows.length} de ${amostra.row_count.toLocaleString("pt-BR")} linhas do build.`}
   {amostra.order.defect_first && " As linhas com defeito registrado do legado vêm primeiro."}
-  {orderedByPrimaryKey ? <> Ordenação pela chave primária {amostra.order.key.map((c) => <code>{c}</code>).reduce((a, b) => [a, ", ", b])}.</>
+  {orderedByPrimaryKey ? <> Ordenação pela chave primária {amostra.order.key.map((c) => <Identificador value={c} />).reduce((a, b) => [a, ", ", b])}.</>
     : orderedByAllColumns ? " A origem usou todas as colunas, na sequência da tabela, para ordenar a amostra."
-    : <> A origem ordenou a amostra por {amostra.order.key.map((c) => <code>{c}</code>).reduce((a, b) => [a, ", ", b])}.</>}
+    : <> A origem ordenou a amostra por {amostra.order.key.map((c) => <Identificador value={c} />).reduce((a, b) => [a, ", ", b])}.</>}
 </p>
 <p class="suave sample-hint">Role a tabela para ver as demais colunas. A primeira fica fixa.</p>
 <div class="rolagem sample-scroll" role="region" aria-labelledby="amostra" tabindex="0"><table class="amostra">
-<thead><tr>{amostra.columns.map((c) => <th scope="col"><a href={`#coluna-${c}`}><code>{c}</code></a>{mascaradas.has(c) && <div class="suave">personal</div>}</th>)}</tr></thead>
+<thead><tr>{amostra.columns.map((c) => <th scope="col"><a href={`#coluna-${c}`}><Identificador value={c} /></a>{mascaradas.has(c) && <div class="suave">personal</div>}</th>)}</tr></thead>
 <tbody>
 {amostra.rows.map((linha) => (
   <tr>{linha.map((v) => (
@@ -193,16 +219,19 @@ const sustentacao = auditoria ? [
 <h2 id="testes"><Conceito id="teste">Testes</Conceito></h2>
 {x.testes.length === 0 ? <p><span class="ausente">Nenhum teste declarado para esta relação.</span></p> : (
 <div class="rolagem"><table>
-<thead><tr><th scope="col">Teste</th><th scope="col">Tipo</th><th scope="col">Coluna</th><th scope="col">Referência</th><th scope="col">Declarado em</th><th scope="col">Resultado</th></tr></thead>
+{testNotes.length > 0 && <caption class="table-notes"><div>Para todos os testes
+  {testNotes.map(([label, note]) => <span><b>{label}</b> · {note}</span>)}
+</div></caption>}
+<thead><tr><th scope="col">Teste</th><th scope="col">Tipo</th>{!testScopeNote && <th scope="col">Coluna</th>}{!referenceNote && <th scope="col">Referência</th>}<th scope="col">Declarado em</th>{!resultNote && <th scope="col">Resultado</th>}</tr></thead>
 <tbody>
 {x.testes.map((t) => (
   <tr>
-    <td><code>{t.test}</code></td>
+    <td><Identificador value={t.test} /></td>
     <td>{t.kind}</td>
-    <td>{t.column == null ? <span class="suave">relação</span> : <a href={`#coluna-${t.column}`}><code>{t.column}</code></a>}</td>
-    <td>{t.references_relation == null ? <span class="suave">—</span> : lnkRef(t.references_relation, t.references_column) ? <a href={lnkRef(t.references_relation, t.references_column)}><code>{t.references_relation}.{t.references_column}</code></a> : <code>{t.references_relation}.{t.references_column}</code>}</td>
+    {!testScopeNote && <td>{t.column == null ? <span class="suave">relação</span> : <a href={`#coluna-${t.column}`}><Identificador value={t.column} /></a>}</td>}
+    {!referenceNote && <td>{t.references_relation == null ? <span class="suave">nenhuma declarada</span> : lnkRef(t.references_relation, t.references_column) ? <a href={lnkRef(t.references_relation, t.references_column)}><Identificador value={`${t.references_relation}.${t.references_column}`} /></a> : <Identificador value={`${t.references_relation}.${t.references_column}`} />}</td>}
     <td>{rotaDaReferencia(t.declared_in) ? <a href={rotaDaReferencia(t.declared_in)}><code>{t.declared_in}</code></a> : <code>{t.declared_in}</code>}</td>
-    <td><Resultado resultado={t.result} />{t.result && !t.result.same_invocation_as_manifest && <div class="suave">execução diferente da do manifesto</div>}</td>
+    {!resultNote && <td><Resultado resultado={t.result} />{t.result && !t.result.same_invocation_as_manifest && <div class="suave">execução diferente da do manifesto</div>}</td>}
   </tr>
 ))}
 </tbody></table></div>)}
@@ -216,11 +245,11 @@ const sustentacao = auditoria ? [
 <dl class="ficha">
   <dt>Estado</dt><dd><span class={`estado ${auditoria.status}`}>{auditoria.status}</span></dd>
   <dt>Commit da auditoria</dt><dd><Ausente valor={auditoria.commit} /></dd>
-  <dt>Critérios</dt><dd>{auditoria.criteria.length ? auditoria.criteria.map((c) => <code>{c}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhum</span>}</dd>
+  <dt>Critérios</dt><dd>{auditoria.criteria.length ? auditoria.criteria.map((c) => <Identificador value={c} />).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhum</span>}</dd>
   <dt>Achados</dt><dd><Ausente valor={auditoria.findings} texto="nenhum" /></dd>
   <dt>Consulta de referência</dt><dd>{auditoria.reference == null ? <span class="ausente">ausente</span> : refAuditoria ? <a href={refAuditoria}><code>{auditoria.reference}</code></a> : <code>{auditoria.reference}</code>}</dd>
   <dt>O que a sustenta</dt><dd>{sustentacao.length
-    ? <ul class="sem-marcador">{sustentacao.map((v) => <li><span class="etiqueta">{v.origem}</span> <code>{v.nome}</code> {v.existe ? <Resultado resultado={v.resultado} /> : <span class="ausente">não encontrado no pacote</span>}</li>)}</ul>
+    ? <ul class="sem-marcador">{sustentacao.map((v) => <li><span class="etiqueta">{v.origem}</span> <Identificador value={v.nome} /> {v.existe ? <Resultado resultado={v.resultado} /> : <span class="ausente">não encontrado no pacote</span>}</li>)}</ul>
     : <span class="ausente">nenhuma verificação declarada</span>}</dd>
 </dl>
 <p class="suave">"O que a sustenta" lista as verificações do <code>pytest</code> e os testes do dbt que a origem declara para esta auditoria, com o resultado da execução registrada no pacote.</p>

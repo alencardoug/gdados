@@ -160,7 +160,7 @@ footer.procedencia p { margin: 0.25rem 0; }
 
 /* Fluxo entre camadas. Cada traço do mapa corresponde a um par de camadas na linhagem. */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-code.identifier { white-space: normal; overflow-wrap: normal; word-break: normal; hyphens: none; }
+code.identifier, .amostra code.identifier { white-space: normal; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .identifier > span { white-space: nowrap; }
 .layer-map { border-block: 1px solid var(--borda); padding-block: 1rem; }
 .flow-spine { max-width: 52rem; }
@@ -206,7 +206,7 @@ code.identifier { white-space: normal; overflow-wrap: normal; word-break: normal
 .identity-card dl { display: grid; grid-template-columns: 1fr 2fr 1.4fr 1.2fr; margin: 0; }
 .identity-card dl > div { min-width: 0; padding: 0.7rem 1.2rem; border-top: 1px solid var(--borda); }
 .identity-card dt, .identity-card small { font-size: 0.85rem; color: var(--suave); }
-.identity-card dd { margin: 0.25rem 0 0; overflow-wrap: anywhere; }
+.identity-card dd { margin: 0.25rem 0 0; }
 .identity-card small { display: block; }
 .composition { grid-column: 1 / -1; }
 .composition dd { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; }
@@ -237,6 +237,9 @@ code.identifier { white-space: normal; overflow-wrap: normal; word-break: normal
 .lineage-table { margin-block: 1rem; }
 .lineage-table td code { white-space: normal; }
 summary { cursor: pointer; }
+
+.table-notes { text-align: left; padding: 0.4rem 0.6rem; color: var(--suave); font-size: 0.86rem; }
+.table-notes > div { display: flex; flex-wrap: wrap; gap: 0.15rem 0.75rem; max-width: calc(100vw - 3.25rem); }
 
 /* Amostras lado a lado. A célula fixa deixa espaço para ler a próxima em telas estreitas. */
 .sample-scroll { border: 1px solid var(--borda); border-radius: 0.4rem; scroll-padding-inline-start: min(8.5rem, 38vw); }
