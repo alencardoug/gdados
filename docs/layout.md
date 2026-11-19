@@ -102,4 +102,50 @@ desenhou à mão? Tem alternativa textual? Cabe nas metas? Distingue declarado d
 Cada rodada: data, proposta do Codex (ou apontador para o commit), crítica do Claude, decisão do
 Owner.
 
-_Nenhuma rodada ainda._
+### Rodada 1 — Orientação no pipeline · 19/11/2026
+
+**Proposta e construção do Codex.** Conectar o mapa da página inicial à pergunta que surge ao abrir
+uma relação do catálogo: onde ela está e de quem recebe ou para quem fornece valores? Implementação
+em `86d3afe`, com verificações de regressão em `b5ceba4`. Os esquemas são HTML gerado pelo Astro
+no build, com listas, links e controles nativos.
+
+| Onde | Como ler | Evidência da origem fixada na v2.3.0 |
+|---|---|---|
+| Mapa no início | Cada estação informa função, nome e quantidade e abre o catálogo filtrado. A lista oferece a leitura por texto. As duas entradas, principal e legada, dividem uma estação. Rejeições, histórico e auditoria aparecem em uma faixa própria. | Funções da Arquitetura §2. Contagens calculadas de `relations.*.schema`. |
+| Minimapa nas fichas | A camada atual recebe o rótulo “Você está aqui”. As setas seguem o sentido dos valores. Até três vizinhos ficam abertos de cada lado e os demais têm expansão por teclado. A tabela lista todos os insumos e consumidores com o número de ligações entre colunas. | Ligações imediatas agregadas de `lineage.relations.*.columns.*.leaves`. Uma junção ou um filtro pode ficar fora dessa linhagem. |
+| Identidade e amostra | A ficha reúne camada, grão, chave primária, responsável e composição de sensibilidade. A legenda numérica acompanha a barra. As âncoras levam, entre outros destinos, aos papéis com leitura e à amostra. A primeira coluna permanece visível durante a rolagem interna e cada ramo JSON abre por demanda. | `relations` e, quando identificado como grão de agregação da view, `view_rules.*.grain`. Sensibilidade vem de cada coluna. A ordem, as linhas e a máscara vêm da exportação de amostras da D06. |
+
+Na amostra, o texto menciona chave primária somente quando as colunas de ordenação coincidem, na
+mesma sequência, com a chave declarada. Nos demais casos, informa as colunas de ordenação ou diz
+que a origem usou todas as colunas na sequência da tabela. A prioridade dos defeitos do legado
+continua explícita. Os quatro componentes herdados da tentativa interrompida foram reescritos e
+integrados. As ideias 2 e 4 a 9 da §5 ficam fora desta rodada.
+
+**Verificação local.** O pacote `2bceb47` passou pela validação de seus 97 arquivos. Os 46 testes
+de unidade passaram. Três builds das 479 páginas produziram o mesmo SHA-256 de `dist/`
+(`64b6fa81008e130ae79dc81d30d99137557e16f3cd73c28f58916b1c75cb08da`). Passaram os 20 testes
+estáticos, inclusive os quatro novos. Foram conferidos 37.285 links e âncoras e as 469 ligações
+imediatas nas 283 fichas. Em gzip nível 6, o maior HTML do portal tem 100.700 bytes
+(`registro_fase_gcp.md`). Entre as páginas alteradas, a maior é a ficha de
+`trusted.legacy_eligible_records`, com 26.652 bytes somando o HTML e o CSS.
+
+Em Firefox 158.0.1, a inicial e as 283 fichas foram abertas como arquivos locais com o CSS do
+build, em 390 px, no tema claro e no escuro. Nas 284 páginas por tema houve zero excesso de largura
+e zero erro ou aviso da página. As 280 tabelas que precisaram de rolagem mantiveram a primeira
+coluna fixa. Em 123 fichas, um JSON abriu e fechou. A leitura do HTML também conferiu as 20.617
+células da exportação, inclusive objetos, listas, nulos e máscaras. A janela sem interface do
+Firefox não recebeu foco do sistema. O foco programático selecionou a tabela, mas a indicação
+visual de foco não pôde ser confirmada.
+
+A E3 completa tem agora 44 verificações. As 24 anteriores ao navegador passaram. O ambiente
+recusou a abertura do servidor local em `127.0.0.1:4321` com `EPERM` e a inicialização do
+Chrome também falhou. Permanecem pendentes as 20 verificações de navegador da E3, inclusive o
+novo teste com Tab e Enter, o foco visível, a medição HTTP das transferências e os tempos de
+renderização, busca e zoom.
+
+**Pergunta ao Owner.** Ao abrir `raw_legacy.support_agents`, você consegue encontrar uma relação
+que recebe valores dela usando só a ficha?
+
+Crítica do Claude: (pendente)
+
+Decisão do Owner: (pendente)
