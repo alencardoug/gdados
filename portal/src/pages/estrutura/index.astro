@@ -135,7 +135,7 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
   Na ponta da relação que aponta, a linha diz "zero ou mais". Na ponta da relação apontada, diz "exatamente um" quando a coluna tem teste <code>not_null</code> declarado,
   e "zero ou um" quando não tem: o pacote não declara a cardinalidade (<a href={rota("conceitos/limitacoes/#cardinalidade-dos-relacionamentos")}>limitação conhecida</a>).
 </p>
-<label>Recorte <select id="er-recorte">
+<label class="seletor-de-recorte">Recorte <select id="er-recorte">
   {recortesER.map((r) => <option value={r.id} data-definicao={r.definicao}>{r.rotulo}</option>)}
   <option value={modeloInteiro.id} data-definicao={modeloInteiro.definicao}>{modeloInteiro.rotulo}</option>
 </select></label>
