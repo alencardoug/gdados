@@ -136,7 +136,8 @@ renderização em 188 ms e 141 KB; busca em até 55 ms por tecla; recorte da lin
 grafo inteiro em 566 ms; estrutura, agora com dois diagramas Mermaid, em 671 KB comprimidos.
 
 **Zoom no grafo inteiro:** mediana de 50 ms, no limite da meta (rodadas: 33, 50, 50, 50,1 e 50 ms).
-A ressalva da §3 continua para a E4. Com CPU 4× mais lenta, a busca chega a 153 ms por tecla e o zoom
+Em 18/11/2026, depois desta rodada, o Owner afrouxou a meta da visão geral para 100 ms
+(E4.4), o que encerra a ressalva da §3; os recortes continuam com 50 ms. Com CPU 4× mais lenta, a busca chega a 153 ms por tecla e o zoom
 a 150 ms, como margem, não meta.
 
 O diagrama entidade-relacionamento não tem meta própria na E3; foi conferido no Chrome nesta data (recorte

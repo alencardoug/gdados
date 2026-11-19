@@ -237,6 +237,7 @@ para registrar a margem.
 | Grafo de relações inteiro (todas as relações do `lineage`) desenhado com layout | até 3 s |
 | Linhagem por coluna: maior recorte exibido de uma vez | até 300 nós; acima disso, a interface pede filtro ou expansão |
 | Zoom e deslocamento no maior recorte permitido | sem quadro acima de 50 ms no perfil do navegador |
+| Zoom e deslocamento no grafo inteiro (visão geral) | sem quadro acima de 100 ms (ajustada pelo Owner em 18/11/2026, E4.4; era 50 ms) |
 
 Os itens que medem fidelidade (2 a 6, 9 e 13) medem fidelidade ao pacote do commit fixado, não ao
 estado atual do banco nem do GCP. Contra o exemplo, valeriam só como ensaio do mecanismo.
@@ -259,7 +260,7 @@ disponível. Pedidos e pendências da avaliação:
 | E4.1 | Roteiro de aprendizado: por onde começar, do conteúdo isolado ao que depende de outros e dos termos técnicos | Avaliado como viável sem dependência nova; em 18/11/2026 o Owner definiu construir **um degrau por vez**, conforme aprende; **o primeiro degrau aguarda o "pode fazer"** | [Página de conceitos §10](docs/pagina_de_conceitos.md#10-roteiro-de-aprendizado-pedido-de-17112026) |
 | E4.2 | As cinco primeiras linhas de cada tabela, com todas as colunas | Tecnicamente viável, mas contraria o AGENTS.md (amostras), a decisão de o portal não ler banco e o formato do pacote; **aguarda decisão do Owner** | [D06](docs/decisoes.md#d06--amostras-de-registros-no-portal) |
 | E4.3 | Revisão conceitual das explicações e dos percursos | Em 18/11/2026 o Owner aprovou o conteúdo e o portal para a fase atual; a revisão continua a cada degrau do roteiro (E4.1) | [Página de conceitos §8](docs/pagina_de_conceitos.md#8-critérios-de-avaliação-local) |
-| E4.4 | Meta de zoom no grafo inteiro, cumprida na mediana e não em toda rodada | Aceitar ou ajustar a meta | [Relatório da E3](docs/relatorio_e3.md), §3; [D02](docs/decisoes.md#d02--diagramas-e-grafos) |
+| E4.4 | Meta de zoom no grafo inteiro, cumprida na mediana e não em toda rodada | **Decidido em 18/11/2026:** o Owner afrouxou a meta do grafo inteiro para 100 ms; os recortes continuam em 50 ms | [Relatório da E3](docs/relatorio_e3.md), §3; [D02](docs/decisoes.md#d02--diagramas-e-grafos) |
 | E4.5 | Identificadores de projetos GCP e prefixo de conta de faturamento nos textos copiados | Feito em 18/11/2026: os três projetos sem relação e o prefixo de faturamento aparecem como marcador | [D04](docs/decisoes.md#d04--identidade-e-audiência-da-publicação); relatório da E3, §5 |
 
 ### E5 — Preparar a publicação

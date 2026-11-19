@@ -191,8 +191,8 @@ continua visível como texto, e o Mermaid só é carregado nas páginas que têm
 desenhar textura durante o zoom e o deslocamento, esconder as ligações enquanto a área se move e não
 desenhar rótulos abaixo de 8 px na tela (`textureOnViewport`, `hideEdgesOnViewport`,
 `min-zoomed-font-size`), sem extensão. A mediana do maior quadro caiu de 83 ms para 33 ms com CPU
-normal, mas duas de cinco rodadas passaram de 50 ms ([relatório da E3](relatorio_e3.md), §3). A meta
-volta ao Owner na E4.
+normal, mas duas de cinco rodadas passaram de 50 ms ([relatório da E3](relatorio_e3.md), §3). Em 18/11/2026
+o Owner afrouxou a meta da visão geral para 100 ms (E4.4); os recortes seguem com 50 ms.
 
 **Diagrama entidade-relacionamento (18/11/2026):** com as chaves da `v2.2.0` (D03), a página de
 estrutura desenha o modelo em Mermaid (`erDiagram`), gerado por `portal/src/lib/er.mjs`, com testes. Como

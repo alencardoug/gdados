@@ -107,7 +107,8 @@ const METAS = [
   ["linhagem_relacao.linhagem_pronta_ms", "Linhagem por relação: recorte inicial desenhado", 1000, "ms"],
   ["linhagem_relacao.expandir_ms", "Linhagem: expandir um nível", 500, "ms"],
   ["linhagem_tudo.linhagem_pronta_ms", "Grafo inteiro desenhado com layout", 3000, "ms"],
-  ["linhagem_tudo.quadro_max_ms", "Zoom e deslocamento no grafo inteiro: maior quadro", 50, "ms"],
+  // Meta do grafo inteiro ajustada pelo Owner em 18/11/2026 (E4.4): 100 ms; os recortes seguem em 50 ms.
+  ["linhagem_tudo.quadro_max_ms", "Zoom e deslocamento no grafo inteiro: maior quadro", 100, "ms"],
   ["linhagem_coluna.quadro_max_ms", "Zoom e deslocamento no maior recorte por coluna permitido: maior quadro", 50, "ms"],
   ["estrutura.bytes_comprimidos", "Estrutura (com Mermaid): dados transferidos", 1_000_000, "B"],
   ["conceitos.bytes_comprimidos", "Conceitos: dados transferidos", 1_000_000, "B"],
