@@ -25,6 +25,9 @@ docs/adr/0053-fato-no-grao-da-remessa.md
 # chaves primárias e estrangeiras de relations (F34)
 docs/adr/0056-chaves-declaradas-em-analytics.md
 
+# regra das amostras de registros (D06)
+docs/adr/0058-amostras-de-registros-para-o-publico.md
+
 # links relativos nos textos do pacote
 docs/adr/0030-cmv-do-livro-de-estoque.md
 docs/adr/0036-recompra-ancorada-no-pedido.md

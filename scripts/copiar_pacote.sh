@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Copia o pacote de metadados da origem, num commit fixado, para origem/ (D03), e os arquivos
-# que o portal lê por commit, listados em scripts/arquivos_da_origem.txt, para origem/arquivos/.
+# Copia o pacote de metadados e as amostras de registros da origem, num commit fixado, para origem/
+# (D03, D06), e os arquivos que o portal lê por commit, listados em scripts/arquivos_da_origem.txt,
+# para origem/arquivos/.
 #
 # Uso:
 #   scripts/copiar_pacote.sh <tag-ou-commit>   copia e registra a procedência
@@ -15,7 +16,9 @@ raiz="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 destino="$raiz/origem"
 procedencia="$destino/procedencia.json"
 lista="$raiz/scripts/arquivos_da_origem.txt"
-pacote=(pacote_de_metadados.json pacote_de_metadados.schema.json pacote_de_metadados.exemplo.json)
+# As amostras de registros (D06; ADR-0058 da origem) vêm do mesmo commit, ao lado do pacote.
+pacote=(pacote_de_metadados.json pacote_de_metadados.schema.json pacote_de_metadados.exemplo.json
+        amostras_de_registros.json amostras_de_registros.schema.json)
 
 falha() { echo "copiar_pacote: $*" >&2; exit 1; }
 
@@ -90,7 +93,8 @@ python3 -I - "$tmp" "$ref" "$commit" "$data_commit" "${pacote[@]}" <<'EOF'
 import datetime, fnmatch, hashlib, json, pathlib, re, sys
 tmp, ref, commit, data_commit, *nomes = sys.argv[1:]
 tmp = pathlib.Path(tmp)
-for nome in ("pacote_de_metadados.json", "pacote_de_metadados.exemplo.json"):
+for nome in ("pacote_de_metadados.json", "pacote_de_metadados.exemplo.json",
+             "amostras_de_registros.json"):
     fmt = json.loads((tmp / nome).read_text(encoding="utf-8")).get("format")
     if fmt != 1:
         sys.exit(f"copiar_pacote: {nome} tem format {fmt!r}; o portal só lê o formato 1")
