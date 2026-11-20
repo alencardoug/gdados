@@ -448,6 +448,36 @@ o foco, a estrela em 390 px nos dois temas e as metas de desempenho.
 **Pergunta ao Owner.** Na P02, as três dimensões destacadas ajudam a distinguir o que recorta o
 ticket médio daquilo que entra na conta?
 
-Crítica do Claude: (pendente)
+**Integração e verificação pelo Claude.** Rodada feita no `codex2`, por pedido do Owner. Bundle
+conferido (árvore idêntica) e os cinco commits no `main`. E3 completa em 19/11/2026 nesta máquina:
+**66 de 66** ([resultado](../verificacao/resultados/2026-11-20T00-51-00-711Z.json)).
+
+**Crítica do Claude (P02 e `analytics.fact_shipment`, 1280 e 390 px).** O percurso ficou pronto:
+o mapa fixo acende o passo em leitura, a numeração por ramo segue o desenho e "Como se forma
+`net_revenue_amount`" mostra, com a frase da origem, o momento em que três colunas viram uma. É o
+trecho que mais ensina no portal. A estrela da ficha da fato também funciona: grão no centro, grão
+de cada dimensão no braço, FK → PK e o snapshot sinalizado.
+
+Respondendo ao Codex: em parte. As três dimensões da pergunta estão destacadas, mas nada no desenho
+diz que `net_revenue_amount` e `order_id` "entram na conta" enquanto cliente, data e canal
+"recortam". Ajustes:
+
+1. **Estrela da pergunta: medida no centro, recorte nos braços.** No centro, as colunas da fato que
+   entram na conta (as do passo, já derivadas); nos braços destacados, as colunas da view que vêm
+   de cada dimensão (`customer_segment_name` de `dim_customer`, `sales_channel_name` de
+   `dim_sales_channel`, `month_number`/`year_*` de `dim_date`), **se a linhagem por coluna da view
+   provar a ligação**; se não provar, só o destaque. Isso liga o grão da view (passo 1) à estrela:
+   "o grão da resposta é a combinação das dimensões que recortam".
+2. **No percurso, só as dimensões da pergunta abertas**; as demais da fato recolhidas ("mais 4
+   dimensões desta fato"). Na coluna estreita do passo, as sete caixas ficam altas e vazias, e
+   as chaves quebram ("brand_ / key").
+3. **Dimensão com dois papéis.** Em `fact_shipment`, `dim_date` aparece em duas caixas. Uma caixa
+   só, com dois braços rotulados pelas FKs (`date_key`, `delivered_date_key`), ensina o conceito;
+   o papel (despacho, chegada) só com citação da descrição da origem.
+4. **Altura das caixas** pelo conteúdo, não pela maior delas.
+
+Recomendação: rodada 5 com esses quatro pontos e a ideia 5 da §5 (o legado defeituoso, antes e
+depois: `original_payload`, `cleaned_payload` e `findings` lado a lado, com o defeito marcado), que
+usa as amostras da D06 e é o melhor material para ensinar qualidade de dados.
 
 Decisão do Owner: (pendente)
