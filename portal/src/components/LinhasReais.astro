@@ -1,0 +1,37 @@
+---
+// Bloco "com linhas reais" de uma página de conceito: a amostra exportada pela origem (D06), nas
+// colunas escolhidas, com as colunas destacadas e as linhas que repetem o mesmo valor numeradas
+// por grupo (o número acompanha a cor, para não depender só dela).
+import Identificador from "./Identificador.astro";
+import Md from "./Md.astro";
+import { amostras, data, rotaDaRelacao, renderizarEmLinha } from "../lib/portal.mjs";
+import "../styles/linhas-reais.css";
+const { bloco } = Astro.props;
+const marker = amostras.masking.marker;
+const href = (n) => rotaDaRelacao(bloco.relacao) + "#linha-amostra-" + n;
+---
+<figure class="linhas-reais">
+  <figcaption>
+    <span class="rotulo">Amostra exportada pela origem, {data(amostras.exported_at)}</span>
+    <span><a href={rotaDaRelacao(bloco.relacao)}><Identificador value={bloco.relacao} /></a>{bloco.grao && <> · grão declarado: <em>{bloco.grao}</em></>}</span>
+  </figcaption>
+  <div class="linhas-reais-rolagem" tabindex="0" role="region" aria-label={"Linhas reais de " + bloco.relacao}>
+    <table>
+      <thead><tr>
+        <th scope="col">Linha</th>
+        {bloco.colunas.map((c) => <th scope="col" class={c.destaque ? "destaque" : undefined}>
+          <code>{c.nome}</code>{c.sensibilidade && <small class={"sens sens-" + c.sensibilidade}>{c.sensibilidade}</small>}
+        </th>)}
+      </tr></thead>
+      <tbody>{bloco.linhas.map((l) => <tr data-grupo={l.grupo ?? undefined} class={l.grupo ? "agrupada grupo-" + ((l.grupo - 1) % 3 + 1) : undefined}>
+        <th scope="row"><a href={href(l.numero)}>{l.numero}</a>{l.grupo && <span class="marca-grupo" title={"Mesmo valor de " + bloco.agruparPor}>● {l.grupo}</span>}</th>
+        {l.valores.map((v, k) => <td class={bloco.colunas[k].destaque ? "destaque" : undefined}>
+          {v === null ? <em class="nulo">nulo</em> : v === marker ? <code class="mascara">{v}</code> :
+            typeof v === "object" ? <code>{JSON.stringify(v)}</code> : <code title={String(v)}>{String(v)}</code>}
+        </td>)}
+      </tr>)}</tbody>
+    </table>
+  </div>
+  {bloco.agruparPor && <p class="suave linhas-reais-legenda">● n: linhas com o mesmo valor de <code>{bloco.agruparPor}</code> ({bloco.grupos} {bloco.grupos === 1 ? "grupo" : "grupos"} nesta amostra).</p>}
+  <p class="linhas-reais-nota"><Md em="span" html={await renderizarEmLinha(bloco.nota)} /></p>
+</figure>

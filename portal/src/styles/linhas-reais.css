@@ -1,0 +1,26 @@
+/* Bloco "com linhas reais" das páginas de conceito (D06). */
+.linhas-reais { margin: 1rem 0 1.5rem; max-width: 60rem; border: 1px solid var(--borda); border-left: 4px solid var(--track); border-radius: 4px; background: var(--superficie); padding: .6rem 1rem .4rem; }
+.linhas-reais figcaption { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .5rem; }
+.linhas-reais .rotulo { font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--suave); }
+.linhas-reais-rolagem { overflow-x: auto; }
+.linhas-reais-rolagem:focus-visible { outline: 3px solid var(--realce); outline-offset: 2px; }
+.linhas-reais table { border-collapse: collapse; font-size: .85rem; min-width: 100%; }
+.linhas-reais th, .linhas-reais td { padding: .3rem .5rem; border-bottom: 1px solid var(--borda); text-align: left; vertical-align: top; }
+.linhas-reais thead th { white-space: nowrap; }
+.linhas-reais thead small { display: block; font-weight: 400; color: var(--suave); }
+.linhas-reais .sens-personal { color: var(--class-personal); font-weight: 600; }
+.linhas-reais .sens-confidential { color: var(--class-confidential); }
+.linhas-reais td code { background: transparent; padding: 0; display: inline-block; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+.linhas-reais .destaque { background: var(--track-surface); }
+.linhas-reais thead .destaque { box-shadow: inset 0 -3px 0 var(--track); }
+.linhas-reais .mascara { color: var(--class-personal); font-weight: 600; }
+.linhas-reais .nulo { color: var(--suave); }
+.linhas-reais tbody th { white-space: nowrap; font-weight: 400; }
+.linhas-reais .marca-grupo { margin-inline-start: .4rem; font-weight: 700; font-size: .8rem; }
+.linhas-reais tr.agrupada > th { box-shadow: inset 4px 0 0 var(--grupo-cor); }
+.linhas-reais tr.agrupada .marca-grupo { color: var(--grupo-cor); }
+.linhas-reais tr.grupo-1 { --grupo-cor: var(--realce); }
+.linhas-reais tr.grupo-2 { --grupo-cor: var(--class-personal); }
+.linhas-reais tr.grupo-3 { --grupo-cor: var(--class-confidential); }
+.linhas-reais-legenda, .linhas-reais-nota { margin: .5rem 0 .3rem; }
+.linhas-reais-nota { max-width: 54rem; }

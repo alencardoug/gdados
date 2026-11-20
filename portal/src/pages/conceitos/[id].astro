@@ -5,7 +5,9 @@ import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Md from "../../components/Md.astro";
 import { termos, termoPorId, gruposComTermos, posicaoNoRoteiro, roteiro } from "../../lib/editorial.mjs";
-import { procedencia, commitCurto, rota, data } from "../../lib/portal.mjs";
+import { procedencia, commitCurto, rota, data, amostras, pacote } from "../../lib/portal.mjs";
+import LinhasReais from "../../components/LinhasReais.astro";
+import { montarLinhasReais } from "../../lib/linhas-reais.mjs";
 
 export function getStaticPaths() {
   return termos.map((t) => ({ params: { id: t.id } }));
@@ -20,6 +22,8 @@ const vizinhos = grupo.termos.filter((x) => x.id !== t.id);
 // Posição no roteiro de aprendizado (página de conceitos §10), quando o termo faz parte dele.
 const noRoteiro = posicaoNoRoteiro.get(t.id) ?? null;
 const degrau = noRoteiro ? roteiro[noRoteiro.degrau] : null;
+// Linhas reais (D06): montadas e conferidas no build; uma afirmação que a amostra não sustenta derruba o build.
+const linhasReais = (d?.linhas_reais ?? []).map((spec) => montarLinhasReais(spec, amostras, pacote));
 ---
 <Base titulo={t.titulo} secao="conceitos" descricao={d?.resumo}>
 <p id="retorno" hidden></p>
@@ -67,6 +71,12 @@ const degrau = noRoteiro ? roteiro[noRoteiro.degrau] : null;
 </>}
 
 {Content && <div class="md documento"><Content /></div>}
+
+{linhasReais.length > 0 && <>
+<h2>Com linhas reais</h2>
+<p class="suave">Linhas exportadas pela origem, com os campos pessoais mascarados como vieram (D06). Não é um exemplo inventado: é o dado do projeto.</p>
+{linhasReais.map((bloco) => <LinhasReais {bloco} />)}
+</>}
 
 {t.exemplos.length > 0 && <>
 <h2>Explore na prática</h2>

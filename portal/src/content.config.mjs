@@ -37,6 +37,18 @@ const conceitos = defineCollection({
       .default([]),
     // Exemplo didático: simplificação rotulada, sem números apresentados como medição do projeto.
     didaticos: z.array(z.object({ titulo: z.string(), texto: z.string() })).default([]),
+    // Linhas reais: a amostra exportada pela origem (D06) de uma relação, com as colunas escolhidas.
+    // As afirmações da nota que dependem dos dados são conferidas no build (agrupar_por, distintas_em).
+    linhas_reais: z
+      .array(z.object({
+        relacao: z.string(),
+        colunas: z.array(z.string()).min(1),
+        destaque: z.array(z.string()).default([]),
+        agrupar_por: z.string().optional(),
+        distintas_em: z.array(z.string()).default([]),
+        nota: z.string(),
+      }))
+      .default([]),
     // Divergência entre fontes da origem: o portal aponta e não escolhe (página de conceitos §7).
     divergencias: z
       .array(z.object({ texto: z.string(), fontes: z.array(caminhoDaOrigem).min(2), encaminhamento: z.string() }))
