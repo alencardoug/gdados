@@ -1,0 +1,29 @@
+/* Mapa de calor por camada: a cor cresce com --calor (0% a 100% do maior valor da coluna). */
+.mapa-de-calor { margin-block: 1.5rem 2rem; }
+.calor-leitura { padding-inline-start: 1.2rem; max-width: 60rem; }
+.calor-leitura li { margin-block: 0.2rem; }
+.calor-rolagem { overflow-x: auto; }
+.calor-rolagem:focus-visible { outline: 3px solid var(--realce); outline-offset: 2px; }
+table.calor { border-collapse: separate; border-spacing: 3px; font-size: 0.9rem; min-width: 100%; }
+table.calor th, table.calor td { padding: 0.35rem 0.45rem; text-align: left; vertical-align: middle; }
+table.calor thead th { font-size: 0.8rem; color: var(--suave); font-weight: 600; border-bottom: 1px solid var(--borda); white-space: nowrap; }
+table.calor thead th.quebra { white-space: normal; min-width: 6rem; }
+table.calor tbody th { white-space: nowrap; font-weight: 600; }
+table.calor tbody th small { color: var(--suave); font-weight: 400; margin-inline-start: 0.3rem; }
+table.calor .num { font-variant-numeric: tabular-nums; }
+table.calor .zero { color: var(--suave); }
+table.calor .classe-public { --cor-classe: var(--class-public); }
+table.calor .classe-internal { --cor-classe: var(--class-internal); }
+table.calor .classe-confidential { --cor-classe: var(--class-confidential); }
+table.calor .classe-personal { --cor-classe: var(--class-personal); }
+table.calor thead .classe { box-shadow: inset 0 -3px 0 var(--cor-classe, var(--borda)); color: var(--texto); }
+/* O fundo vai até 30% da cor da classe, para o número manter contraste nos dois temas. */
+table.calor .calor-celula { min-width: 4.2rem; border-radius: 4px;
+  background: color-mix(in srgb, var(--cor-classe, var(--track)) calc(var(--calor) * 0.3), var(--superficie)); }
+table.calor .calor-celula a { color: var(--texto); font-weight: 700; text-decoration-color: var(--cor-classe); text-underline-offset: 3px; }
+table.calor .cobertura { white-space: nowrap; }
+table.calor .barra { display: inline-block; width: 3.5rem; height: 0.5rem; border-radius: 999px; background: var(--codigo-fundo); vertical-align: middle; overflow: hidden; }
+table.calor .barra span { display: block; height: 100%; width: var(--calor); background: var(--cor-camada, var(--track)); }
+.calor-nota { max-width: 60rem; font-size: 0.88rem; }
+/* Em tela estreita a tabela rola por dentro; a camada fica fixa à esquerda. */
+table.calor tbody th, table.calor thead tr:first-child th:first-child { position: sticky; left: 0; z-index: 1; background: var(--fundo); }

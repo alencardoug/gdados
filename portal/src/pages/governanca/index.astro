@@ -3,6 +3,7 @@
 import Conceito from "../../components/Conceito.astro";
 import Base from "../../layouts/Base.astro";
 import Ausente from "../../components/Ausente.astro";
+import MapaDeCalor from "../../components/MapaDeCalor.astro";
 import { relacoes, camadas, dominios, sensibilidades, tiposDeRecurso, rota, rotaDaRelacao, pacote } from "../../lib/portal.mjs";
 import { semMarcacao } from "../../lib/markdown.mjs";
 const resumo = (t, n = 140) => {
@@ -28,6 +29,8 @@ const resumo = (t, n = 140) => {
 </div>
 <p id="busca-situacao" role="status" class="suave"></p>
 <ul id="busca-resultados" class="resultados"></ul>
+
+<MapaDeCalor />
 
 <h2 id="catalogo">Catálogo de relações</h2>
 <form class="filtros" id="filtros" aria-label="Filtros do catálogo">

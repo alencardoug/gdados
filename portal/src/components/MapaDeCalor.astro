@@ -1,0 +1,64 @@
+---
+// Mapa de calor por camada (frente de layout, rodada 9): classes de sensibilidade das colunas,
+// cobertura de testes do dbt e máscara da exportação de amostras. A tabela é a própria
+// alternativa textual: cada célula tem o número, e a cor só reforça a proporção.
+import Conceito from "./Conceito.astro";
+import Identificador from "./Identificador.astro";
+import { amostras, pacote, camadas, rota, data } from "../lib/portal.mjs";
+import { mapaDeCalor } from "../lib/calor.mjs";
+import "../styles/mapa-de-calor.css";
+const m = mapaDeCalor(pacote, amostras, camadas);
+// A coluna "Mascaradas" fala só de colunas personal: se a máscara aparecer fora delas, a build para.
+const foraDePersonal = m.linhas.filter((l) => l.mascaradasForaDePersonal > 0).map((l) => l.camada);
+if (foraDePersonal.length) throw new Error(`mapa de calor: máscara fora de colunas personal em ${foraDePersonal.join(", ")}`);
+const pct = (n, d) => (d ? Math.round((100 * n) / d) : 0);
+const catalogo = (camada, classe) => rota(`governanca/?camada=${encodeURIComponent(camada)}${classe ? `&sensibilidade=${encodeURIComponent(classe)}` : ""}#catalogo`);
+const comPessoal = m.linhas.filter((l) => l.porClasse.personal > 0);
+const maisPessoal = comPessoal.toSorted((a, b) => b.porClasse.personal - a.porClasse.personal)[0];
+const semTeste = m.linhas.filter((l) => l.testes === 0).map((l) => l.camada);
+const resultados = m.linhas.reduce((acc, l) => { for (const [s, n] of Object.entries(l.resultados)) acc[s] = (acc[s] ?? 0) + n; return acc; }, {});
+const ligados = Object.values(resultados).reduce((a, b) => a + b, 0);
+---
+<section class="mapa-de-calor" aria-labelledby="calor">
+<h2 id="calor">Onde está o dado sensível e onde estão os testes</h2>
+<p>Cada linha é uma camada, na ordem do pipeline. A cor de cada célula cresce com o número dentro da coluna da tabela; o número é o que vale. Escolha uma célula para abrir o catálogo filtrado.</p>
+<ul class="calor-leitura">
+  {maisPessoal && <li>Colunas <code>personal</code> aparecem em {comPessoal.length} das {m.linhas.length} camadas; a que mais concentra é <span class="marca-camada" data-camada={maisPessoal.camada}><Identificador value={maisPessoal.camada} /></span>, com {maisPessoal.porClasse.personal}.</li>}
+  {semTeste.length > 0 && <li>O pacote não declara teste do dbt em {semTeste.map((c, i) => <>{i > 0 && (i === semTeste.length - 1 ? " e " : ", ")}<Identificador value={c} /></>)}. Outras verificações estão em <a href={rota("governanca/evidencias/")}>estado e evidência</a>.</li>}
+  <li>{ligados} testes do dbt ligados a relações: {Object.entries(resultados).map(([s, n], i) => <>{i > 0 && ", "}{n} com resultado <code>{s}</code></>)}{m.testesSemRelacao > 0 && <>. Outros {m.testesSemRelacao} (<code>{m.tiposSemRelacao.join(", ")}</code>) não declaram relação e ficam fora da tabela</>}.</li>
+</ul>
+<div class="calor-rolagem" tabindex="0" role="region" aria-label="Tabela do mapa de calor por camada">
+<table class="calor">
+  <thead>
+    <tr>
+      <th rowspan="2" scope="col">Camada</th>
+      <th rowspan="2" scope="col">Colunas</th>
+      <th colspan={m.classes.length} scope="colgroup"><Conceito id="sensibilidade">Sensibilidade</Conceito> das colunas</th>
+      <th colspan="2" scope="colgroup"><Conceito id="teste">Testes</Conceito> do dbt</th>
+      <th scope="col" rowspan="2" class="quebra">Mascaradas na amostra</th>
+    </tr>
+    <tr>
+      {m.classes.map((c) => <th scope="col" class={"classe classe-" + c}>{c}</th>)}
+      <th scope="col">testes</th>
+      <th scope="col">colunas com teste</th>
+    </tr>
+  </thead>
+  <tbody>{m.linhas.map((l) => <tr data-camada={l.camada}>
+    <th scope="row" class="marca-camada"><a href={catalogo(l.camada)}>{l.camada}</a> <small>{l.relacoes} {l.relacoes === 1 ? "relação" : "relações"}</small></th>
+    <td class="num">{l.colunas}</td>
+    {m.classes.map((c) => {
+      const n = l.porClasse[c];
+      return <td class={"num calor-celula classe-" + c} style={`--calor: ${pct(n, m.maximoPorClasse[c])}%`}>
+        {n > 0 ? <a href={catalogo(l.camada, c)} title={`Relações de ${l.camada} com colunas ${c}`}>{n}</a> : <span class="zero">0</span>}
+      </td>;
+    })}
+    <td class="num">{l.testes || <span class="zero">0</span>}</td>
+    <td class="cobertura" style={`--calor: ${pct(l.comTeste, l.colunas)}%`}>
+      <span class="num">{l.comTeste} de {l.colunas}</span> <span class="barra" aria-hidden="true"><span></span></span> <small>{pct(l.comTeste, l.colunas)}%</small>
+    </td>
+    <td class="num">{l.mascaradas > 0 ? <>{l.mascaradas} <small>de {l.porClasse.personal}</small></> : <span class="zero">0</span>}</td>
+  </tr>)}</tbody>
+</table>
+</div>
+<p class="suave calor-nota">"Colunas com teste" conta as colunas que têm ao menos um teste do dbt declarado nelas; testes da relação inteira contam em "testes", não na cobertura. "Mascaradas na amostra" conta, entre as colunas <code>personal</code> da camada, as que trazem <code>{m.marcador}</code> nas linhas exportadas em {data(amostras.exported_at)}, inclusive dentro de cargas JSON; a máscara vale para colunas <code>personal</code> e, nas cargas do legado, só para os campos pessoais da tabela de origem ({amostras.masking.rule}), e um nulo continua nulo. A classificação descreve o dado; quem pode lê-lo está nos papéis de acesso de cada relação.</p>
+</section>
