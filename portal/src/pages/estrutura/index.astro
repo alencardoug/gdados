@@ -65,6 +65,7 @@ const adr0056 = rotaDaReferencia("docs/adr/0056-chaves-declaradas-em-analytics.m
 const ENTREGA = { read_by_commit: "lido por commit", not_available: "indisponível" };
 const comGrao = relacoes.filter((x) => x.r.grain != null);
 const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].sort();
+import LadoALado from "../../components/LadoALado.astro";
 ---
 <Base titulo="Estrutura e ambientes" secao="estrutura" descricao="Camadas, travessias, infraestrutura local e GCP.">
 <h1>Estrutura do projeto e ambientes</h1>
@@ -73,7 +74,7 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
   Esta página separa o que o projeto <strong>declara</strong> (configuração e código), o que foi <strong>registrado</strong> numa data
   (execução e evidência) e o que <strong>não está disponível</strong> ao portal.
 </p>
-<nav aria-label="Nesta página"><a href="#fisica">Camadas</a> · <a href="#travessias">Travessias</a> · <a href="#logica">Entidades e grãos</a> · <a href="#entidades">Relacionamentos</a> · <a href="#ambientes">Ambientes e documentos</a> · <a href="#arquivos">Arquivos da origem</a></nav>
+<nav aria-label="Nesta página"><a href="#fisica">Camadas</a> · <a href="#travessias">Travessias</a> · <a href="#logica">Entidades e grãos</a> · <a href="#entidades">Relacionamentos</a> · <a href="#lado-a-lado">Local e GCP</a> · <a href="#ambientes">Ambientes e documentos</a> · <a href="#arquivos">Arquivos da origem</a></nav>
 
 <h2 id="fisica"><Conceito id="camada">Camadas</Conceito> e <Conceito id="materializacao">materializações</Conceito></h2>
 <p>As camadas aparecem na ordem do pipeline, calculada pela linhagem. A materialização diz como cada objeto existe no banco: tabela, view, incremental, snapshot ou seed. Uma <em>source</em> não é materializada pelo dbt; ela é a origem.</p>
@@ -157,6 +158,8 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
 </tbody></table></div>
 <p class="suave">Os resultados são os da execução registrada no pacote. Uma chave estrangeira sem teste <code>relationships</code> correspondente apareceria como "sem resultado".</p>
 </>}
+
+<LadoALado />
 
 <h2 id="ambientes">Ambientes e documentos</h2>
 <p>

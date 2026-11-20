@@ -1,0 +1,37 @@
+/* Local e GCP lado a lado: uma espinha de conceitos no meio, o local à esquerda e o GCP à direita. */
+.lado-a-lado { --cor-local: var(--lado-local); --cor-gcp: var(--lado-gcp); }
+.lado-local { --cor-lado: var(--cor-local); }
+.lado-gcp { --cor-lado: var(--cor-gcp); }
+.lados-cabecalho, .paridade-linha, .declaracoes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.6rem 1.2rem; }
+.lados-cabecalho { margin-block: 1rem 0.5rem; align-items: start; }
+.lados-cabecalho .lado { border-top: 4px solid var(--cor-lado); background: color-mix(in srgb, var(--cor-lado) 8%, var(--superficie)); border-radius: 0.4rem; padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+.lados-cabecalho strong { display: block; color: var(--cor-lado); font-size: 1.05rem; }
+.estados-gcp { margin: 0.4rem 0 0; padding-inline-start: 1.1rem; font-size: 0.85rem; }
+.paridade { list-style: none; padding: 0; margin: 0; }
+.paridade-linha { position: relative; padding-block: 0.25rem; }
+.paridade-conceito { grid-column: 1 / -1; justify-self: center; position: relative; z-index: 1; font-weight: 700; font-size: 0.92rem;
+  padding: 0.15rem 0.8rem; border: 1px solid var(--borda); border-radius: 999px; background: var(--superficie); margin-bottom: -0.2rem; }
+.paridade-linha::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 2px dotted var(--borda); }
+.paridade-cartao { position: relative; z-index: 1; border: 1px solid var(--borda); border-inline-start: 4px solid var(--cor-lado); border-radius: 0.4rem;
+  background: var(--superficie); padding: 0.45rem 0.7rem; font-size: 0.9rem; min-width: 0; }
+.paridade-cartao.lado-gcp { border-inline-start-width: 1px; border-inline-end: 4px solid var(--cor-lado); }
+.paridade-rotulo { display: none; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--cor-lado); }
+.paridade-cartao p { margin: 0; overflow-wrap: anywhere; }
+.paridade-cartao details > p { margin-top: 0.4rem; color: var(--suave); }
+.paridade-cartao summary { cursor: pointer; }
+.paridade-medido { display: inline-block; margin-top: 0.35rem; font-size: 0.75rem; font-weight: 700; color: var(--ok); border: 1px solid currentColor; border-radius: 999px; padding: 0 0.5rem; }
+.declaracoes h4 { color: var(--cor-lado); margin: 0.8rem 0 0.4rem; }
+.declaracao { border-inline-start: 3px solid var(--cor-lado); padding: 0.2rem 0 0.2rem 0.7rem; margin-block: 0.6rem; font-size: 0.9rem; }
+.declaracao ul { margin: 0.25rem 0 0; padding-inline-start: 1.1rem; }
+.declaracao .tipos { display: flex; flex-wrap: wrap; gap: 0.2rem 0.4rem; list-style: none; padding: 0; }
+.declaracao .tipos li { border: 1px solid var(--borda); border-radius: 999px; padding: 0 0.45rem; background: var(--superficie); }
+.declaracao .tipos code { background: none; padding: 0; font-size: 0.8rem; }
+@media (max-width: 40rem) {
+  .lados-cabecalho, .paridade-linha, .declaracoes { grid-template-columns: minmax(0, 1fr); }
+  .paridade-linha::before { display: none; }
+  .paridade-conceito { justify-self: start; margin-bottom: 0; }
+  .paridade-linha { padding-block: 0.6rem; border-bottom: 1px solid var(--borda); }
+  .paridade-rotulo { display: block; }
+  .paridade-cartao.lado-gcp { border-inline-end-width: 1px; border-inline-start-width: 4px; }
+}
+.declaracao li { overflow-wrap: anywhere; }

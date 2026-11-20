@@ -1,0 +1,83 @@
+---
+// Local e GCP lado a lado (frente de layout, rodada 10). O esqueleto é o mapa de paridade da
+// origem (Arquitetura §5, apontado em environments): uma linha por conceito, a fase local à
+// esquerda e a GCP à direita. Abaixo, o que os arquivos declarativos copiados declaram. O estado
+// de cada lado sai de environments: lido por commit, congelado em data ou indisponível.
+import Md from "./Md.astro";
+import { pacote, lerArquivo, caminhosCopiados, renderizarEmLinha, rotaDaReferencia, data } from "../lib/portal.mjs";
+import { tabelaDaSecao, aberturaDaCelula, servicosDoCompose, imagemLegivel, recursosDoTerraform } from "../lib/paridade.mjs";
+import "../styles/lado-a-lado.css";
+
+const ambientes = pacote.environments;
+const mapa = ambientes.find((e) => /#.*paridade/.test(e.path));
+if (!mapa) throw new Error("lado a lado: environments não aponta o mapa de paridade");
+const [arquivoDoMapa, ancora] = mapa.path.split("#");
+const tabela = tabelaDaSecao(lerArquivo(arquivoDoMapa), ancora);
+if (tabela.cabecalho.length !== 3) throw new Error("lado a lado: o mapa de paridade não tem três colunas");
+const base = arquivoDoMapa; // links relativos resolvem a partir do próprio arquivo da origem
+
+const composes = ambientes.filter((e) => /docker-compose[^/]*\.ya?ml$/.test(e.path)).map((e) => ({
+  e, servicos: servicosDoCompose(lerArquivo(e.path)),
+}));
+const terraform = ambientes.find((e) => /^terraform\/?$/.test(e.path));
+const arquivosTf = caminhosCopiados.filter((c) => /^terraform\/[^/]+\.tf$/.test(c))
+  .map((c) => ({ c, tipos: recursosDoTerraform(lerArquivo(c)) })).filter((x) => x.tipos.length);
+const declaracoes = arquivosTf.reduce((n, x) => n + x.tipos.reduce((m, t) => m + t.n, 0), 0);
+const totalServicos = composes.reduce((n, x) => n + x.servicos.length, 0);
+const estadosGcp = ambientes.filter((e) => e.frozen_at || e.delivery !== "read_by_commit");
+const medido = (t) => /\*\*Medido/i.test(t);
+const celula = async (texto) => {
+  const { abertura, resumida } = aberturaDaCelula(texto);
+  return { abertura, resumida, html: await renderizarEmLinha(texto, base) };
+};
+const linhas = await Promise.all(tabela.linhas.map(async ([conceito, local, gcp]) => ({
+  conceito: await renderizarEmLinha(conceito, base), local: await celula(local), gcp: { ...(await celula(gcp)), medido: medido(gcp) },
+})));
+---
+<section class="lado-a-lado" aria-labelledby="lado-a-lado">
+<h2 id="lado-a-lado">Local e GCP lado a lado</h2>
+<p>O mesmo projeto em dois ambientes, conceito por conceito. As linhas vêm do <a href={rotaDaReferencia(mapa.path)}>{tabela.titulo}</a>, mantido pela origem: uma decisão local só é aceita se tiver a linha correspondente na nuvem. Cada cartão mostra a abertura do texto da origem; abra-o para ler o texto inteiro.</p>
+
+<div class="lados-cabecalho">
+  <div class="lado lado-local">
+    <strong>Fase local</strong>
+    <span>{composes.length} arquivos docker-compose, {totalServicos} serviços declarados · <span class="estado read_by_commit">lido por commit</span></span>
+  </div>
+  <div class="lado lado-gcp">
+    <strong>Fase GCP</strong>
+    <span>{terraform && <>Terraform, {declaracoes} declarações de recurso · <span class="estado read_by_commit">lido por commit</span></>}</span>
+    <ul class="estados-gcp">{estadosGcp.map(async (e) => <li>
+      <span class={`estado ${e.delivery}`}>{e.delivery === "not_available" ? "indisponível" : "congelado"}</span>
+      {" "}{e.title}{e.frozen_at && <> · congelado em {data(e.frozen_at)}</>}{e.note && <>: <Md em="span" html={await renderizarEmLinha(e.note, e.path)} /></>}
+    </li>)}</ul>
+  </div>
+</div>
+
+<ol class="paridade" role="list">{linhas.map((l) => <li class="paridade-linha">
+  <div class="paridade-conceito"><Md em="span" html={l.conceito} /></div>
+  {[["local", l.local], ["gcp", l.gcp]].map(([lado, c]) => <div class={`paridade-cartao lado-${lado}`}>
+    <span class="paridade-rotulo">{lado === "local" ? "Local" : "GCP"}</span>
+    {c.resumida ? <details><summary>{c.abertura}</summary><p><Md em="span" html={c.html} /></p></details> : <p><Md em="span" html={c.html} /></p>}
+    {c.medido && <span class="paridade-medido" title="O texto da origem marca, em negrito, uma medição na janela GCP">medido na janela GCP</span>}
+  </div>)}
+</li>)}</ol>
+
+<h3 id="arquivos-declarativos">O que os arquivos declaram</h3>
+<div class="declaracoes">
+  <div class="lado-local">
+    <h4>Serviços dos docker-compose</h4>
+    {composes.map(({ e, servicos }) => <div class="declaracao">
+      <a href={rotaDaReferencia(e.path)}><code>{e.path}</code></a> <span class="suave">· {e.title}</span>
+      <ul role="list">{servicos.map((s) => <li><code>{s.nome}</code>{s.imagem ? <span class="suave" title={s.imagem}> · {imagemLegivel(s.imagem)}</span> : <span class="ausente"> imagem não declarada</span>}{s.heranca && <span class="suave" title={`herdada da âncora YAML ${s.heranca}`}> (âncora)</span>}</li>)}</ul>
+    </div>)}
+  </div>
+  <div class="lado-gcp">
+    <h4>Blocos <code>resource</code> do Terraform</h4>
+    <p class="suave">Contam-se declarações: um bloco com <code>for_each</code> ou <code>count</code> cria várias instâncias. {terraform?.note && <>Nota do pacote: {terraform.note}</>}</p>
+    {arquivosTf.map(({ c, tipos }) => <div class="declaracao">
+      <a href={rotaDaReferencia(c)}><code>{c.replace(/^terraform\//, "")}</code></a> <span class="suave">· {tipos.reduce((n, t) => n + t.n, 0)}</span>
+      <ul role="list" class="tipos">{tipos.map((t) => <li><code>{t.tipo}</code>{t.n > 1 && <span class="suave"> ×{t.n}</span>}</li>)}</ul>
+    </div>)}
+  </div>
+</div>
+</section>
