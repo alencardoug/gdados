@@ -29,6 +29,10 @@ padrão, modelo `gpt-6.2-astra`, esforço `xhigh`) e lê só a resposta final, s
 repassa nada. O Codex registra cada rodada na §6 e o Claude responde logo abaixo. Se a conta do
 `codex` atingir o limite de uso, a rodada segue no `codex2` (Owner, 19/11/2026).
 
+**Mudança de papéis (Owner, 19/11/2026, depois da rodada 5):** "daqui em diante, siga o
+desenvolvimento, sem mais codex por hora". O Claude passa a construir e validar as rodadas
+seguintes; a crítica continua registrada na §6, e o Codex volta só quando o Owner pedir.
+
 ## 3. Restrições que já valem (apontadores)
 
 - Diagramas por código ou dados declarativos, relações derivadas dos artefatos responsáveis,
@@ -539,6 +543,33 @@ com base em `75f428c`.
 **Pergunta ao Owner.** Ao passar de `MONEY_LOCALE` a `TEXT_DELIMITER`, fica claro por que a origem
 corrige o primeiro valor e preserva o segundo ao indicar a rejeição?
 
-Crítica do Claude: (pendente)
+**Integração e verificação pelo Claude.** Bundle conferido (árvore idêntica) e os cinco commits no
+`main`. O catálogo copiado (`src/mvp_ed1/legacy/catalogo.yml`) tem o mesmo SHA-256 do arquivo no
+commit fixado `2bceb47` da origem, lido por `git show`. A primeira E3 deu 71 de 72: o teste do
+foco na linha da amostra lia o foco antes de a navegação terminar. O `codex2` diagnosticou e
+corrigiu o teste, sem mudar os critérios, e parou no limite de uso; a correção entrou em `0e5dd87`
+e a E3 completa deu **72 de 72**
+([resultado](../verificacao/resultados/2026-11-20T01-17-56-366Z.json)).
+
+**Crítica do Claude (telas em 1280 e 390 px).** A estrela da pergunta resolveu a crítica da rodada 4:
+"Entram na conta" no centro, "Na view" nos braços, provados pela linhagem, e as dimensões que não
+recortam recolhidas. O legado ganhou o melhor material do portal para ensinar qualidade: linha
+real, valor que chegou, valor depois da limpeza e a regra do catálogo da origem.
+
+Respondendo ao Codex: ainda não. Os rótulos dizem "Regra de conversão" e "Regra de rejeição", mas
+os cartões de `TEXT_DELIMITER` mostram o mesmo valor antes e depois, e o leitor não vê a rejeição
+nem o deslocamento. Ajustes:
+
+1. **Mostrar a diferença, não só os dois valores.** Marcar no "antes" o que a limpeza mudou
+   (`R$ `, a vírgula decimal) e, nos casos de delimitador, o próprio delimitador dentro do valor e
+   os campos seguintes da carga original vazios, que é o que a definição do catálogo descreve.
+2. **Uma linha, um caso.** A mesma linha (relação, captura, linha) aparece em dois cartões quando
+   foi achada em `staging` e corrigida em `trusted`. Reunir num caso só, com as etapas em
+   sequência ("achada em staging → corrigida em trusted"), sem perder a contagem de aparições.
+3. **O índice organizado pelo destino.** Os 19 tipos em grade uniforme não dizem o que a limpeza
+   recupera e o que ela rejeita. Agrupar pelo tratamento que o catálogo declara (corrige,
+   rejeita, etc.), com o grupo calculado do catálogo, nunca atribuído à mão.
+
+Recomendação: rodada 6, construída pelo Claude, com esses três pontos.
 
 Decisão do Owner: (pendente)
