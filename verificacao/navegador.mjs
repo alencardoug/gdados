@@ -323,6 +323,38 @@ async function funcionais(nav, { view, pacote }) {
     await contexto.close();
   }
 
+  // 8. Tema: o botão troca por teclado, a escolha persiste entre páginas, o Mermaid redesenha com
+  // as cores novas, "automático" apaga a escolha e, sem JavaScript, o botão não aparece.
+  {
+    const { contexto, pagina, erros } = await abrir(nav, "/estrutura/", { pronto: '#diagrama[data-pronto="1"]' });
+    const estado = () => pagina.evaluate(() => ({ tema: document.documentElement.dataset.theme ?? null,
+      fundo: getComputedStyle(document.body).backgroundColor, armazenado: localStorage.getItem("gdados-tema") }));
+    const inicial = await estado();
+    const svgAntes = await pagina.$eval("#diagrama svg", (el) => el.id);
+    await pagina.locator("#tema").focus();
+    await pagina.keyboard.press("Enter");
+    await pagina.keyboard.press("Enter");
+    await pagina.waitForFunction((id) => document.querySelector("#diagrama svg")?.id !== id, svgAntes, { timeout: 30000 });
+    const escuro = { ...(await estado()), rotulo: await pagina.getAttribute("#tema", "aria-label"),
+      svg: await pagina.$eval("#diagrama svg", (el) => el.id) };
+    await pagina.goto(BASE + "/conceitos/", { waitUntil: "load" });
+    const outraPagina = await estado();
+    await pagina.locator("#tema").click();
+    const automatico = await estado();
+    errosDeConsole.push(...erros);
+    await contexto.close();
+    const semJs = await nav.newContext({ javaScriptEnabled: false });
+    const p2 = await semJs.newPage();
+    await p2.goto(BASE + "/");
+    const ocultoSemJs = await p2.$eval("#tema", (b) => b.hidden);
+    await semJs.close();
+    add(8, "Tema: Enter troca para escuro, a escolha vale na página seguinte, o Mermaid redesenha e sem JavaScript o botão some",
+      inicial.tema === null && escuro.tema === "dark" && escuro.fundo !== inicial.fundo && escuro.armazenado === "dark" &&
+      escuro.svg !== svgAntes && outraPagina.tema === "dark" && outraPagina.fundo === escuro.fundo &&
+      automatico.tema === null && automatico.armazenado === null && ocultoSemJs,
+      { inicial, escuro, outraPagina, automatico, ocultoSemJs });
+  }
+
   const starChecks = [], defectChecks = [];
   for (const theme of ["light", "dark"]) {
     const contexto = await nav.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 }, colorScheme: theme });
