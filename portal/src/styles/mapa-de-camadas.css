@@ -3,6 +3,10 @@
 .map-key, .map-layout { display: grid; gap: 1rem 2rem; }
 .map-key { margin-bottom: 1.2rem; }
 .map-key p { margin: 0; }
+.layer-map { --legacy-track: #935019; }
+@media (prefers-color-scheme: dark) { .layer-map { --legacy-track: #eab074; } }
+.legacy-key, .input-key { display: block; margin-top: 0.35rem; }
+.legacy-key::before { content: ""; display: inline-block; vertical-align: middle; width: 1.8em; border-top: 4px solid var(--legacy-track); margin-right: 0.45em; }
 .pair-example { border-inline-start: 3px solid var(--track); padding-inline-start: 0.8rem; }
 .map-grid {
   display: grid;
@@ -24,7 +28,7 @@
 .layer-station > span, .layer-station small, .layer-count { display: block; font-size: 0.82rem; line-height: 1.35; }
 .layer-count, .layer-station small { color: var(--suave); }
 .layer-count { font-weight: 400; }
-.station-cell[data-layer="raw_legacy"] .layer-station { border-inline-start-color: var(--realce); }
+.station-cell[data-layer="raw_legacy"] .layer-station { border-inline-start-color: var(--legacy-track); }
 
 .map-trace {
   --head: max(0.7rem, calc(var(--stroke) + 5px));
@@ -33,7 +37,7 @@
   place-items: center;
   color: var(--track);
 }
-.map-trace[data-from="raw_legacy"] { color: var(--realce); }
+.map-trace[data-from="raw_legacy"] { color: var(--legacy-track); }
 .map-trace b {
   position: relative;
   line-height: 1.25;

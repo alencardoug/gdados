@@ -125,11 +125,16 @@ export function verificarEstatica({ dist, origem }) {
   const tabulated = [...flowTable.matchAll(/<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>(\d+)<\/td><\/tr>/gs)]
     .map(([, source, target, n]) => [`${textoDe(source).trim()}→${textoDe(target).trim()}`, Number(n)]);
   const sameFlows = (pairs) => pairs.length === expectedFlows.size && isDeepStrictEqual(new Map(pairs), expectedFlows);
-  const missingIncoming = stations.filter(([layer, , , body]) =>
-    body.includes("não informa entrada de outra camada") !==
-      ![...expectedFlows.keys()].some((key) => key.endsWith("→" + layer) && key !== `${layer}→${layer}`));
-  add(2, "Traços, ramais, saltos e tabela contam os pares dirigidos entre as camadas", sameFlows(drawn) && sameFlows(tabulated) && !missingIncoming.length,
-    { fluxos: expectedFlows.size, pares: esperado.size, ausencias_divergentes: missingIncoming.map(([layer]) => layer) });
+  add(2, "Traços, ramais, saltos e tabela contam os pares dirigidos entre as camadas", sameFlows(drawn) && sameFlows(tabulated),
+    { fluxos: expectedFlows.size, pares: esperado.size });
+  const incoming = new Set([...expectedFlows.keys()].map((pair) => pair.split("→")).filter(([a,b]) => a !== b).map(([,b]) => b));
+  const withoutInput = Object.keys(layers).filter((layer) => !incoming.has(layer)).sort();
+  const note = homeHtml.match(/class="input-key">([\s\S]*?)<\/p>/)?.[1] ?? "";
+  const named = [...note.matchAll(/<code class="identifier">(.*?)<\/code>/g)].map(([tag]) => textoDe(tag).trim()).sort();
+  add(2, "A legenda identifica a trilha do legado e reúne as estações sem entrada", isDeepStrictEqual(named, withoutInput) &&
+    (homeHtml.match(/A linhagem não informa entrada de outra camada/g) ?? []).length === Number(withoutInput.length > 0) &&
+    homeHtml.includes('class="legacy-key">Trilha do legado') === [...expectedFlows.keys()].some((key) => key.startsWith("raw_legacy→")),
+    { camadas_sem_entrada: named });
 
   // A faixa do desvio começa sob o legado, passa ao lado de staging e termina no topo de trusted.
   const gridArea = (style) => style?.match(/grid-area:([\d /]+)/)?.[1].split("/").map(Number) ?? [];

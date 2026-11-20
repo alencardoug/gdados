@@ -3,9 +3,8 @@ import Identificador from "./Identificador.astro";
 import TracoCamada from "./TracoCamada.astro";
 import { relationsByLayer, rota } from "../lib/portal.mjs";
 import { layerRoles } from "../lib/fluxo-de-camadas.mjs";
-const { layer, flows, loop, largest } = Astro.props;
+const { layer, loop, largest } = Astro.props;
 const count = relationsByLayer.get(layer).length;
-const supplied = flows.some((f) => f.target === layer && f.source !== layer);
 ---
 <div class="layer-station">
   <a href={rota(`governanca/?camada=${encodeURIComponent(layer)}#catalogo`)}>
@@ -13,6 +12,5 @@ const supplied = flows.some((f) => f.target === layer && f.source !== layer);
     <span class="layer-count">{count} {count === 1 ? "relação" : "relações"}</span>
   </a>
   {layerRoles.has(layer) && <span>{layerRoles.get(layer)}</span>}
-  {!supplied && <small>A linhagem não informa entrada de outra camada.</small>}
   {loop && <span class="station-loop"><TracoCamada edge={loop} {largest} shape="loop" />{loop.pairs === 1 ? "par interno" : "pares internos"}</span>}
 </div>

@@ -7,6 +7,8 @@ import { arestasDeRelacoes, relacaoPorId, relationsByLayer, rotaDaRelacao } from
 import { examplePair, flowWidth, layerFlows, planLayerMap } from "../lib/fluxo-de-camadas.mjs";
 const layerOf = (id) => relacaoPorId.get(id)?.camada;
 const flows = layerFlows(arestasDeRelacoes, layerOf);
+const withoutInput = [...relationsByLayer.keys()].filter((layer) =>
+  !flows.some((f) => f.target === layer && f.source !== layer));
 const { stations, others, routes, extra } = planLayerMap([...relationsByLayer.keys()], flows);
 const largest = Math.max(1, ...flows.map((f) => f.pairs));
 const example = examplePair(arestasDeRelacoes, layerOf);
@@ -16,6 +18,9 @@ const example = examplePair(arestasDeRelacoes, layerOf);
     <p>Siga as setas no sentido dos valores. Cada estação abre sua camada no catálogo.<br />
       {largest > 1 ? <>Escala linear de 1 px (1 par) a 10 px ({largest} pares).</>
         : <>Cada traço representa um par de relações e tem 1 px de espessura.</>}
+      {flows.some((f) => f.source === "raw_legacy") && <span class="legacy-key">Trilha do legado</span>}
+      {withoutInput.length > 0 && <span class="input-key">A linhagem não informa entrada de outra camada em {withoutInput.map((layer, i) =>
+        <>{i > 0 && ", "}<Identificador value={layer} /></>)}.</span>}
     </p>
     {example && <p class="pair-example">
       <a href={rotaDaRelacao(example.source)}><Identificador value={example.source} /></a>{" fornece valores a "}
@@ -30,7 +35,7 @@ const example = examplePair(arestasDeRelacoes, layerOf);
         // Se a vizinha lateral tiver mais texto, a linha ocupa a diferença de altura fora da caixa.
         const stem = routes.find((r) => r.shape === "down" && r.edge.source === layer);
         return <div class="station-cell" data-layer={layer} style={{ gridArea: area }}>
-          <EstacaoCamada {layer} {flows} {loop} {largest} />
+          <EstacaoCamada {layer} {loop} {largest} />
           {stem && ["staging", "analytics"].includes(layer) &&
             <span class="station-stem" aria-hidden="true" style={{ width: `${flowWidth(stem.edge.pairs, largest)}px` }} />}
         </div>;
@@ -46,7 +51,7 @@ const example = examplePair(arestasDeRelacoes, layerOf);
   </div>
   {others.length > 0 && <div class="other-stations">
     <h3>Demais camadas do pacote</h3>
-    {others.map(({ layer, loop }) => <EstacaoCamada {layer} {flows} {loop} {largest} />)}
+    {others.map(({ layer, loop }) => <EstacaoCamada {layer} {loop} {largest} />)}
   </div>}
 </div>
 <details class="lineage-table"><summary>Ler todos os fluxos em tabela</summary>
