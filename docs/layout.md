@@ -253,3 +253,46 @@ O que ainda engana ou não ensina:
 Recomendação: uma rodada 2b curta só para a inicial (pontos 1 a 5), depois a rodada 3.
 
 Decisão do Owner: (pendente)
+
+### Rodada 2b — As duas entradas do mapa da inicial · 19/11/2026
+
+**Construção do Codex.** No topo, `raw` e `raw_legacy` ocupam estações lado a lado. De
+`raw_legacy` partem duas setas. A de 40 pares dobra em direção a `staging`. A de 76 desce pela
+borda externa e chega a `trusted`. Os dois traços representam a linhagem imediata dos valores. A
+[Arquitetura §2](../origem/arquivos/docs/arquitetura.md#2-camadas-de-dados) descreve as funções
+das camadas. A legenda se limita ao que se pode ler nos traços.
+
+- A espessura varia em escala linear de 1 px para um par até 10 px para a maior contagem do
+  pacote, hoje 81 pares entre `staging` e `trusted`. Cada seta conserva o número exato.
+- Ao lado da escala, o build escolhe um par com várias ligações entre colunas e dá preferência
+  ao desvio do legado. Na `v2.3.0` (`2bceb47`), `raw_legacy.carts` fornece valores a
+  `trusted.legado__carts` por 13 ligações entre colunas. O par acrescenta **1** aos 76.
+  Os dois nomes abrem as fichas.
+- Os laços de `trusted` (60) e `analytics` (58) trazem o número dentro da volta na própria
+  estação. Cinco saltos e retornos aparecem em uma lista com origem, seta numerada e destino.
+  A tabela reúne os 16 fluxos, inclusive os internos.
+- As caixas de `staging` e `trusted` têm a altura do conteúdo. Quando a estação vizinha precisa
+  de mais linhas, o traço continua fora da caixa. A grade preserva as duas entradas lado a lado
+  em 390 px. As estações e a tabela usam links e controles nativos de teclado.
+
+Os 469 pares dirigidos resultam de `lineage.relations.*.columns.*.leaves`, agrupados pelo
+`relations.*.schema` dos dois extremos. O Astro gera o mapa em HTML, CSS e SVG no build.
+
+**Verificação local de 19/11/2026.** Passaram os 57 casos de unidade e as 29 verificações
+estáticas. Quatro verificações novas conferem no HTML o desvio por fora de `staging`, as larguras
+dos 16 traços, o exemplo da legenda e os laços dentro das estações. A validação conferiu 97 arquivos
+da origem e a estática resolveu 36.740 links e âncoras. Três builds geraram 479 páginas com o mesmo
+SHA-256 de `dist/` (`6baae85500767829df2dc8e44c43bc3562fb3e996d9692ab47c15a9cd3a083fd`).
+Duraram 7,02 s, 7,13 s e 6,88 s, com mediana de 7,02 s. Na inicial, HTML e CSS somaram 8.365
+bytes em gzip nível 6. A verificação no navegador cabe ao Claude, inclusive a leitura em 390 px
+nos dois temas, o foco por teclado e as metas de tempo e transferência.
+
+**Entrega.** Implementação em `da282ac` e verificações estáticas em `e454c9a`.
+Bundle local em `.cache/layout-rodada-2b/rodada-2b.bundle`, com base em `80898a4`.
+
+**Pergunta ao Owner.** Em 390 px, dá para seguir a seta de 76 até `trusted` e distinguir a de 40
+que termina em `staging`?
+
+Crítica do Claude: (pendente)
+
+Decisão do Owner: (pendente)
