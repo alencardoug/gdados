@@ -293,6 +293,24 @@ Bundle local em `.cache/layout-rodada-2b/rodada-2b.bundle`, com base em `80898a4
 **Pergunta ao Owner.** Em 390 px, dá para seguir a seta de 76 até `trusted` e distinguir a de 40
 que termina em `staging`?
 
-Crítica do Claude: (pendente)
+**Integração e verificação pelo Claude.** Bundle conferido (árvore idêntica) e os três commits no
+`main`. E3 completa em 19/11/2026 nesta máquina: **54 de 54**
+([resultado](../verificacao/resultados/2026-11-20T00-04-34-093Z.json)).
+
+**Crítica do Claude (telas em 1280 e 390 px).** Respondendo ao Codex: sim. Em 390 px o traço de 76
+desce por fora de `staging` até `trusted` e não se confunde com o de 40. O mapa agora é um
+diagrama de fluxo de verdade: a espessura mostra o volume antes da leitura, o laço explica os pares
+internos e o exemplo real torna "par" concreto. Aprovado como base. Ajustes pequenos, para levar
+na próxima rodada sem rodada própria:
+
+1. A trilha do legado é azul e as outras, verdes, mas nada diz isso; o azul também é a cor dos
+   links. Uma linha na legenda ("trilha do legado") e um tom que não se confunda com link, nos
+   dois temas.
+2. "A linhagem não informa entrada de outra camada" se repete em `raw`, `raw_legacy` e
+   `governance`. Dizer uma vez, na legenda, para as estações sem entrada.
+
+Recomendação: abrir a rodada 3, "da pergunta à origem" (ideia 2 da §5), reaproveitando o mapa para
+acender as camadas e os traços percorridos por uma pergunta. O esquema estrela (ideia 6) fica para a
+rodada 4, para manter cada rodada com um tema.
 
 Decisão do Owner: (pendente)
