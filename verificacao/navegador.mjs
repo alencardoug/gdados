@@ -355,6 +355,28 @@ async function funcionais(nav, { view, pacote }) {
       { inicial, escuro, outraPagina, automatico, ocultoSemJs });
   }
 
+  // 8. Trilha do roteiro: marcar pelo teclado, a marcação sobrevive à recarga e, sem JavaScript, não há caixas.
+  {
+    const { contexto, pagina, erros } = await abrir(nav, "/conceitos/roteiro/", { pronto: "[data-trilha] label:not([hidden])" });
+    const caixa = pagina.locator("[data-marca]").first();
+    await caixa.focus();
+    await pagina.keyboard.press("Space");
+    await pagina.reload({ waitUntil: "load" });
+    await pagina.waitForSelector("[data-trilha] label:not([hidden])");
+    const depois = await pagina.evaluate(() => ({ marcada: document.querySelector("[data-marca]").checked,
+      progresso: document.querySelector(".trilha-progresso").textContent,
+      feita: document.querySelector(".estacao[data-feito]")?.dataset.feito }));
+    errosDeConsole.push(...erros);
+    await contexto.close();
+    const semJs = await nav.newContext({ javaScriptEnabled: false });
+    const p2 = await semJs.newPage();
+    await p2.goto(BASE + "/conceitos/roteiro/");
+    const caixasVisiveis = await p2.locator("[data-trilha] label:visible").count();
+    await semJs.close();
+    add(8, "Trilha: espaço marca a estação, a marcação vale depois de recarregar e, sem JavaScript, a trilha aparece sem caixas",
+      depois.marcada && depois.feita === "true" && /^1 de \d+ feitas$/.test(depois.progresso) && caixasVisiveis === 0, { depois, caixasVisiveis });
+  }
+
   const starChecks = [], defectChecks = [];
   for (const theme of ["light", "dark"]) {
     const contexto = await nav.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 }, colorScheme: theme });
