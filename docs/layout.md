@@ -48,7 +48,9 @@ seguintes; a crítica continua registrada na §6, e o Codex volta só quando o O
   declarado, medido e verificado; `null` como ausente; rodapé de procedência em toda página;
   classificação de sensibilidade não vira decisão de exposição; seed e coluna gerada não são quebra
   de linhagem.
-- Português na interface; tema claro e escuro (variáveis em `portal/src/styles/portal.css`).
+- Português na interface; tema claro e escuro (variáveis em `portal/src/styles/portal.css`), escolhível
+  no topo desde a rodada 8; toda cor nova entra como token nos dois temas e passa no teste de contraste
+  (`portal/test/tema.test.mjs`).
 - Publicação só pelo push no `main` (D04): **todo push publica**, então só com o "pode" do Owner.
 
 ## 4. O que existe hoje (19/11/2026)
@@ -626,5 +628,30 @@ células (valor, nulo e máscara), a classificação de cada coluna e 4 linhas a
 
 **Pergunta ao Owner.** Na página de chave, as duas linhas de "Loja online" deixam claro por que a
 chave natural sozinha não basta?
+
+Decisão do Owner: (pendente)
+
+### Rodada 8 — Tema escuro escolhível e cores das camadas · 19/11/2026
+
+**Pedido do Owner (19/11/2026):** "implemente um dark mode, explorando mais cores onde possível".
+**Construção do Claude.** Commits `efc3dd7` e `95afcb4`.
+
+| O quê | Como |
+|---|---|
+| Seletor de tema | Botão no topo: Automático (segue o sistema) → Claro → Escuro. A escolha é aplicada por um script em linha no `<head>`, antes da primeira pintura, e lembrada no navegador de quem lê (`localStorage`, conveniência local). Sem JavaScript o botão não aparece e vale o sistema. |
+| Tema escuro | Fundo azulado (`#0e1219`, superfície `#161b25`) em vez de cinza neutro. Os tokens escuros ficam em dois blocos idênticos, um para a preferência do sistema e outro para a escolha, e um teste exige que sejam iguais. |
+| Cores das camadas | Paleta de 11 cores (`--camada-0` a `--camada-10`), com valores próprios em cada tema. O build gera, da ordem das camadas no grafo, as regras que ligam cada camada a uma cor (`--cor-<camada>`, `[data-layer]`, `[data-camada]`, `[data-from]`); nenhum nome de camada é fixado em JavaScript. A cor aparece nas estações e traços do mapa (o traço tem a cor da camada de onde sai, e o legado continua ocre), no topo do cartão da relação, no "você está aqui" e nos grupos de vizinhos, num ponto antes do nome da camada (cartão, catálogo, estrutura), num trilho sob o topo e nos nós do Cytoscape, com a mesma cor para a mesma camada em todo lugar. |
+| Diagramas | Mermaid passa a usar o tema `base` com as cores do portal; Mermaid e Cytoscape redesenham quando o leitor troca o tema. |
+
+**Verificação local de 19/11/2026.** Unidade: 100 de 100, com cinco novos casos: blocos escuros
+idênticos, mesmas cores nos dois temas, contraste WCAG em cada tema (texto, links e cores de estado
+4,5:1 sobre fundo e superfície; cores das camadas 3:1, por serem marcas gráficas) e o CSS gerado
+das camadas. E3 completa: **77 de 77**
+([resultado](../verificacao/resultados/2026-11-20T01-48-02-509Z.json)), com a verificação nova do
+botão: Enter troca para escuro, a escolha vale na página seguinte, o Mermaid redesenha, "Automático"
+apaga a escolha e, sem JavaScript, o botão não aparece.
+
+**Pergunta ao Owner.** As cores das camadas ajudam a reconhecer a mesma camada no mapa, na ficha e
+no grafo, ou ficaram excessivas em algum lugar?
 
 Decisão do Owner: (pendente)
