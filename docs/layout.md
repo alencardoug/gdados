@@ -600,3 +600,31 @@ nulos pode incluir nulos legítimos, como a página avisa.
 rejeitada, enquanto `MONEY_LOCALE` é corrigido?
 
 Decisão do Owner: (pendente)
+
+### Rodada 7 — Conceitos com linhas reais · 19/11/2026
+
+**Construção do Claude** (ideia 4 da §5). Commits `a0d57cb`, `07f3fa1` e `22db4d1`. O tipo de bloco
+fica registrado no dono documental das páginas de conceito ([§6](pagina_de_conceitos.md#6-diagramas-e-exemplos)).
+
+| Conceito | Linhas reais | O que ensinam |
+|---|---|---|
+| Chave | `analytics.dim_sales_channel`, agrupada por `sales_channel_natural_key` | A mesma chave natural (1 e 3) em duas linhas, uma por origem, cada uma com a sua chave substituta. A nota cita a descrição de `source_system`: os dois sistemas numeram a partir de 1. |
+| Grão | `analytics.fact_shipment`, colunas do pedido destacadas | Cada linha é uma remessa; `order_shipment_count` ("repetido em cada remessa dele", na descrição da origem) e `order_to_delivery_days` (grão pedido) não somam nesta tabela. A primeira linha tem um pedido de 2 remessas. |
+| Sensibilidade | `analytics.dim_customer`, colunas `personal` destacadas | A classificação do pacote no cabeçalho de cada coluna; `<personal>` onde havia valor e nulo onde não havia (`birth_date`). A classificação descreve o dado, não decide o acesso. |
+
+**Decisões.** As linhas vêm todas da amostra, sem escolher as que convêm; o destaque é de coluna,
+e o agrupamento é calculado. A afirmação que depende do dado é conferida na build
+(`agrupar_por`, `distintas_em`), e um bloco que a amostra fixada deixar de sustentar derruba a
+build, ao contrário dos exemplos citados, que só aparecem como "não encontrado". SCD ficou de fora:
+as amostras de `snapshots` e das dimensões não trazem duas versões da mesma entidade, e o portal
+não fabrica uma.
+
+**Verificação local de 19/11/2026.** Unidade: 95 de 95 (dois casos novos, um deles com as quatro
+falhas de build). Estáticas: 43 de 43; a nova lê o HTML e a exportação e confere 3 blocos, 75
+células (valor, nulo e máscara), a classificação de cada coluna e 4 linhas agrupadas. E3 completa:
+**76 de 76** ([resultado](../verificacao/resultados/2026-11-20T01-36-09-609Z.json)).
+
+**Pergunta ao Owner.** Na página de chave, as duas linhas de "Loja online" deixam claro por que a
+chave natural sozinha não basta?
+
+Decisão do Owner: (pendente)
