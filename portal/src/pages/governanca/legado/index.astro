@@ -3,12 +3,14 @@ import { getEntry } from "astro:content";
 import Base from "../../../layouts/Base.astro";
 import Identificador from "../../../components/Identificador.astro";
 import Md from "../../../components/Md.astro";
-import CasoDoLegado from "../../../components/CasoDoLegado.astro";
+import LinhaDoLegado from "../../../components/LinhaDoLegado.astro";
 import ProcedenciaDoLegado from "../../../components/ProcedenciaDoLegado.astro";
-import { amostras, renderizarEmLinha, rota, rotaDaReferencia } from "../../../lib/portal.mjs";
+import { amostras, pacote, renderizarEmLinha, rota, rotaDaReferencia } from "../../../lib/portal.mjs";
+import { TRATAMENTOS, agruparPorLinha, chaveDaLinha, tratamentoDoTipo } from "../../../lib/casos-do-legado.mjs";
 import { byCode, catalogPath, legacyUrl, stepsByRaw } from "../../../lib/legado-no-portal.mjs";
 import "../../../styles/legado.css";
 const catalog = (await getEntry("catalogoLegado", "falhas"))?.data.value ?? {};
+const delimitador = (await getEntry("catalogoLegado", "delimitador"))?.data.value;
 const types = [...byCode].sort(([a], [b]) => a.localeCompare(b));
 // Uma correção curta, legível e explicada na própria linha abre a página.
 const corrected = types.flatMap(([, items]) => items).filter((item) =>
@@ -17,22 +19,42 @@ const corrected = types.flatMap(([, items]) => items).filter((item) =>
 const length = (item) => item.before.length + item.after.length;
 const firstCase = corrected.toSorted((a, b) => length(a) - length(b))[0];
 const total = types.reduce((n, [, items]) => n + items.length, 0);
+const schemaDe = (rel) => pacote.relations[rel]?.schema;
+const linhasDe = (items) => agruparPorLinha(items, schemaDe).length;
+const firstRow = firstCase && agruparPorLinha(byCode.get(firstCase.code), schemaDe)
+  .find((g) => g.chave === (chaveDaLinha(firstCase) ?? "achado:" + firstCase.anchor));
+// Os grupos saem do catálogo: `conversao` com `recuperacao` ou `rejeicao` (mutuamente exclusivas).
+const DESCRICAO = {
+  recupera: ["A limpeza recupera o valor", "O catálogo declara uma conversão com recuperação <code>original</code>: a informação foi preservada e a limpeza a restaura."],
+  anula: ["A limpeza troca por nulo de verdade", "O catálogo declara uma conversão com recuperação <code>nulo</code>: o alvo canônico é o nulo, e o original não volta."],
+  converte: ["A limpeza converte", "O catálogo declara uma conversão sem dizer o que ela recupera."],
+  rejeita: ["A linha é rejeitada", "O catálogo declara o motivo da rejeição quando não há regra válida: converte-se só quando existe <em>uma</em> interpretação possível."],
+  indefinido: ["Sem definição no catálogo", "O catálogo da origem não define estes tipos."],
+};
+const grupos = TRATAMENTOS.map((t) => ({ t, tipos: types.filter(([code]) => tratamentoDoTipo(catalog[code]) === t) }))
+  .filter((g) => g.tipos.length > 0);
 ---
 <Base titulo="Qualidade do legado" secao="governanca">
 <p class="migalhas"><a href={rota("governanca/")}>Governança</a> › Qualidade do legado</p>
 <h1>Qualidade do legado</h1>
 <p class="lead">O que a limpeza conseguiu recuperar? Escolha um achado para ler o valor que chegou, o que ficou depois da limpeza e a regra aplicada.</p>
 {firstCase && <><a href="#tipos">Ir ao índice de defeitos</a>
-  <CasoDoLegado item={firstCase} />
+  <LinhaDoLegado grupo={firstRow} regra={catalog[firstCase.code]} {delimitador} />
   <a href={legacyUrl(firstCase.code)}>Ver a regra de <Identificador value={firstCase.code} /> e suas aparições</a></>}
 <h2 id="tipos">Tipos de defeito nas amostras</h2>
 <p><strong>{types.length} tipos · {total} aparições.</strong> Cada entrada em <code>achados</code>, <code>value_findings</code> ou <code>findings</code> conta uma vez na linha exportada. Uma ocorrência pode aparecer em várias relações, capturas ou versões do tratamento.</p>
 <p>As definições vêm de <a href={rotaDaReferencia(catalogPath)}>falhas, no catálogo da origem</a>.</p>
-<ul class="defect-index" role="list">{types.map(async ([code, items]) => <li data-code={code}>
-  <a href={legacyUrl(code)}><Identificador value={code} /></a>
-  <span class="defect-count">{items.length} {items.length === 1 ? "aparição" : "aparições"}</span>
-  <p>{catalog[code]?.deteccao ? <Md em="span" html={await renderizarEmLinha(catalog[code].deteccao)} /> : "O catálogo da origem não define este tipo."}</p>
-</li>)}</ul>
+<p>Os grupos seguem o tratamento que o catálogo declara para cada tipo.</p>
+{grupos.map(({ t, tipos }) => <section class="treatment-group" aria-labelledby={"tratamento-" + t}>
+  <h3 id={"tratamento-" + t}>{DESCRICAO[t][0]} <span class="defect-count-group">{tipos.length} {tipos.length === 1 ? "tipo" : "tipos"} · {tipos.reduce((n, [, i]) => n + i.length, 0)} aparições</span></h3>
+  <p class="treatment-note" set:html={DESCRICAO[t][1]} />
+  <ul class="defect-index" role="list">{tipos.map(async ([code, items]) => <li data-code={code}>
+    <a href={legacyUrl(code)}><Identificador value={code} /></a>
+    <span class="defect-count">{items.length} {items.length === 1 ? "aparição" : "aparições"} · {linhasDe(items)} {linhasDe(items) === 1 ? "linha" : "linhas"}</span>
+    {catalog[code]?.grupo && <span class="defect-family">{catalog[code].grupo}</span>}
+    <p>{catalog[code]?.deteccao ? <Md em="span" html={await renderizarEmLinha(catalog[code].deteccao)} /> : "O catálogo da origem não define este tipo."}</p>
+  </li>)}</ul>
+</section>)}
 {stepsByRaw.size > 0 && <details class="legacy-paths" id="percursos"><summary>Onde as linhas aptas do legado entram nos percursos</summary>
   <ul>{[...stepsByRaw.values()].map((step) =>
     <li><a href={step.href}>{step.question}, passo {step.number} · <Identificador value={step.relation} /></a> · <Identificador value={step.measure} /></li>)}</ul>
