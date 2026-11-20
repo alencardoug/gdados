@@ -396,3 +396,58 @@ Recomendação: levar os pontos 1 a 4 para a rodada 4 junto com o esquema estrel
 pode nascer do passo "Fato da pergunta" (a fato no centro e as dimensões da P02 em volta).
 
 Decisão do Owner: (pendente)
+
+### Rodada 4 — Onde o valor muda e o que uma linha da fato representa · 19/11/2026
+
+**Percurso.** Comece pela P02, em `/governanca/pergunta/P02/`. No passo 3,
+`trusted.order_items` recebe `discount_amount`, `quantity` e `unit_price` pelos dois ramos.
+A seta termina em `net_revenue_amount`. Abaixo dela, a descrição da origem explica em que momento
+a receita é arredondada e o desconto é aplicado. No passo 1, a seta do ticket médio inclui
+`source_system` junto de `net_revenue_amount` e `order_id`. A regra de `average_order_value` em
+`metrics` divide a receita líquida por `order_count`. Esse denominador conta as combinações
+distintas de sistema de origem e pedido.
+
+Cada seta aberta vem das folhas imediatas de `lineage.relations.*.columns.*.leaves` quando ao
+menos um nome muda. Dois ramos que entregam as mesmas colunas dividem a linha e conservam links
+para os dois passos. As citações vêm da descrição da coluna e da métrica identificada em
+`view_rules`. A numeração termina um ramo antes de abrir o seguinte, para que se possa acompanhar
+uma origem de uma vez. Na P02, o varejo ocupa os passos 4 e 5, e o legado, 6 e 7. Um insumo
+compartilhado ganha um único número depois dos consumidores.
+
+O mapa fica fixo nas telas largas. A estação e o número do passo em leitura recebem destaque ao
+rolar. Os números são atalhos para os passos. Um fluxo direto da medida que sai da grade aparece
+na estação que o recebe. Em 390 px, o atalho “Ir aos passos em lista” fica acima do mapa. Com o
+JavaScript desligado, o HTML contém as setas, os ramos, as citações e todos os links.
+
+**Estrela.** Abra `/governanca/relacao/analytics.fact_shipment/#estrela`. No centro, o grão
+declarado é “uma remessa”. Dois braços chegam a `dim_date.date_key`: um parte de `date_key` e o
+outro de `delivered_date_key`. Cada braço corresponde a uma FK da fato em `relations` e termina
+na PK declarada da dimensão. A tabela liga as duas colunas às fichas, e o diagrama
+entidade-relacionamento abre no recorte da fato.
+
+A mesma estrela aparece no passo “Fato da pergunta”. As dimensões em `questions.*.dimensions`
+recebem o rótulo “Dimensão da pergunta”. As declaradas para a pergunta que carecem de FK direta
+naquela fato aparecem abaixo do desenho. Uma dimensão recebe um link para seu snapshot quando as
+folhas imediatas identificam uma relação com `resource_type: snapshot`. O Astro gera o esquema em
+HTML, CSS e SVG. Em telas estreitas, os braços se distribuem em pares acima e abaixo do grão.
+
+**Verificação local de 19/11/2026.** Passaram 82 casos de unidade e 36 verificações estáticas.
+A validação conferiu os 97 arquivos da origem `v2.3.0` (`2bceb47`). O HTML dos 88 percursos
+mostrou 185 ocorrências de mudança de nome em 626 passos. As 11 fichas de fatos mostraram 57
+braços, e 84 passos de fato incluíram a estrela. Nas 551 páginas, os 48.958 links e âncoras
+resolveram. Três builds duraram 7,30 s, 7,22 s e 7,31 s. O SHA-256 de `dist/` foi o mesmo
+nas três execuções (`f2e0057c04e145d57d405257df1dae22f8990360fa075c274e40ceb452e5fb0d`).
+Em gzip nível 6, o HTML e os recursos referenciados diretamente somaram 14.940 bytes na P02,
+até 17.085 bytes entre os percursos (P13), e 18.875 bytes na ficha de remessas.
+
+**Entrega.** Percurso em `1af6850`, estrela em `6446539`, identidade do denominador em
+`67da154` e verificações em `aba3bb5`. Bundle em `.cache/layout-rodada-4/rodada-4.bundle`,
+com base em `e561d1f`. A E3 de navegador cabe ao Claude, incluindo o mapa ao avançar e voltar,
+o foco, a estrela em 390 px nos dois temas e as metas de desempenho.
+
+**Pergunta ao Owner.** Na P02, as três dimensões destacadas ajudam a distinguir o que recorta o
+ticket médio daquilo que entra na conta?
+
+Crítica do Claude: (pendente)
+
+Decisão do Owner: (pendente)
