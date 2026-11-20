@@ -7,6 +7,8 @@ const relation = relacaoPorId.get(id);
 const description = !relation?.colunasSemDescricao.has(name) && relation?.r.columns[name]?.description;
 const rule = pacote.view_rules[id]?.columns?.[name];
 const metric = pacote.metrics[rule?.name];
+const denominator = metric?.kind === "ratio" && pacote.metrics[metric.denominator];
+const identity = denominator?.aggregate === "count_distinct" && denominator.identity;
 ---
 <div class="value-change" data-output={name}>
   <p class="column-label">Como se forma <Identificador value={name} /></p>
@@ -21,8 +23,11 @@ const metric = pacote.metrics[rule?.name];
     <cite><a href={rotaDaColuna(id, name)}>Descrição da coluna na origem</a></cite>
   </blockquote>}
   {metric && <p class="metric-rule"><a href={rotaDaMetrica(rule.name)}>Regra de <Identificador value={rule.name} /></a>
-    {metric.kind === "ratio" && metric.numerator && metric.denominator && <> · Numerador <Identificador value={metric.numerator} /> · Denominador <Identificador value={metric.denominator} />
-      {metric.on_zero_denominator === "returns_null" && " · Com denominador zero, o resultado é nulo."}</>}
+    {metric.kind === "ratio" && metric.numerator && metric.denominator && <> · Divide <a href={rotaDaMetrica(metric.numerator)}><Identificador value={metric.numerator} /></a>
+      {" por "}<a href={rotaDaMetrica(metric.denominator)}><Identificador value={metric.denominator} /></a>.
+      {identity?.length > 0 && <> O denominador conta combinações distintas de {identity.map((key, i) =>
+        <>{i > 0 && " e "}<Identificador value={key} /></>)}.</>}
+      {metric.on_zero_denominator === "returns_null" && " Com denominador zero, o resultado é nulo."}</>}
     {metric.kind === "difference" && metric.minuend && metric.subtrahend && <> · Minuendo <Identificador value={metric.minuend} /> · Subtraendo <Identificador value={metric.subtrahend} /></>}
     {metric.kind === "measure" && metric.aggregate && <> · Agregação <Identificador value={metric.aggregate} /></>}
   </p>}
