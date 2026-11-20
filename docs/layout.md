@@ -679,3 +679,54 @@ rolagem; em 390 px rola por dentro com a camada fixa à esquerda.
 **Pergunta ao Owner.** O mapa deixa claro onde o dado pessoal entra e onde os testes se concentram?
 
 Decisão do Owner: (pendente)
+
+### Rodada 10 — Local e GCP lado a lado · 19/11/2026
+
+**Construção do Claude** (ideia 7 da §5). Commits `4937b79` e `a291c18`. Fica na página de estrutura,
+antes de "Ambientes e documentos".
+
+- **Esqueleto comum:** o mapa de paridade que a origem mantém na Arquitetura §5, achado pelo
+  apontador de `environments` (`docs/arquitetura.md#5-mapa-de-paridade-local--gcp`). Um conceito por
+  linha, na espinha do meio; a fase local à esquerda e a GCP à direita. Cada cartão mostra a abertura
+  do texto da origem (até a primeira pausa forte) e abre o texto inteiro; 2 linhas levam "medido na
+  janela GCP", onde a origem grifa **Medido**.
+- **Estado de cada lado**, de `environments`: os dois lados lidos por commit; no GCP, a declaração
+  congelada em 13/11/2026 (recursos destruídos), o registro da fase e as evidências indisponíveis,
+  cada um com a nota do pacote.
+- **O que os arquivos declaram:** os 10 serviços dos três docker-compose, com a imagem própria ou a
+  herdada da âncora YAML, e as 67 declarações `resource` do Terraform por arquivo e tipo, com o aviso
+  de que um bloco com `for_each` ou `count` cria várias instâncias.
+- Tokens `--lado-local` (verde-azulado) e `--lado-gcp` (azul) nos dois temas, no teste de contraste.
+
+**Verificação.** Unidade: 105 de 105. A estática nova relê os arquivos copiados sem o código do portal
+(20 conceitos, 2 medidos, 67 declarações e os serviços de cada compose). E3: **79 de 79**
+([resultado](../verificacao/resultados/2026-11-20T02-38-44-534Z.json)). Em 390 px os lados se
+empilham sob cada conceito, sem rolagem horizontal.
+
+Decisão do Owner: (pendente)
+
+### Rodada 11 — O roteiro como trilha · 19/11/2026
+
+**Construção do Claude** (ideia 9 da §5). Commits `3d1ed3c` e `764ff0a`. Fica no alto de "Comece por
+aqui".
+
+- Cada degrau é uma linha de estações em três trechos coloridos: **ler** os termos, **praticar** nos
+  objetos reais e **conferir** com as perguntas, na ordem do `roteiro.yml`. Cada estação abre o termo,
+  o objeto ou a pergunta.
+- Quem estuda marca o que já fez. A marcação fica só no navegador dessa pessoa, a linha enche até a
+  última estação feita em sequência e o contador mostra "n de 12 feitas". Sem JavaScript, a trilha
+  aparece sem as caixas.
+- **O que ficou de fora, e por quê:** a ideia original falava em "o que cada degrau desbloqueia". O
+  grafo de pré-requisitos do inventário é esparso (os termos do Degrau 1 não são pré-requisito de
+  nenhum termo fora dele, e 52 dos 57 restantes não têm pré-requisito), então um "desbloqueia"
+  calculado ficaria vazio. Degraus futuros também não foram inventados: o seguinte aparece só como o
+  passo que o roteiro anuncia, porque cada degrau novo depende do "pode fazer" do Owner.
+
+**Verificação.** Estática: as 12 estações iguais ao roteiro e as âncoras das perguntas. Navegador:
+espaço marca a estação, a marcação sobrevive à recarga e, sem JavaScript, não há caixas. E3:
+**81 de 81** ([resultado](../verificacao/resultados/2026-11-20T02-46-16-204Z.json)).
+
+**Pergunta ao Owner.** A trilha ajuda a saber onde você está no estudo? Quer que os próximos degraus
+cheguem já desenhados nela quando você der o "pode fazer"?
+
+Decisão do Owner: (pendente)
