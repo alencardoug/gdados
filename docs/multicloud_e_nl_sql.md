@@ -13,8 +13,8 @@ fazer" do Owner. As regras gerais continuam no [AGENTS.md](../AGENTS.md), nas
 > o processamento de dados.
 
 Ordem das plataformas: **Databricks → AWS → Snowflake**. O `nl_sql` registra, em 14/11/2026 (Q14), a
-ordem Databricks → AWS → GCP para as medições dele; a inclusão do Snowflake e o lugar do GCP nessa
-sequência ficam para o Owner alinhar entre os projetos.
+ordem Databricks → AWS → GCP para as medições dele. Em 20/11/2026 o Owner fixou a ordem comum (§6):
+o GCP fica como base já existente, e o Snowflake é a terceira plataforma nova nos dois projetos.
 
 ## 2. Os três projetos e o fluxo
 
@@ -90,8 +90,10 @@ Recomendações, para o `nl_sql` avaliar pelas regras dele:
 ## 6. Pendências e avisos
 
 - Avisos deixados em 20/11/2026 no `alinhamento.md` da origem e do `nl_sql`, a pedido do Owner.
-- Para o Owner decidir, quando chegar a hora:
-  1. o `nl_sql` lê o pacote direto da origem (recomendado) ou um JSON do gdados;
-  2. as páginas multicloud entram já com o declarado ou só quando houver medição;
-  3. a ordem combinada entre os projetos (Databricks → AWS → Snowflake aqui; Databricks → AWS → GCP
-     no `nl_sql`).
+- Decisões do Owner (20/11/2026), cada uma pela alternativa recomendada:
+  1. o `nl_sql` lê o contexto semântico do **pacote da origem, por *tag***, como fonte única; o JSON
+     derivado do gdados (§5, item 5) não será feito agora;
+  2. as páginas multicloud entram **já com o declarado**, cada célula marcada como declarada, medida
+     em data ou indisponível; a medição do `nl_sql` entra ao lado quando existir;
+  3. a ordem comum é **Databricks → AWS → Snowflake**, com o GCP como base já existente e coluna de
+     referência. Aviso deixado no `alinhamento.md` do `nl_sql` no mesmo dia.

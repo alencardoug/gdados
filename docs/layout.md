@@ -191,7 +191,7 @@ Recomendação para a rodada 2: refinar a orientação nesses cinco pontos (o ma
 abrir ideias novas. A rodada 3 abre "da pergunta à origem" (ideia 2), que pode reaproveitar o mapa
 para acender as estações percorridas por uma pergunta, e o esquema estrela (ideia 6).
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 2 — A orientação vira fluxo · 19/11/2026
 
@@ -260,7 +260,7 @@ O que ainda engana ou não ensina:
 
 Recomendação: uma rodada 2b curta só para a inicial (pontos 1 a 5), depois a rodada 3.
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 2b — As duas entradas do mapa da inicial · 19/11/2026
 
@@ -321,7 +321,7 @@ Recomendação: abrir a rodada 3, "da pergunta à origem" (ideia 2 da §5), reap
 acender as camadas e os traços percorridos por uma pergunta. O esquema estrela (ideia 6) fica para a
 rodada 4, para manter cada rodada com um tema.
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 3 — Da pergunta à origem · 19/11/2026
 
@@ -402,7 +402,7 @@ O que falta para o percurso ensinar de fato:
 Recomendação: levar os pontos 1 a 4 para a rodada 4 junto com o esquema estrela (ideia 6), que
 pode nascer do passo "Fato da pergunta" (a fato no centro e as dimensões da P02 em volta).
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 4 — Onde o valor muda e o que uma linha da fato representa · 19/11/2026
 
@@ -487,7 +487,7 @@ Recomendação: rodada 5 com esses quatro pontos e a ideia 5 da §5 (o legado de
 depois: `original_payload`, `cleaned_payload` e `findings` lado a lado, com o defeito marcado), que
 usa as amostras da D06 e é o melhor material para ensinar qualidade de dados.
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 5 — O que entra na conta e o que a limpeza consegue recuperar · 19/11/2026
 
@@ -575,7 +575,7 @@ nem o deslocamento. Ajustes:
 
 Recomendação: rodada 6, construída pelo Claude, com esses três pontos.
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 6 — O legado mostra a diferença e o destino · 19/11/2026
 
@@ -602,7 +602,7 @@ nulos pode incluir nulos legítimos, como a página avisa.
 **Pergunta ao Owner.** Ao abrir `TEXT_DELIMITER`, dá para ver por que a linha não tem conserto e é
 rejeitada, enquanto `MONEY_LOCALE` é corrigido?
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 7 — Conceitos com linhas reais · 19/11/2026
 
@@ -630,7 +630,7 @@ células (valor, nulo e máscara), a classificação de cada coluna e 4 linhas a
 **Pergunta ao Owner.** Na página de chave, as duas linhas de "Loja online" deixam claro por que a
 chave natural sozinha não basta?
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 8 — Tema escuro escolhível e cores das camadas · 19/11/2026
 
@@ -655,7 +655,7 @@ apaga a escolha e, sem JavaScript, o botão não aparece.
 **Pergunta ao Owner.** As cores das camadas ajudam a reconhecer a mesma camada no mapa, na ficha e
 no grafo, ou ficaram excessivas em algum lugar?
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 9 — Mapa de calor de sensibilidade e testes · 19/11/2026
 
@@ -679,7 +679,7 @@ rolagem; em 390 px rola por dentro com a camada fixa à esquerda.
 
 **Pergunta ao Owner.** O mapa deixa claro onde o dado pessoal entra e onde os testes se concentram?
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 10 — Local e GCP lado a lado · 19/11/2026
 
@@ -704,7 +704,7 @@ antes de "Ambientes e documentos".
 ([resultado](../verificacao/resultados/2026-11-20T02-38-44-534Z.json)). Em 390 px os lados se
 empilham sob cada conceito, sem rolagem horizontal.
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
 
 ### Rodada 11 — O roteiro como trilha · 19/11/2026
 
@@ -730,4 +730,4 @@ espaço marca a estação, a marcação sobrevive à recarga e, sem JavaScript, 
 **Pergunta ao Owner.** A trilha ajuda a saber onde você está no estudo? Quer que os próximos degraus
 cheguem já desenhados nela quando você der o "pode fazer"?
 
-Decisão do Owner: (pendente)
+Decisão do Owner (20/11/2026): aprovada como publicada; ajustes futuros entram em rodada nova.
