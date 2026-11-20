@@ -43,7 +43,8 @@ seguintes; a crítica continua registrada na §6, e o Codex volta só quando o O
 - Metas da E3 ([relatório](relatorio_e3.md), [PLANO](../PLANO.md) E3): primeira renderização
   ≤ 1500 ms, ≤ 1 MB por página, busca ≤ 150 ms por tecla, zoom ≤ 100 ms no grafo inteiro e ≤ 50 ms nos
   recortes, 390 px sem rolagem horizontal da página, teclado e foco visível, console sem erro. A
-  verificação em `verificacao/` tem de continuar passando (hoje 39 de 39).
+  verificação em `verificacao/` tem de continuar passando (39 de 39 na abertura da frente; 81 de 81 em
+  20/11/2026, depois da rodada 11).
 - Fidelidade (AGENTS.md, "Fontes e evidências"): não inventar contagem nem ligação; distinguir
   declarado, medido e verificado; `null` como ausente; rodapé de procedência em toda página;
   classificação de sensibilidade não vira decisão de exposição; seed e coluna gerada não são quebra

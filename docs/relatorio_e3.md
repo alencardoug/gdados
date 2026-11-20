@@ -162,3 +162,22 @@ domínios de exemplo. Governança com primeira renderização em 220 ms e 142 KB
 por tecla; recorte da linhagem em 254 ms; grafo inteiro em 564 ms, zoom em 50 ms (meta de 100 ms).
 A página de relação medida tem 7,8 KB; com as amostras, a maior página de relação de `dist/`
 (`trusted.legacy_eligible_records`) tem 22 KB comprimida [medido fora da verificação, com gzip].
+
+## 9. Repetição depois da frente de layout (20/11/2026)
+
+| Campo | Valor |
+|---|---|
+| Versão avaliada | gdados `a291c18` com a rodada 11 ainda sem commit (o resultado registra `arvore_limpa: false`); a mesma árvore entrou em `3d1ed3c` e `764ff0a` |
+| Pacote | `mvp_eng_dados_2` `v2.3.0` (`2bceb47`), com as amostras da D06 e o catálogo de falhas do legado copiado do mesmo commit |
+| Ambiente | O mesmo da §1: Node 24.18.0, cinco repetições por medida |
+| Resultado bruto | [`verificacao/resultados/2026-11-20T02-46-16-204Z.json`](../verificacao/resultados/2026-11-20T02-46-16-204Z.json) |
+
+**As 81 verificações automáticas passaram.** São 42 a mais que na §8. Cada rodada da
+[frente de layout](layout.md#6-rodadas) acrescentou as suas, e o registro de cada uma está lá:
+mapas, percursos, estrelas, legado, linhas reais, tema, mapa de calor, lado a lado e trilha.
+Também passaram 105 testes de unidade.
+
+Medidas com CPU normal, mediana: primeira renderização da pergunta em 216 ms, do legado em 220 ms e
+do catálogo em 272 ms; catálogo com 148 KB; busca em até 53 ms por tecla; recorte da linhagem em
+337 ms e expansão em 57 ms; grafo inteiro em 799 ms, com quadro de zoom de até 50 ms; a página de
+relação medida tem 13,6 KB e a de estrutura, a maior, 680 KB, por causa do Mermaid (meta de 1 MB).
