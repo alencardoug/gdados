@@ -655,3 +655,27 @@ apaga a escolha e, sem JavaScript, o botão não aparece.
 no grafo, ou ficaram excessivas em algum lugar?
 
 Decisão do Owner: (pendente)
+
+### Rodada 9 — Mapa de calor de sensibilidade e testes · 19/11/2026
+
+**Construção do Claude** (ideia 8 da §5). Commits `e11a3aa` e `8047696`. Fica na página de
+governança, antes do catálogo, e cada célula abre o catálogo filtrado por camada e classe.
+
+| Coluna | De onde vem |
+|---|---|
+| Colunas por classe (`public`, `internal`, `confidential`, `personal`) | `relations.*.columns.*.sensitivity`. A cor da célula cresce com o número dentro da classe (até 30% da cor, para o número manter contraste nos dois temas). |
+| Testes e colunas com teste | `tests.*.relation`, `column` e `result.status`. "Colunas com teste" conta só testes declarados numa coluna; os 33 testes `singular` sem relação aparecem numa frase, fora da tabela. |
+| Mascaradas na amostra | Colunas `personal` cujas linhas exportadas trazem `<personal>`, inclusive dentro de JSON. A nota explica por que nem toda coluna `personal` aparece mascarada (nulo continua nulo; nas cargas do legado só os campos pessoais da tabela de origem, ADR-0058). A build para se a máscara aparecer fora de `personal`. |
+
+Leituras calculadas acima da tabela: o dado pessoal aparece em 7 das 9 camadas e se concentra em
+`staging` (73 colunas); o pacote não declara teste do dbt em `raw`, `raw_legacy` e `snapshots`;
+868 testes ligados a relações, todos `pass`.
+
+**Verificação local de 19/11/2026.** Unidade: 101 de 101. Estáticas: 44 de 44; a nova recalcula, sem
+o código do portal, as 9 camadas célula a célula. E3 completa: **78 de 78**
+([resultado](../verificacao/resultados/2026-11-20T02-10-38-107Z.json)). Em 1280 px a tabela cabe sem
+rolagem; em 390 px rola por dentro com a camada fixa à esquerda.
+
+**Pergunta ao Owner.** O mapa deixa claro onde o dado pessoal entra e onde os testes se concentram?
+
+Decisão do Owner: (pendente)
