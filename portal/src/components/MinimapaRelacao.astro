@@ -18,7 +18,7 @@ const groups = [
     {groups.map(({ direction, label, layers }) => {
       let visible = 3;
       return <Fragment>
-        {direction === "outputs" && <div class="current-relation">
+        {direction === "outputs" && <div class="current-relation" data-camada={x.camada}>
           <strong>Você está aqui</strong>
           {otherFunction(x.camada) && <small>Outras funções</small>}
           <a href={catalog(x.camada)} aria-current="location"><Identificador value={x.camada} /></a>

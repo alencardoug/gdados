@@ -31,6 +31,7 @@ const pairsInTrail = (edge) => trail && edge
     <p>Siga as setas no sentido dos valores. Cada estação abre sua camada no catálogo.<br />
       {largest > 1 ? <>Escala linear de 1 px (1 par) a 10 px ({largest} pares).</>
         : <>Cada traço representa um par de relações e tem 1 px de espessura.</>}
+      <span class="color-key">Cada estação e cada traço têm a cor da camada de onde os valores saem.</span>
       {flows.some((f) => f.source === "raw_legacy") && <span class="legacy-key">Trilha do legado</span>}
       {withoutInput.length > 0 && <span class="input-key">A linhagem não informa entrada de outra camada em {withoutInput.map((layer, i) =>
         <>{i > 0 && ", "}<Identificador value={layer} /></>)}.</span>}

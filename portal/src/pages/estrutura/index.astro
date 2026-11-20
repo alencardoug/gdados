@@ -82,7 +82,7 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
 <tbody>
 {porCamada.map((c) => (
   <tr>
-    <th scope="row"><a href={rota(`governanca/?camada=${c.camada}#catalogo`)}>{c.camada}</a></th>
+    <th scope="row" class="marca-camada" data-camada={c.camada}><a href={rota(`governanca/?camada=${c.camada}#catalogo`)}>{c.camada}</a></th>
     <td>{c.n}</td>
     <td>{Object.entries(c.combinacoes).map(([k, n]) => <div>{k}: {n}</div>)}</td>
     <td>{c.papeis.length ? c.papeis.map((p) => <code>{p}</code>).reduce((a, b) => [a, ", ", b]) : <span class="ausente">nenhuma concessão</span>}</td>
@@ -190,17 +190,20 @@ const pastasRaiz = [...new Set(caminhosCopiados.map((c) => c.split("/")[0]))].so
 </Base>
 <script>
 import mermaid from "mermaid";
+import { configurarMermaid, redesenharNaTroca } from "../../cliente/mermaid-tema.js";
 const alvo = document.getElementById("diagrama");
-const escuro = matchMedia("(prefers-color-scheme: dark)").matches;
 // No ER, o desenho fica no tamanho natural e a área rola na horizontal: reduzido, o modelo inteiro fica ilegível.
-mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: escuro ? "dark" : "neutral", er: { useMaxWidth: false } });
-const travessias = mermaid.render("travessias-svg", alvo.dataset.definicao).then(({ svg }) => {
+const OPCOES = { er: { useMaxWidth: false } };
+configurarMermaid(mermaid, OPCOES);
+let versao = 0;
+const desenharTravessias = () => mermaid.render(`travessias-svg-${++versao}`, alvo.dataset.definicao).then(({ svg }) => {
   alvo.innerHTML = svg;
   performance.mark("travessias:pronto");
   alvo.dataset.pronto = "1";
 }).catch((e) => {
   alvo.textContent = `O diagrama não pôde ser desenhado (${e.message}). As travessias estão na tabela abaixo.`;
 });
+let travessias = desenharTravessias();
 
 // Diagrama entidade-relacionamento: um recorte por vez, escolhido no seletor ou por ?er=<relação>.
 const er = document.getElementById("er-diagrama");
@@ -233,4 +236,8 @@ if (er && seletor) {
   });
   travessias.then(desenharER);
 }
+redesenharNaTroca(mermaid, OPCOES, () => {
+  travessias = desenharTravessias();
+  if (er && seletor) travessias.then(desenharER);
+});
 </script>

@@ -14,7 +14,7 @@
 .guided-map { margin-top: 0.5rem; }
 .guided-map .map-layout { grid-template-columns: minmax(0, 1fr); }
 .guide-key { margin: 0 0 1rem; font-size: 0.9rem; }
-.guided-map .layer-station[data-active="true"] { background: var(--track-surface); }
+.guided-map .layer-station[data-active="true"] { background: color-mix(in srgb, var(--cor-camada, var(--track)) 15%, var(--superficie)); }
 .guided-map .layer-station[data-active="false"] { background: transparent; border: 1px dashed var(--borda); }
 .guided-map .outside-layer code { text-decoration: none; }
 .guided-map .outside-layer { color: var(--suave); font-size: 0.85rem; }

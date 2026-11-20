@@ -6,7 +6,8 @@
 // A mesma informação está na tabela ao lado do grafo, navegável por teclado (condição de acesso).
 // Conteúdo do pacote entra no DOM só como texto.
 import cytoscape from "cytoscape";
-import { posicoesEmCamadas, corDaCamada } from "./camadas.js";
+import { posicoesEmCamadas, tokenDaCamada } from "./camadas.js";
+import { aoMudarTema } from "./tema.js";
 import { columnsInFocus } from "./recorte-de-colunas.js";
 
 const LIMITE_DE_NOS = 300;
@@ -47,20 +48,21 @@ export async function iniciarLinhagem(raiz) {
   };
 
   const camadaDoNo = (id) => (ehTravessia(id) ? "travessia" : nos.get(relacaoDaColuna(id))?.camada ?? id.split(".")[0]);
-  const estilo = [
+  // Cores lidas dos tokens do tema na hora de desenhar; refeitas quando o leitor troca o tema.
+  const estilo = () => [
     { selector: "node", style: {
       label: "data(rotulo)", "font-size": 10, "text-valign": "center", "text-halign": "right", "text-margin-x": 5,
-      "background-color": (n) => corDaCamada(indiceDaCamada.get(n.data("camada")) ?? 0), width: 14, height: 14,
+      "background-color": (n) => css(tokenDaCamada(indiceDaCamada.get(n.data("camada")) ?? 0)) || "#6b7280", width: 14, height: 14,
       color: css("--texto") || "#111", "text-wrap": "ellipsis", "text-max-width": 190,
     } },
-    { selector: 'node[tipo = "travessia"]', style: { shape: "diamond", "background-color": "#475569", width: 16, height: 16 } },
+    { selector: 'node[tipo = "travessia"]', style: { shape: "diamond", "background-color": css("--suave") || "#475569", width: 16, height: 16 } },
     { selector: "node.foco", style: { width: 22, height: 22, "border-width": 3, "border-color": css("--texto") || "#111" } },
     { selector: "node.expandido", style: { shape: "round-rectangle" } },
     { selector: "edge", style: {
-      width: 1, "line-color": "#9ca3af", "target-arrow-color": "#9ca3af",
+      width: 1, "line-color": css("--suave") || "#9ca3af", "target-arrow-color": css("--suave") || "#9ca3af", "line-opacity": 0.55,
       "target-arrow-shape": "triangle", "curve-style": "bezier", "arrow-scale": 0.7,
     } },
-    { selector: 'edge[tipo = "travessia"]', style: { "line-style": "dashed", "line-color": "#64748b", "target-arrow-color": "#64748b" } },
+    { selector: 'edge[tipo = "travessia"]', style: { "line-style": "dashed", "line-color": css("--suave") || "#64748b", "target-arrow-color": css("--suave") || "#64748b" } },
     { selector: ".apagado", style: { opacity: 0.18 } },
     // Visão geral: rótulo abaixo de 8 px na tela não é desenhado (ilegível de qualquer forma).
     ...(modo === "tudo" ? [{ selector: "node", style: { "min-zoomed-font-size": 8 } }] : []),
@@ -70,9 +72,10 @@ export async function iniciarLinhagem(raiz) {
   // Na visão geral, durante zoom e deslocamento o núcleo desenha uma textura e esconde as ligações
   // (opções do Cytoscape.js, sem extensão), para manter os quadros curtos com o grafo inteiro.
   const cy = cytoscape({
-    container: $("#grafo"), style: estilo, minZoom: 0.05, maxZoom: 4, boxSelectionEnabled: false,
+    container: $("#grafo"), style: estilo(), minZoom: 0.05, maxZoom: 4, boxSelectionEnabled: false,
     ...(modo === "tudo" ? { textureOnViewport: true, hideEdgesOnViewport: true } : {}),
   });
+  aoMudarTema(() => cy.style(estilo()));
 
   const no = (id, tipo) => ({
     group: "nodes",

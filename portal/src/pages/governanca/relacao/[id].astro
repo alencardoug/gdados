@@ -92,10 +92,10 @@ const sustentacao = auditoria ? [
 ---
 <Base titulo={x.id} secao="governanca" descricao={`Relação ${x.id} no catálogo do portal.`}>
 <p class="migalhas"><a href={rota("governanca/")}>Governança</a> › <a href={rota(`governanca/?camada=${x.camada}#catalogo`)}>{x.camada}</a></p>
-<header class="identity-card">
+<header class="identity-card" data-camada={x.camada}>
   <h1><Identificador value={x.id} /></h1>
   <dl>
-    <div><dt><Conceito id="camada">Camada</Conceito></dt><dd><Identificador value={r.schema} /></dd></div>
+    <div><dt><Conceito id="camada">Camada</Conceito></dt><dd class="marca-camada"><Identificador value={r.schema} /></dd></div>
     <div><dt><Conceito id="grao">Grão</Conceito> · o que uma linha representa</dt><dd>
       {r.grain != null ? r.grain : viewGrain.length ? <>
         Uma combinação de {viewGrain.map((c) => <Identificador value={c} />).reduce((a, b) => [a, ", ", b])}

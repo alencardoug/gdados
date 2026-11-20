@@ -79,13 +79,16 @@ const TIPO = { relacao: "relação", coluna: "coluna", pergunta: "pergunta", met
 </Base>
 <script>
 import mermaid from "mermaid";
+import { configurarMermaid, redesenharNaTroca } from "../../cliente/mermaid-tema.js";
 const alvo = document.getElementById("mapa-roteiro");
-const escuro = matchMedia("(prefers-color-scheme: dark)").matches;
-mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: escuro ? "dark" : "neutral" });
-mermaid.render("mapa-roteiro-svg", alvo.dataset.definicao).then(({ svg }) => {
+configurarMermaid(mermaid);
+let versao = 0;
+const desenhar = () => mermaid.render(`mapa-roteiro-svg-${++versao}`, alvo.dataset.definicao).then(({ svg }) => {
   alvo.innerHTML = svg;
   alvo.dataset.pronto = "1";
 }).catch((e) => {
   alvo.textContent = `O mapa não pôde ser desenhado (${e.message}). A ordem está nas listas acima.`;
 });
+desenhar();
+redesenharNaTroca(mermaid, {}, desenhar);
 </script>

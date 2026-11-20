@@ -2,7 +2,8 @@
 // Layout comum: navegação principal (três páginas, PLANO §2 a §4) e rodapé de procedência,
 // visível em toda página (D03: data dos artefatos e commit fixado sempre visíveis).
 import "../styles/portal.css";
-import { procedencia, pacote, rota, dataHora, commitCurto, rotaDoArquivo } from "../lib/portal.mjs";
+import { procedencia, pacote, rota, dataHora, commitCurto, rotaDoArquivo, camadas } from "../lib/portal.mjs";
+import { cssDasCamadas } from "../lib/tema.mjs";
 
 interface Props {
   titulo: string;
@@ -27,6 +28,8 @@ const itens = [
 {descricao && <meta name="description" content={descricao}>}
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:,">
+<script is:inline>(()=>{try{const t=localStorage.getItem("gdados-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<style is:inline set:html={cssDasCamadas(camadas)}></style>
 </head>
 <body data-base={rota()}>
 <a class="pular" href="#conteudo">Pular para o conteúdo</a>
@@ -38,7 +41,9 @@ const itens = [
         {itens.map((i) => <li><a href={i.href} aria-current={secao === i.id ? "page" : undefined}>{i.rotulo}</a></li>)}
       </ul>
     </nav>
+    <button type="button" id="tema" class="tema" hidden><span class="tema-icone" aria-hidden="true">◐</span> <span class="tema-rotulo">Automático</span></button>
   </div>
+  <div class="trilho-das-camadas" aria-hidden="true">{camadas.map((c) => <span data-camada={c}></span>)}</div>
 </header>
 <main id="conteudo">
   <slot />
@@ -66,6 +71,7 @@ const itens = [
   </div>
 </footer>
 <script>
+import "../cliente/tema.js";
 import "../cliente/retorno.js";
 </script>
 </body>

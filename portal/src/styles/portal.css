@@ -1,9 +1,11 @@
-/* Estilo do portal gdados. Cores em variáveis, com tema escuro pela preferência do sistema. */
+/* Estilo do portal gdados. Cores em variáveis, com tema claro e escuro. */
+/* Tema claro (padrão). O escuro vale pela preferência do sistema ou pela escolha no topo
+   (data-theme no <html>); os dois blocos escuros abaixo têm de ser idênticos (teste de unidade). */
 :root {
-  --fundo: #fbfbfa;
+  --fundo: #fafaf7;
   --superficie: #ffffff;
   --texto: #1c1d1f;
-  --suave: #5b5f66;
+  --suave: #565b63;
   --borda: #dcdde0;
   --realce: #1d4ed8;
   --realce-fundo: #e8eefc;
@@ -18,31 +20,86 @@
   --class-internal: #506eab;
   --class-confidential: #865693;
   --class-personal: #a05931;
+  /* Paleta das camadas, na ordem do grafo (src/lib/tema.mjs liga cada camada a um índice). */
+  --camada-0: #4b5563;
+  --camada-1: #0369a1;
+  --camada-2: #935019;
+  --camada-3: #0e7490;
+  --camada-4: #15803d;
+  --camada-5: #b91c1c;
+  --camada-6: #7e22ce;
+  --camada-7: #4338ca;
+  --camada-8: #be185d;
+  --camada-9: #4d7c0f;
+  --camada-10: #c2410c;
   --largura: 72rem;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
-    --fundo: #151618;
-    --superficie: #1d1f22;
-    --texto: #e6e7e9;
-    --suave: #a3a7ae;
-    --borda: #34373c;
+  :root:not([data-theme="light"]) {
+    --fundo: #0e1219;
+    --superficie: #161b25;
+    --texto: #e7eaf0;
+    --suave: #a6aebd;
+    --borda: #2c3443;
     --realce: #8ab4ff;
-    --realce-fundo: #1f2a44;
+    --realce-fundo: #1c2740;
     --ausente: #f0c060;
-    --ausente-fundo: #3a2f14;
+    --ausente-fundo: #33290f;
     --ok: #6fd39b;
     --alerta: #ff9a7a;
-    --codigo-fundo: #26292d;
+    --codigo-fundo: #222936;
     --track: #83c8bb;
-    --track-surface: #1b302e;
+    --track-surface: #142a29;
     --class-public: #83c8bb;
     --class-internal: #8daee8;
     --class-confidential: #c29ad4;
     --class-personal: #e4aa85;
+    --camada-0: #a3adbd;
+    --camada-1: #7dd3fc;
+    --camada-2: #eab074;
+    --camada-3: #67e8f9;
+    --camada-4: #86efac;
+    --camada-5: #fca5a5;
+    --camada-6: #d8b4fe;
+    --camada-7: #a5b4fc;
+    --camada-8: #f9a8d4;
+    --camada-9: #bef264;
+    --camada-10: #fdba74;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --fundo: #0e1219;
+  --superficie: #161b25;
+  --texto: #e7eaf0;
+  --suave: #a6aebd;
+  --borda: #2c3443;
+  --realce: #8ab4ff;
+  --realce-fundo: #1c2740;
+  --ausente: #f0c060;
+  --ausente-fundo: #33290f;
+  --ok: #6fd39b;
+  --alerta: #ff9a7a;
+  --codigo-fundo: #222936;
+  --track: #83c8bb;
+  --track-surface: #142a29;
+  --class-public: #83c8bb;
+  --class-internal: #8daee8;
+  --class-confidential: #c29ad4;
+  --class-personal: #e4aa85;
+  --camada-0: #a3adbd;
+  --camada-1: #7dd3fc;
+  --camada-2: #eab074;
+  --camada-3: #67e8f9;
+  --camada-4: #86efac;
+  --camada-5: #fca5a5;
+  --camada-6: #d8b4fe;
+  --camada-7: #a5b4fc;
+  --camada-8: #f9a8d4;
+  --camada-9: #bef264;
+  --camada-10: #fdba74;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -73,6 +130,13 @@ header.topo .marca { font-weight: 700; text-decoration: none; color: var(--texto
 header.topo nav ul { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; list-style: none; margin: 0; padding: 0; }
 header.topo nav a { text-decoration: none; }
 header.topo nav a[aria-current="page"] { font-weight: 700; text-decoration: underline; }
+/* Seletor de tema e trilho das camadas: a faixa sob o topo repete as cores das camadas, na ordem do grafo. */
+header.topo .tema { margin-inline-start: auto; align-self: center; font: inherit; font-size: 0.85rem; color: var(--texto);
+  background: var(--codigo-fundo); border: 1px solid var(--borda); border-radius: 999px; padding: 0.15rem 0.7rem; cursor: pointer; }
+header.topo .tema:hover { border-color: var(--realce); }
+header.topo .tema-icone { display: inline-block; width: 1em; text-align: center; }
+.trilho-das-camadas { display: flex; height: 4px; }
+.trilho-das-camadas span { flex: 1; background: var(--cor-camada); }
 
 main { padding-block: 1.5rem 3rem; }
 h1 { font-size: 1.6rem; line-height: 1.25; margin: 0.5rem 0 1rem; overflow-wrap: anywhere; }
@@ -162,7 +226,7 @@ code.identifier, .amostra code.identifier { white-space: normal; overflow-wrap: 
 .identifier > span { white-space: nowrap; }
 
 /* A ficha mantém os termos ligados às explicações e os valores declarados juntos. */
-.identity-card { margin-top: 1rem; border: 1px solid var(--borda); border-top: 0.25rem solid var(--track); border-radius: 0.6rem; background: var(--superficie); }
+.identity-card { margin-top: 1rem; border: 1px solid var(--borda); border-top: 0.3rem solid var(--cor-camada, var(--track)); border-radius: 0.6rem; background: var(--superficie); }
 .identity-card h1 { padding: 1rem 1.2rem; margin: 0; }
 .identity-card h1 code { background: transparent; padding: 0; }
 .identity-card dl { display: grid; grid-template-columns: 1fr 2fr 1.4fr 1.2fr; margin: 0; }
@@ -191,12 +255,15 @@ code.identifier, .amostra code.identifier { white-space: normal; overflow-wrap: 
 .relation-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; padding-block: 0.6rem; border-bottom: 1px solid var(--borda); }
 .relation-nav a { padding-block: 0.25rem; }
 .relation-flow { --arrow-space: 1.8rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1fr); align-items: center; gap: var(--arrow-space); background: var(--superficie); padding: 0.65rem; border-block: 1px solid var(--borda); }
-.current-relation { text-align: center; padding: 0.55rem; border: 2px solid var(--track); border-radius: 0.4rem; background: var(--track-surface); }
+.current-relation { text-align: center; padding: 0.55rem; border: 2px solid var(--cor-camada, var(--track)); border-radius: 0.4rem; background: color-mix(in srgb, var(--cor-camada, var(--track)) 14%, var(--superficie)); }
 .current-relation > strong, .relation-flow small { display: block; color: var(--track); font-size: 0.78rem; }
 .current-relation > div { margin-top: 0.2rem; font-weight: 650; }
 .neighbors { position: relative; min-width: 0; }
 .neighbors h3, .neighbors p { margin: 0; color: var(--suave); font-size: 0.85rem; }
-.neighbor-layer { padding-inline-start: 0.55rem; border-inline-start: 2px solid var(--track); margin-block-start: 0.3rem; }
+.neighbor-layer { padding-inline-start: 0.55rem; border-inline-start: 3px solid var(--cor-camada, var(--track)); margin-block-start: 0.3rem; }
+/* Marca de camada: um ponto na cor da camada antes do nome (a cor vem do data-camada mais próximo). */
+.marca-camada::before { content: ""; display: inline-block; width: 0.6em; height: 0.6em; border-radius: 50%; margin-inline-end: 0.4em;
+  background: var(--cor-camada, var(--track)); vertical-align: 0.05em; }
 .neighbor-stop { color: var(--track); font-size: 0.9rem; }
 .neighbor-layer li, .neighbor-layer summary { font-size: 0.9rem; line-height: 1.4; }
 .neighbors.connected::after { content: "⟶" / ""; position: absolute; top: 50%; transform: translateY(-50%); width: var(--arrow-space); text-align: center; font-size: 1.55rem; line-height: 1; color: var(--track); }

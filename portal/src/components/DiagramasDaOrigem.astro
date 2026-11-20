@@ -6,11 +6,11 @@
 ---
 <script>
 import mermaid from "mermaid";
+import { configurarMermaid, redesenharNaTroca } from "../cliente/mermaid-tema.js";
 const blocos = [...document.querySelectorAll("pre > code.language-mermaid")];
-const escuro = matchMedia("(prefers-color-scheme: dark)").matches;
-mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: escuro ? "dark" : "neutral" });
-let i = 0;
-for (const code of blocos) {
+configurarMermaid(mermaid);
+// Prepara uma vez: a figura no lugar do bloco e a definição da origem recolhida logo abaixo.
+const pares = blocos.map((code) => {
   const pre = code.parentElement;
   const figura = document.createElement("div");
   figura.className = "diagrama";
@@ -20,13 +20,24 @@ for (const code of blocos) {
   pre.replaceWith(figura);
   detalhes.append(resumo, pre);
   figura.after(detalhes);
-  try {
-    const { svg } = await mermaid.render(`origem-diagrama-${i++}`, code.textContent);
-    figura.innerHTML = svg;
-  } catch (e) {
-    figura.textContent = `O diagrama não pôde ser desenhado (${e.message}). A definição está logo abaixo.`;
-    detalhes.open = true;
+  return { figura, detalhes, definicao: code.textContent };
+});
+let versao = 0;
+const desenhar = async () => {
+  const minha = ++versao;
+  let i = 0;
+  for (const { figura, detalhes, definicao } of pares) {
+    try {
+      const { svg } = await mermaid.render(`origem-diagrama-${minha}-${i++}`, definicao);
+      if (minha !== versao) return;
+      figura.innerHTML = svg;
+    } catch (e) {
+      figura.textContent = `O diagrama não pôde ser desenhado (${e.message}). A definição está logo abaixo.`;
+      detalhes.open = true;
+    }
   }
-}
+};
+await desenhar();
 document.documentElement.dataset.diagramasProntos = String(blocos.length);
+redesenharNaTroca(mermaid, {}, desenhar);
 </script>

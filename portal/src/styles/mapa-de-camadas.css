@@ -3,9 +3,9 @@
 .map-key, .map-layout { display: grid; gap: 1rem 2rem; }
 .map-key { margin-bottom: 1.2rem; }
 .map-key p { margin: 0; }
-.layer-map { --legacy-track: #935019; }
-@media (prefers-color-scheme: dark) { .layer-map { --legacy-track: #eab074; } }
-.legacy-key, .input-key { display: block; margin-top: 0.35rem; }
+/* Cada estação e cada traço têm a cor da camada (tokens gerados em Base.astro a partir da ordem do grafo). */
+.layer-map { --legacy-track: var(--cor-raw_legacy, var(--track)); }
+.legacy-key, .input-key, .color-key { display: block; margin-top: 0.35rem; }
 .legacy-key::before { content: ""; display: inline-block; vertical-align: middle; width: 1.8em; border-top: 4px solid var(--legacy-track); margin-right: 0.45em; }
 .pair-example { border-inline-start: 3px solid var(--track); padding-inline-start: 0.8rem; }
 .map-grid {
@@ -15,29 +15,27 @@
 }
 .station-cell { min-width: 0; display: flex; flex-direction: column; }
 .station-cell:is([data-layer="raw"], [data-layer="raw_legacy"]) .layer-station { flex: 1; }
-.station-stem { flex: 1; align-self: center; background: var(--track); }
+.station-stem { flex: 1; align-self: center; background: var(--cor-camada, var(--track)); }
 .layer-station {
   padding: 0.45rem 0.65rem;
   border: 1px solid var(--borda);
-  border-inline-start: 3px solid var(--track);
+  border-inline-start: 4px solid var(--cor-camada, var(--track));
   border-radius: 0.35rem;
-  background: var(--superficie);
+  background: color-mix(in srgb, var(--cor-camada, var(--track)) 7%, var(--superficie));
 }
 .layer-station a { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.6rem; font-weight: 700; text-decoration: none; }
 .layer-station code { padding: 0; background: none; text-decoration: underline; text-underline-offset: 0.15em; }
 .layer-station > span, .layer-station small, .layer-count { display: block; font-size: 0.82rem; line-height: 1.35; }
 .layer-count, .layer-station small { color: var(--suave); }
 .layer-count { font-weight: 400; }
-.station-cell[data-layer="raw_legacy"] .layer-station { border-inline-start-color: var(--legacy-track); }
 
 .map-trace {
   --head: max(0.7rem, calc(var(--stroke) + 5px));
   position: relative;
   display: grid;
   place-items: center;
-  color: var(--track);
+  color: var(--cor-origem, var(--track));
 }
-.map-trace[data-from="raw_legacy"] { color: var(--legacy-track); }
 .map-trace b {
   position: relative;
   line-height: 1.25;

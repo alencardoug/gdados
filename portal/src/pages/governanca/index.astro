@@ -55,7 +55,7 @@ const resumo = (t, n = 140) => {
 {relacoes.map((x) => (
   <tr data-camada={x.camada} data-dominio={x.r.meta?.domain ?? "-"} data-sensibilidade={x.sensibilidades.join(" ")} data-tipo={x.r.resource_type}>
     <td><a href={rotaDaRelacao(x.id)}><code>{x.id}</code></a></td>
-    <td>{x.camada}</td>
+    <td class="marca-camada">{x.camada}</td>
     <td>{x.r.resource_type}</td>
     <td><Ausente valor={x.r.meta?.domain} texto="não declarado" /></td>
     <td>{Object.keys(x.r.columns).length}</td>

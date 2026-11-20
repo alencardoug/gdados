@@ -63,6 +63,8 @@ export function posicoesEmCamadas(ids, camadaDe, ordem, { dx = 260, dy = 34 } = 
 }
 
 // Paleta das camadas, atribuída pela ordem das camadas no grafo: nenhum nome de camada é fixado
-// no código. Cores escolhidas para contraste sobre fundo claro e escuro.
-const PALETA = ["#6b7280", "#9ca3af", "#0e7490", "#1d4ed8", "#7c3aed", "#b91c1c", "#047857", "#b45309", "#be185d", "#4d7c0f", "#0369a1"];
-export const corDaCamada = (indice) => PALETA[indice % PALETA.length];
+// no código. As cores são tokens de portal.css (--camada-N), com valores próprios no tema claro e
+// no escuro; o mesmo índice dá a mesma cor no mapa das camadas e no grafo.
+export const TAMANHO_DA_PALETA = 11;
+export const tokenDaCamada = (indice) => `--camada-${indice % TAMANHO_DA_PALETA}`;
+export const corDaCamada = (indice) => `var(${tokenDaCamada(indice)})`;
