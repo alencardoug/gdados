@@ -53,6 +53,11 @@ const animar = (pagina) =>
 async function rodadaDeDesempenho(nav, cpu, { view, expandir, maiorPermitido }) {
   const r = {};
   {
+    const { contexto, m } = await abrir(nav, "/governanca/pergunta/P02/", { cpu });
+    r.pergunta = m;
+    await contexto.close();
+  }
+  {
     const { contexto, pagina, m } = await abrir(nav, "/governanca/", { cpu, pronto: "html[data-busca-pronta]" });
     await pagina.locator("#busca").pressSequentially("receita liquida", { delay: 80 });
     await pagina.waitForTimeout(400);
@@ -100,6 +105,8 @@ async function rodadaDeDesempenho(nav, cpu, { view, expandir, maiorPermitido }) 
 }
 
 const METAS = [
+  ["pergunta.fcp_ms", "Pergunta P02: primeira renderização do percurso", 1500, "ms"],
+  ["pergunta.bytes_comprimidos", "Pergunta P02: dados transferidos", 1_000_000, "B"],
   ["catalogo.fcp_ms", "Governança: primeira renderização com conteúdo", 1500, "ms"],
   ["catalogo.bytes_comprimidos", "Governança: dados transferidos", 1_000_000, "B"],
   ["catalogo.busca_max_ms", "Busca: maior tempo por tecla", 150, "ms"],
@@ -239,6 +246,56 @@ async function funcionais(nav, { view, pacote }) {
     highlightChecks.every((r) => JSON.stringify(r.byClick) === JSON.stringify(classRows("public")) &&
       JSON.stringify(r.byKeyboard) === JSON.stringify(classRows("personal")) && r.firstTarget === classRows("personal")[0] &&
       r.keyFocus && r.selectedClass === "true" && r.cleared), highlightChecks);
+
+  const guideChecks = [];
+  for (const theme of ["light", "dark"]) {
+    const { contexto, pagina, erros } = await abrir(nav, "/governanca/pergunta/P02/", {
+      viewport: { width: 390, height: 844 }, cache: true,
+    });
+    await pagina.emulateMedia({ colorScheme: theme });
+    const other = pagina.locator('.measure-picker a:not([aria-current])').first();
+    const measure = (await other.textContent()).trim();
+    await other.focus();
+    await pagina.keyboard.press("Shift+Tab");
+    await pagina.keyboard.press("Tab");
+    const focus = await other.evaluate((e) => e.matches(":focus-visible") && getComputedStyle(e).outlineStyle !== "none");
+    await pagina.keyboard.press("Enter");
+    await pagina.waitForURL((u) => u.hash === "#percurso");
+    const selected = await pagina.locator(".measure-guide").getAttribute("data-measure");
+    const width = await pagina.evaluate(() => document.documentElement.scrollWidth);
+    const first = pagina.locator("#passo-1");
+    const viewId = await first.getAttribute("data-relation");
+    await first.locator(".step-graph").focus();
+    await pagina.keyboard.press("Enter");
+    await pagina.waitForSelector("#linhagem[data-pronto]");
+    const published = await pagina.evaluate(() => document.getElementById("linhagem").cy.edges()
+      .map((e) => e.data("source") + "→" + e.data("target")).sort());
+    const expected = pacote.lineage.relations[viewId].columns[measure].leaves.map((leaf) => leaf + "→" + viewId + "." + measure).sort();
+    const inputsMatch = JSON.stringify(published) === JSON.stringify(expected);
+    await pagina.goBack();
+    const terminal = pagina.locator('.guide-steps > li').filter({ has: pagina.locator('[data-terminal="source"]') }).first();
+    const terminalId = await terminal.getAttribute("id");
+    const branch = pagina.locator(`.step-branches a[href="#${terminalId}"]`).first();
+    await branch.focus();
+    await pagina.keyboard.press("Enter");
+    const onBranch = new URL(pagina.url()).hash === "#" + terminalId &&
+      await terminal.evaluate((e) => e === document.activeElement && getComputedStyle(e).outlineStyle !== "none");
+    const relation = await terminal.getAttribute("data-relation");
+    const columns = await terminal.locator("[data-column]").evaluateAll((els) => els.map((e) => e.dataset.column));
+    await terminal.locator(".step-graph").focus();
+    await pagina.keyboard.press("Enter");
+    await pagina.waitForSelector("#linhagem[data-pronto]");
+    const nodes = await pagina.evaluate(() => document.getElementById("linhagem").cy.nodes().map((n) => n.id()).sort());
+    const exact = JSON.stringify(nodes) === JSON.stringify(columns.map((c) => relation + "." + c).sort());
+    await pagina.goBack();
+    const restored = await pagina.locator(".measure-guide").getAttribute("data-measure") === selected &&
+      new URL(pagina.url()).hash === "#" + terminalId;
+    guideChecks.push({ theme, width, focus, selected, measure, inputsMatch, onBranch, exact, restored });
+    errosDeConsole.push(...erros);
+    await contexto.close();
+  }
+  add(8, "Percurso em 390 px nos dois temas: escolha por teclado, ramo, recorte terminal no grafo e volta",
+    guideChecks.every((r) => r.width <= 390 && r.focus && r.selected === r.measure && r.inputsMatch && r.onBranch && r.exact && r.restored), guideChecks);
 
   // 12. Ida e volta: do recorte da linhagem à explicação e de volta ao mesmo recorte.
   {

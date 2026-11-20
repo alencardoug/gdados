@@ -4,6 +4,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { isDeepStrictEqual } from "node:util";
+import { checkGuides } from "./percursos.mjs";
 // Exceção à independência: a lista dos identificadores mascarados (só hashes) tem um dono, o portal.
 import { mascarar } from "../portal/src/lib/mascara.mjs";
 
@@ -85,6 +86,7 @@ export function verificarEstatica({ dist, origem }) {
   add(1, "Toda relação do pacote tem página", semPagina.length === 0, { relacoes: Object.keys(R).length, sem_pagina: semPagina });
   const semPergunta = Object.keys(pacote.questions).filter((id) => !existsSync(join(dist, "governanca", "pergunta", id, "index.html")));
   add(1, "Toda pergunta do pacote tem página", semPergunta.length === 0, { perguntas: Object.keys(pacote.questions).length, sem_pagina: semPergunta });
+  checkGuides(pacote, (path) => html(dist, path), add);
 
   // Grafo publicado = agregação das folhas do pacote, sem aresta a mais ou a menos (itens 2 e 9).
   const grafo = lerJson(join(dist, "dados", "grafo.json"));
