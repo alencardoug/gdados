@@ -1,0 +1,25 @@
+---
+import Identificador from "./Identificador.astro";
+import Md from "./Md.astro";
+import { rotaDaColuna, rotaDaRelacao, relacaoPorId, mdDoPacoteEmLinha } from "../lib/portal.mjs";
+const { dim, fact, view, viewColumns } = Astro.props;
+const relation = relacaoPorId.get(fact);
+---
+<li class="star-arm" data-dimension={dim.target} data-used={viewColumns ? "true" : undefined}>
+  <a href={rotaDaRelacao(dim.target)}><Identificador value={dim.name} /></a>
+  {dim.grain && <span>{dim.grain}</span>}
+  {dim.keys.map(async ({ fk, pk }) => {
+    const role = dim.keys.length > 1 && !relation.colunasSemDescricao.has(fk) && relation.r.columns[fk]?.description;
+    return <>
+      <div class="arm-keys">
+        <svg class="arm-line" viewBox="0 0 30 4" preserveAspectRatio="none" aria-hidden="true"><path d="M0 2H30" vector-effect="non-scaling-stroke" /></svg>
+        <code>{fk}</code> → <code>{pk}</code>
+      </div>
+      {role && <blockquote class="fk-role"><Md em="span" html={await mdDoPacoteEmLinha(role)} /> <cite><a href={rotaDaColuna(fact, fk)}>Descrição da FK na origem</a></cite></blockquote>}
+    </>;
+  })}
+  {viewColumns && <b class="dimension-in-question">Dimensão da pergunta</b>}
+  {viewColumns?.length > 0 && <p class="arm-columns">Na view · {viewColumns.map((name, i) =>
+    <>{i > 0 && ", "}<a href={rotaDaColuna(view, name)}><Identificador value={name} /></a></>)}</p>}
+  {dim.snapshots.map((id) => <a class="snapshot-link" href={rotaDaRelacao(id)}>Usa snapshot <Identificador value={id.split(".").at(-1)} /></a>)}
+</li>

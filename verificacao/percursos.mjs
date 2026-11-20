@@ -35,7 +35,7 @@ export function checkGuides(pkg, html, add) {
     const sheet = html(`/governanca/relacao/${id}/`);
     if (r.schema === "analytics" && r.name.startsWith("fact_")) {
       factSheets++;
-      const { errors, arms } = checkStar(pkg, id, sheet, []);
+      const { errors, arms } = checkStar(pkg, id, sheet);
       sheetArms += arms;
       if (errors.length) starErrors.push([id, errors]);
     } else if (sheet.includes('class="fact-star"')) starErrors.push([id, "estrela fora de uma fato"]);
@@ -98,7 +98,7 @@ export function checkGuides(pkg, html, add) {
         if (!isDeepStrictEqual(changedPairs, expectedChanges)) changesErrors.push(root + "/" + relation);
         if (q.facts.includes(relation)) {
           stepStars++;
-          const { errors } = checkStar(pkg, relation, body, q.dimensions);
+          const { errors } = checkStar(pkg, relation, body, q, names);
           if (errors.length) starErrors.push([root, relation, errors]);
         } else if (body.includes('class="fact-star"')) starErrors.push([root, relation, "estrela fora do passo da fato"]);
         const branchSteps = new Set();

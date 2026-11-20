@@ -2,6 +2,7 @@
 import Identificador from "./Identificador.astro";
 import EsquemaEstrela from "./EsquemaEstrela.astro";
 import { factStar } from "../lib/estrela.mjs";
+import ColunasDoPasso from "./ColunasDoPasso.astro";
 import MudancaDeColuna from "./MudancaDeColuna.astro";
 import { changedInputs } from "../lib/percurso-da-medida.mjs";
 import Md from "./Md.astro";
@@ -43,16 +44,12 @@ const crossings = travessias.filter((t) => t.relacoes.includes(id));
     </blockquote>}
     {!star && (r?.grain || grain.length > 0) && <p class="step-grain"><b>Grão</b> · {r?.grain ?? <>Uma combinação de {grain.map((c, i) =>
       <>{i > 0 && ", "}<Identificador value={c} /></>)} (regra da view).</>}</p>}
-    <p class="column-label">{columns.length === 1 ? "Coluna que carrega o valor" : "Colunas que carregam o valor"}</p>
-    <ul class="value-columns" role="list">{columns.map(({ name, terminal, gap }) =>
-      <li data-column={name} data-terminal={terminal ?? undefined}>
-        {r?.columns[name] ? <a href={rotaDaColuna(id, name)}><Identificador value={name} /></a> : <Identificador value={name} />}
-        {terminal && !commonTerminal && <span> · {terminalLabel[terminal]}</span>}
-        {gap && <span class="ausente">{gap}</span>}
-      </li>)}</ul>
+    {star ? <><h5 class="star-title">Esquema estrela</h5><EsquemaEstrela {star} {question}>
+      <ColunasDoPasso {id} {r} {columns} {commonTerminal} {terminalLabel} label="Entram na conta" />
+    </EsquemaEstrela></> : <ColunasDoPasso {id} {r} {columns} {commonTerminal} {terminalLabel}
+      label={columns.length === 1 ? "Coluna que carrega o valor" : "Colunas que carregam o valor"} />}
     {changes.map(({ name, groups }) => <MudancaDeColuna {id} {name} {groups} {numbers} />)}
     {commonTerminal && <p class="terminal-note"><strong>Origem terminal</strong> · {terminalText[commonTerminal]}</p>}
-    {star && <><h5 class="star-title">Esquema estrela</h5><EsquemaEstrela {star} dimensions={question.dimensions} /></>}
     {inputs.length > 0 && <>
       <p class="branch-label">{inputs.length === 1 ? "O valor vem do passo" : "O valor vem destes ramos"}</p>
       <ul class="step-branches">{inputs.map((input) =>

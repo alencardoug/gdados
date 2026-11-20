@@ -1,50 +1,48 @@
 ---
 import Identificador from "./Identificador.astro";
-import { modeloER, rotaDaColuna, rotaDaRelacao, rotaDoER } from "../lib/portal.mjs";
+import DimensaoDaEstrela from "./DimensaoDaEstrela.astro";
+import { modeloER, pacote, rotaDaColuna, rotaDaRelacao, rotaDoER } from "../lib/portal.mjs";
+import { viewColumnsByDimension } from "../lib/estrela.mjs";
 import "../styles/esquema-estrela.css";
-const { star, dimensions } = Astro.props;
-const { arms } = star;
-const used = new Set(dimensions);
-const indirect = dimensions?.filter((id) => !arms.some((a) => a.target === id)) ?? [];
-const half = Math.ceil(arms.length / 2);
-const sides = [arms.slice(0, half), arms.slice(half)];
+const { star, question } = Astro.props;
+const columns = question && viewColumnsByDimension(pacote, question);
+const shown = star.dimensions.filter((dim) => !question || columns.has(dim.target));
+const other = star.dimensions.filter((dim) => question && !columns.has(dim.target));
+const indirect = question?.dimensions.filter((id) => !shown.some((dim) => dim.target === id)) ?? [];
+const half = Math.ceil(shown.length / 2);
+const sides = [shown.slice(0, half), shown.slice(half)];
+const grain = question && pacote.view_rules[question.view]?.grain;
 ---
 <div class="fact-star" data-fact={star.id}>
-  <p class="star-key">Cada dimensão descreve um lado da linha da fato. Em cada braço, a chave estrangeira (FK) da fato aponta para a chave primária (PK) da dimensão.
-    {dimensions?.length > 0 && " O destaque identifica as dimensões declaradas para a pergunta."}</p>
+  <p class="star-key">Cada braço liga a chave estrangeira (FK) da fato à chave primária (PK) da dimensão.
+    {question && <> {grain && Object.keys(grain).length ? <>O <a href="#passo-1">grão da resposta no passo 1</a> combina os campos que recortam a medida.</>
+      : <>O <a href="#passo-1">passo 1</a> apresenta a view. Sua regra não explicita a combinação de campos do grão.</>}
+      {" "}Os braços destacados mostram as dimensões da pergunta e as colunas da view que recebem valores delas pela linhagem.</>}</p>
   <div class="star-layout">
     <div class="star-hub">
       <span>Fato · <code>analytics</code></span>
       <strong><Identificador value={star.name} /></strong>
       <p>Uma linha da fato = <b>{star.grain ?? "grão não declarado"}</b></p>
-      {star.primaryKey.length > 0 && <small>PK {star.primaryKey.map((key, i) => <>{i > 0 && " · "}<Identificador value={key} /></>)}</small>}
+      {star.primaryKey.length > 0 && <small>PK {star.primaryKey.map((key, i) => <>{i > 0 && " · "}<code>{key}</code></>)}</small>}
+      <slot />
     </div>
-    {sides.map((side, index) => side.length > 0 && <div class:list={["star-side", index === 0 ? "before-hub" : "after-hub"]}>
-      <ul class="star-nodes" role="list">
-        {side.map((arm) => <li class="star-arm" data-dimension={arm.target} data-used={used.has(arm.target) ? "true" : undefined}>
-          <a href={rotaDaRelacao(arm.target)}><Identificador value={arm.dimension} /></a>
-          {arm.grain && <span>{arm.grain}</span>}
-          <div class="arm-keys"><Identificador value={arm.fk} /> → <Identificador value={arm.pk} /></div>
-          {arm.snapshots.map((id) => <a class="snapshot-link" href={rotaDaRelacao(id)}>Usa snapshot <Identificador value={id.split(".").at(-1)} /></a>)}
-          {used.has(arm.target) && <b class="dimension-in-question">Dimensão da pergunta</b>}
-        </li>)}
-      </ul>
-      <svg class="star-fan" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        {side.map((arm, i) => <line x1={index === 0 ? 100 : 0} y1="50" x2={index === 0 ? 0 : 100}
-          y2={100 * (i + 0.5) / side.length} class:list={[used.has(arm.target) && "used"]} vector-effect="non-scaling-stroke" />)}
-      </svg>
-    </div>)}
+    {sides.map((side, index) => side.length > 0 && <ul class:list={["star-side", index === 0 ? "before-hub" : "after-hub"]} role="list">
+      {side.map((dim) => <DimensaoDaEstrela {dim} fact={star.id} view={question?.view} viewColumns={columns?.get(dim.target)} />)}
+    </ul>)}
   </div>
-  {!arms.length && <p>O pacote não declara ligação direta entre uma FK desta fato e a PK de uma dimensão.</p>}
+  {other.length > 0 && <details class="star-others"><summary>Mais {other.length} {other.length === 1 ? "dimensão" : "dimensões"} desta fato</summary>
+    <ul role="list">{other.map((dim) => <DimensaoDaEstrela {dim} fact={star.id} />)}</ul>
+  </details>}
+  {!star.dimensions.length && <p>O pacote não declara ligação direta entre uma FK desta fato e a PK de uma dimensão.</p>}
   {indirect.length > 0 && <p class="star-key">Dimensões da pergunta sem FK direta nesta fato · {indirect.map((id, i) =>
     <>{i > 0 && ", "}<a href={rotaDaRelacao(id)}><Identificador value={id} /></a></>)}</p>}
-  {arms.length > 0 && <details class="star-table"><summary>Ler as ligações FK → PK em tabela</summary>
+  {star.dimensions.length > 0 && <details class="star-table"><summary>Ler as ligações FK → PK em tabela</summary>
     <table><thead><tr><th scope="col">FK da fato</th><th scope="col">PK da dimensão</th></tr></thead>
-      <tbody>{arms.map((arm) => <tr>
-        <td><a href={rotaDaColuna(star.id, arm.fk)}><Identificador value={arm.fk} /></a></td>
-        <td><a href={rotaDaColuna(arm.target, arm.pk)}><Identificador value={arm.target + "." + arm.pk} /></a>
-          {used.has(arm.target) && <small>Dimensão da pergunta</small>}</td>
-      </tr>)}</tbody>
+      <tbody>{star.dimensions.flatMap((dim) => dim.keys.map(({ fk, pk }) => <tr>
+        <td><a href={rotaDaColuna(star.id, fk)}><code>{fk}</code></a></td>
+        <td><a href={rotaDaColuna(dim.target, pk)}><Identificador value={dim.target} />.<code>{pk}</code></a>
+          {columns?.has(dim.target) && <small>Dimensão da pergunta</small>}</td>
+      </tr>))}</tbody>
     </table>
   </details>}
   {modeloER.includes(star.id) && <a class="star-er" href={rotaDoER(star.id)}>Ver a fato no diagrama entidade-relacionamento</a>}

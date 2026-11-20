@@ -325,7 +325,7 @@ async function funcionais(nav, { view, pacote }) {
     const jump = await pagina.evaluate(() => document.activeElement?.id === "passos");
     const change = await pagina.locator('#passo-3 [data-output="net_revenue_amount"]').isVisible();
     const star = pagina.locator(".fact-star").first();
-    const summary = star.locator("summary");
+    const summary = star.locator(".star-table > summary");
     await summary.focus();
     await pagina.keyboard.press("Space");
     const focus = await summary.evaluate((el) => el.matches(":focus-visible") && getComputedStyle(el).outlineStyle !== "none");

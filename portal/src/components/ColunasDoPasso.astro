@@ -1,0 +1,12 @@
+---
+import Identificador from "./Identificador.astro";
+import { rotaDaColuna } from "../lib/portal.mjs";
+const { id, r, columns, commonTerminal, terminalLabel, label } = Astro.props;
+---
+<p class="column-label">{label}</p>
+<ul class="value-columns" role="list">{columns.map(({ name, terminal, gap }) =>
+  <li data-column={name} data-terminal={terminal ?? undefined}>
+    {r?.columns[name] ? <a href={rotaDaColuna(id, name)}><Identificador value={name} /></a> : <Identificador value={name} />}
+    {terminal && !commonTerminal && <span> · {terminalLabel[terminal]}</span>}
+    {gap && <span class="ausente">{gap}</span>}
+  </li>)}</ul>
