@@ -1,0 +1,39 @@
+---
+// Trilha visual do roteiro (frente de layout, rodada 11): cada degrau como uma linha de estações em
+// três trechos (ler os termos, praticar nos objetos reais, conferir com as perguntas), na ordem que
+// o roteiro declara. Quem estuda pode marcar o que já fez: a marcação fica só no navegador dessa
+// pessoa (cliente/trilha.js) e, sem JavaScript, a trilha aparece sem ela. Degraus futuros não são
+// inventados: o seguinte aparece só como o passo que o roteiro anuncia.
+import { roteiro } from "../lib/editorial.mjs";
+import "../styles/trilha.css";
+const TRECHOS = { ler: "Ler", praticar: "Praticar", conferir: "Conferir" };
+const estacoes = (d) => [
+  ...d.termos.map((t) => ({ id: `${d.id}:ler:${t.id}`, trecho: "ler", rotulo: t.termo.titulo, href: t.termo.href, dica: t.porque })),
+  ...d.pratica.map((e) => ({ id: `${d.id}:praticar:${e.ref}`, trecho: "praticar", rotulo: e.tipo === "pagina" ? "página do portal" : e.ref,
+    href: e.href, dica: [e.nota, e.tipo === "pagina" ? e.ref : null].filter(Boolean).join(" · "), codigo: e.tipo !== "pagina" })),
+  ...d.perguntasHtml.map((_, n) => ({ id: `${d.id}:conferir:${n + 1}`, trecho: "conferir", rotulo: `Pergunta ${n + 1}`, href: `#pergunta-${d.id}-${n + 1}` })),
+];
+---
+<section class="trilhas" aria-labelledby="trilha-titulo" data-trilha>
+  <h2 id="trilha-titulo">A trilha</h2>
+  <p>Cada degrau é uma linha: primeiro <span class="trecho-ler">ler</span> os termos, depois <span class="trecho-praticar">praticar</span> nas tabelas reais e, por fim, <span class="trecho-conferir">conferir</span> com as perguntas. <span class="trilha-com-js" hidden>Marque o que já fez; a marcação fica só neste navegador.</span></p>
+  {roteiro.map((d, i) => {
+    const lista = estacoes(d);
+    return <div class="trilha-degrau" data-degrau={d.id}>
+      <h3><a href={`#degrau-${d.id}`}>{d.titulo}</a> <span class="trilha-progresso" aria-live="polite" data-total={lista.length}>{lista.length} estações</span></h3>
+      <ol class="trilha" role="list" style={`--n: ${lista.length + 1}`}>{lista.map((e, k) => <li class={`estacao trecho-${e.trecho}`} data-estacao={e.id}>
+        {(k === 0 || lista[k - 1].trecho !== e.trecho) && <span class="trecho-nome">{TRECHOS[e.trecho]}</span>}
+        <span class="estacao-ponto" aria-hidden="true">{k + 1}</span>
+        <span class="estacao-corpo">
+          {e.href ? <a href={e.href} title={e.dica}>{e.codigo ? <code>{e.rotulo}</code> : e.rotulo}</a> : <span title={e.dica}>{e.codigo ? <code>{e.rotulo}</code> : e.rotulo}</span>}
+          <label class="estacao-feito" hidden><input type="checkbox" data-marca={e.id} aria-label={`Feito: ${e.rotulo}`} /> <span aria-hidden="true">feito</span></label>
+        </span>
+      </li>)}
+      <li class="estacao estacao-seguinte" aria-label={i + 1 < roteiro.length ? `A seguir: ${roteiro[i + 1].titulo}` : "O próximo degrau entra quando este for estudado"}>
+        <span class="estacao-ponto" aria-hidden="true">›</span>
+        <span class="estacao-corpo">{i + 1 < roteiro.length ? <a href={`#degrau-${roteiro[i + 1].id}`}>{roteiro[i + 1].titulo}</a> : <span class="suave">Próximo degrau: entra quando este for estudado</span>}</span>
+      </li></ol>
+    </div>;
+  })}
+</section>
+<script>import "../cliente/trilha.js";</script>

@@ -1,0 +1,32 @@
+/* Trilha do roteiro: estações numeradas sobre uma linha, colorida por trecho; a parte feita enche. */
+.trilhas { margin-block: 1.5rem 2rem; }
+.trilhas { --cor-ler: var(--realce); --cor-praticar: var(--track); --cor-conferir: var(--class-confidential); }
+.trecho-ler { --cor-trecho: var(--cor-ler); }
+.trecho-praticar { --cor-trecho: var(--cor-praticar); }
+.trecho-conferir { --cor-trecho: var(--cor-conferir); }
+.trilhas p > span[class^="trecho-"] { color: var(--cor-trecho); font-weight: 700; }
+.trilha-degrau h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.8rem; }
+.trilha-progresso { font-size: 0.85rem; font-weight: 400; color: var(--suave); }
+.trilha { --progresso: 0%; position: relative; list-style: none; margin: 0.5rem 0 0; padding: 1.6rem 0 0.5rem;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0.3rem; }
+.trilha::before { content: ""; position: absolute; left: 1.1rem; right: calc((100% + 0.3rem) / var(--n, 1) - 1.1rem); top: 2.85rem; height: 4px; border-radius: 4px;
+  background: linear-gradient(90deg, var(--track) var(--progresso), var(--borda) var(--progresso)); }
+.estacao { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem; min-width: 0; }
+.trecho-nome { position: absolute; top: -1.5rem; left: 0; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cor-trecho); }
+.estacao-ponto { position: relative; z-index: 1; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%;
+  border: 3px solid var(--cor-trecho, var(--borda)); background: var(--superficie); font-weight: 700; font-size: 0.85rem; color: var(--texto); }
+.estacao[data-feito="true"] .estacao-ponto { background: var(--cor-trecho); color: var(--superficie); }
+.estacao-corpo { font-size: 0.8rem; line-height: 1.3; overflow-wrap: anywhere; hyphens: auto; }
+.estacao-corpo code { background: none; padding: 0; font-size: 0.78rem; }
+.estacao-feito { display: flex; align-items: center; gap: 0.25rem; margin-top: 0.2rem; font-size: 0.78rem; color: var(--suave); cursor: pointer; }
+.estacao-feito[hidden] { display: none; }
+.estacao-seguinte .estacao-ponto { border-style: dashed; border-color: var(--borda); color: var(--suave); }
+@media (max-width: 40rem) {
+  .trilha { grid-auto-flow: row; grid-auto-columns: auto; padding: 0.3rem 0 0.3rem; gap: 0.6rem; }
+  .trilha::before { left: 1.0rem; right: auto; top: 0.6rem; bottom: 0.6rem; width: 4px; height: auto;
+    background: linear-gradient(180deg, var(--track) var(--progresso), var(--borda) var(--progresso)); }
+  .estacao { flex-direction: row; align-items: center; gap: 0.6rem; }
+  .trecho-nome { position: static; order: -1; flex-basis: 100%; margin-inline-start: 2.8rem; }
+  .estacao { flex-wrap: wrap; }
+  .estacao-corpo { flex: 1; }
+}

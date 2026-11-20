@@ -4,6 +4,7 @@
 // página: D02, condição 3); a lista numerada é a alternativa em texto.
 import Base from "../../layouts/Base.astro";
 import Md from "../../components/Md.astro";
+import TrilhaDoRoteiro from "../../components/TrilhaDoRoteiro.astro";
 import { roteiro, mapaDoRoteiroMermaid } from "../../lib/editorial.mjs";
 import { rota, data, procedencia, commitCurto } from "../../lib/portal.mjs";
 
@@ -21,6 +22,8 @@ const TIPO = { relacao: "relação", coluna: "coluna", pergunta: "pergunta", met
   O roteiro cresce um degrau por vez, conforme o estudo avança. É uma sugestão: o catálogo, a linhagem e todas as explicações
   continuam abertos a qualquer momento. Para cada termo, leia a explicação, volte aqui e siga para o próximo.
 </p>
+
+<TrilhaDoRoteiro />
 
 <nav aria-label="Degraus">
   <ol>{roteiro.map((d) => <li><a href={`#degrau-${d.id}`}>{d.titulo}</a></li>)}</ol>
@@ -62,7 +65,7 @@ const TIPO = { relacao: "relação", coluna: "coluna", pergunta: "pergunta", met
     {d.perguntasHtml.length > 0 && <>
       <h3>Confira o que aprendeu</h3>
       <p class="suave">As respostas estão nas páginas da prática e nas explicações acima.</p>
-      <ol>{d.perguntasHtml.map((q) => <li><Md html={q} em="span" /></li>)}</ol>
+      <ol>{d.perguntasHtml.map((q, n) => <li id={`pergunta-${d.id}-${n + 1}`}><Md html={q} em="span" /></li>)}</ol>
     </>}
 
     <p class="suave">
