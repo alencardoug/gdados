@@ -1,6 +1,27 @@
 // O percurso começa numa única medida da pergunta. Só as folhas imediatas abrem ramos.
 import { separarColuna } from "./definicoes.mjs";
-import { camadasPorCaminhoMaisLongo } from "../cliente/camadas.js";
+
+// Uma seta resume as folhas imediatas de uma coluna. Insumos de relações
+// distintas só dividem a legenda se fornecerem os mesmos nomes.
+export function changedInputs({ name, leaves }) {
+  const byRelation = new Map();
+  let changed = false;
+  for (const leaf of leaves) {
+    const { relacao, coluna } = separarColuna(leaf);
+    if (coluna !== name) changed = true;
+    if (!byRelation.has(relacao)) byRelation.set(relacao, new Set());
+    byRelation.get(relacao).add(coluna);
+  }
+  if (!changed) return [];
+  const groups = new Map();
+  for (const [id, columns] of byRelation) {
+    const names = [...columns].sort();
+    const key = JSON.stringify(names);
+    if (!groups.has(key)) groups.set(key, { names, relations: [] });
+    groups.get(key).relations.push(id);
+  }
+  return [...groups.values()];
+}
 
 export function initialMeasure(question, pkg) {
   const columns = pkg.view_rules[question.view]?.columns ?? {};
@@ -41,8 +62,17 @@ export function measureTrail(view, measure, pkg) {
   }
   visit(`${view}.${measure}`);
   const edges = [...byId.values()].flatMap((step) => [...step.inputs].map((source) => ({ source, target: step.id })));
-  // No roteiro o consumidor vem antes dos insumos, inclusive quando dois ramos se reencontram.
-  const depth = camadasPorCaminhoMaisLongo([...byId.keys()], edges.map(({ source, target }) => ({ source: target, target: source })));
-  const steps = [...byId.values()].sort((a, b) => depth.get(a.id) - depth.get(b.id) || a.id.localeCompare(b.id));
-  return { steps, edges };
+  // Pós-ordem invertida mantém cada ramo junto e põe insumos compartilhados
+  // depois de todos os consumidores. O desempate entre irmãos é pelo identificador.
+  const visited = new Set();
+  const ordered = [];
+  function finish(id) {
+    if (visited.has(id)) return;
+    visited.add(id);
+    const step = byId.get(id);
+    for (const input of [...step.inputs].sort().reverse()) finish(input);
+    ordered.push(step);
+  }
+  finish(view);
+  return { steps: ordered.reverse(), edges };
 }

@@ -48,3 +48,41 @@ const alternative = !reachesSource(measure) && question.measures.find((m) => rea
     </div>
   </div>
 </section>
+
+<script>
+  // A linha de leitura fica logo abaixo do topo. O realce acompanha também
+  // passos mais altos que a janela e a volta a uma âncora pelo histórico.
+  const layout = document.querySelector(".guide-layout");
+  if (layout) {
+    const steps = [...layout.querySelectorAll(".guide-steps > li")];
+    const links = new Map([...layout.querySelectorAll(".station-steps a")].map((a) => [a.hash, a]));
+    const wide = matchMedia("(min-width: 60rem)");
+    let current;
+    let frame;
+    function mark() {
+      frame = undefined;
+      const line = Math.min(160, innerHeight * 0.25);
+      const bounds = layout.querySelector(".guide-steps").getBoundingClientRect();
+      const reading = wide.matches && bounds.top < innerHeight && bounds.bottom >= line;
+      const step = reading && (steps.findLast((el) => el.getBoundingClientRect().top <= line) ?? steps[0]);
+      const link = step ? links.get("#" + step.id) : undefined;
+      if (link === current) return;
+      current?.removeAttribute("aria-current");
+      link?.setAttribute("aria-current", "step");
+      current = link;
+    }
+    function schedule() {
+      if (frame === undefined) frame = requestAnimationFrame(mark);
+    }
+    function listen() {
+      window.removeEventListener("scroll", schedule);
+      if (wide.matches) window.addEventListener("scroll", schedule, { passive: true });
+      schedule();
+    }
+    wide.addEventListener("change", listen);
+    window.addEventListener("resize", schedule);
+    // Abrir uma tabela pode mudar o passo visível sem mover a barra de rolagem.
+    layout.addEventListener("toggle", schedule, true);
+    listen();
+  }
+</script>

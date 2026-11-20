@@ -1,0 +1,29 @@
+---
+import Identificador from "./Identificador.astro";
+import Md from "./Md.astro";
+import { mdDoPacote, pacote, relacaoPorId, rotaDaColuna, rotaDaMetrica } from "../lib/portal.mjs";
+const { id, name, groups, numbers } = Astro.props;
+const relation = relacaoPorId.get(id);
+const description = !relation?.colunasSemDescricao.has(name) && relation?.r.columns[name]?.description;
+const rule = pacote.view_rules[id]?.columns?.[name];
+const metric = pacote.metrics[rule?.name];
+---
+<div class="value-change" data-output={name}>
+  <p class="column-label">Como se forma <Identificador value={name} /></p>
+  {groups.map(({ names, relations }) => <div class="change-line">
+    <span class="change-from">{relations.toSorted((a, b) => numbers.get(a) - numbers.get(b)).map((source, i) =>
+      <>{i > 0 && " e "}<a href={`#passo-${numbers.get(source)}`}>Passo {numbers.get(source)}</a></>)}</span>
+    <span>{names.map((n, i) => <>{i > 0 && " · "}<Identificador value={n} /></>)}
+      {" → "}<strong><Identificador value={name} /></strong></span>
+  </div>)}
+  {description && <blockquote>
+    <Md html={await mdDoPacote(description)} />
+    <cite><a href={rotaDaColuna(id, name)}>Descrição da coluna na origem</a></cite>
+  </blockquote>}
+  {metric && <p class="metric-rule"><a href={rotaDaMetrica(rule.name)}>Regra de <Identificador value={rule.name} /></a>
+    {metric.kind === "ratio" && metric.numerator && metric.denominator && <> · Numerador <Identificador value={metric.numerator} /> · Denominador <Identificador value={metric.denominator} />
+      {metric.on_zero_denominator === "returns_null" && " · Com denominador zero, o resultado é nulo."}</>}
+    {metric.kind === "difference" && metric.minuend && metric.subtrahend && <> · Minuendo <Identificador value={metric.minuend} /> · Subtraendo <Identificador value={metric.subtrahend} /></>}
+    {metric.kind === "measure" && metric.aggregate && <> · Agregação <Identificador value={metric.aggregate} /></>}
+  </p>}
+</div>

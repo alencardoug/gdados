@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { initialMeasure, measureTrail } from "../src/lib/percurso-da-medida.mjs";
+import { changedInputs, initialMeasure, measureTrail } from "../src/lib/percurso-da-medida.mjs";
 import { columnsInFocus } from "../src/cliente/recorte-de-colunas.js";
 
 const pkg = JSON.parse(readFileSync(new URL("../../origem/pacote_de_metadados.json", import.meta.url)));
@@ -71,4 +71,20 @@ test("o foco do Cytoscape preserva o recorte antigo sem seleção e aceita só a
   assert.deepEqual(columnsInFocus([], ["x", "y"]), ["x", "y"]);
   assert.deepEqual(columnsInFocus(["y", "fora", "y"], ["x", "y"]), ["y"]);
   assert.deepEqual(columnsInFocus(["fora"], ["x", "y"]), []);
+});
+
+test("a numeração da P02 termina o ramo de varejo antes de abrir o legado", () => {
+  const q = pkg.questions.P02;
+  const steps = measureTrail(q.view, "average_order_value", pkg).steps;
+  assert.deepEqual(steps.map((s) => s.layer), ["consumption", "analytics", "trusted", "staging", "raw", "trusted", "raw_legacy"]);
+});
+
+test("a mudança de nome conserva a relação de cada folha, inclusive um insumo homônimo", () => {
+  const leaves = ["a.one.x", "a.two.y", "a.three.x", "a.two.total", "a.two.y"];
+  assert.deepEqual(changedInputs({ name: "total", leaves }), [
+    { names: ["x"], relations: ["a.one", "a.three"] },
+    { names: ["total", "y"], relations: ["a.two"] },
+  ]);
+  assert.deepEqual(changedInputs({ name: "x", leaves: ["a.one.x", "a.two.x"] }), []);
+  assert.deepEqual(changedInputs({ name: "x", leaves: [] }), []);
 });

@@ -15,15 +15,16 @@ const example = !trail && examplePair(arestasDeRelacoes, layerOf);
 const focused = trail ? layerFlows(trail.edges, layerOf) : [];
 const largest = Math.max(1, ...(trail ? focused : flows).map((f) => f.pairs));
 const stepsAt = (layer) => trail?.steps.flatMap((s, i) => s.layer === layer ? [i + 1] : []);
+const directTo = (layer) => focused.filter((f) => f.target === layer &&
+  extra.some((e) => e.source === f.source && e.target === layer));
 const pairsInTrail = (edge) => trail && edge
   ? focused.find((f) => f.source === edge.source && f.target === edge.target)?.pairs ?? 0 : undefined;
 ---
 <div class:list={["layer-map", trail && "guided-map"]}>
-  {trail && <p class="guide-key">Comece em <code>consumption</code>, na base do mapa.
-    {focused.length ? <> Para voltar à origem, percorra as setas acesas da ponta para o início. Cada uma conta os pares de relações do percurso.
-      {largest > 1 && " Quanto mais pares, mais larga a seta."}</>
+  {trail && <p class="guide-key">Comece em <Identificador value={trail.steps[0].layer} />, na base do mapa.
+    {focused.length ? <> Para voltar à origem, percorra as setas acesas da ponta para o início.</>
       : <> A linhagem desta medida fica na própria estação.</>}
-    {" "}As estações numeradas abrem o primeiro passo da camada. As cinzas ficam fora do percurso.
+    {" "}Cada número abre o passo correspondente. As estações cinzas ficam fora do percurso.
     {focused.some((f) => f.source === "raw_legacy") && <span class="legacy-key">Trilha do legado</span>}
   </p>}
   {!trail && <div class="map-key">
@@ -47,24 +48,24 @@ const pairsInTrail = (edge) => trail && edge
         // Se a vizinha lateral tiver mais texto, a linha ocupa a diferença de altura fora da caixa.
         const stem = routes.find((r) => r.shape === "down" && r.edge.source === layer);
         return <div class="station-cell" data-layer={layer} style={{ gridArea: area }}>
-          <EstacaoCamada {layer} {loop} {largest} steps={stepsAt(layer)} loopCount={pairsInTrail(loop)} />
+          <EstacaoCamada {layer} {loop} {largest} steps={stepsAt(layer)} loopCount={pairsInTrail(loop)} direct={directTo(layer)} />
           {stem && ["staging", "analytics"].includes(layer) &&
             <span class="station-stem" data-active={trail ? String(Boolean(pairsInTrail(stem.edge))) : undefined}
-              aria-hidden="true" style={{ width: `${flowWidth(pairsInTrail(stem.edge) ?? stem.edge.pairs, largest, trail ? 3 : 1)}px` }} />}
+              aria-hidden="true" style={{ width: `${trail ? (pairsInTrail(stem.edge) ? 3 : 1) : flowWidth(stem.edge.pairs, largest)}px` }} />}
         </div>;
       })}
       {routes.map(({ edge, shape, area }) => <TracoCamada {edge} {shape} {area} {largest} count={pairsInTrail(edge)} />)}
     </div>
-    {extra.length > 0 && <div class="extra-flows">
+    {!trail && extra.length > 0 && <div class="extra-flows">
       <h3>Outros fluxos diretos</h3>
-      <ul role="list">{extra.map((edge) => <li data-active={trail ? String(Boolean(pairsInTrail(edge))) : undefined}>
-        <Identificador value={edge.source} /><TracoCamada {edge} {largest} shape="right" count={pairsInTrail(edge)} /><Identificador value={edge.target} />
+      <ul role="list">{extra.map((edge) => <li>
+        <Identificador value={edge.source} /><TracoCamada {edge} {largest} shape="right" /><Identificador value={edge.target} />
       </li>)}</ul>
     </div>}
   </div>
   {others.length > 0 && <div class="other-stations">
     <h3>Demais camadas do pacote</h3>
-    {others.map(({ layer, loop }) => <EstacaoCamada {layer} {loop} {largest} steps={stepsAt(layer)} loopCount={pairsInTrail(loop)} />)}
+    {others.map(({ layer, loop }) => <EstacaoCamada {layer} {loop} {largest} steps={stepsAt(layer)} loopCount={pairsInTrail(loop)} direct={directTo(layer)} />)}
   </div>}
 </div>
 {!trail && <details class="lineage-table"><summary>Ler todos os fluxos em tabela</summary>

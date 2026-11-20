@@ -3,17 +3,19 @@ import Identificador from "./Identificador.astro";
 import TracoCamada from "./TracoCamada.astro";
 import { relationsByLayer, rota } from "../lib/portal.mjs";
 import { layerRoles } from "../lib/fluxo-de-camadas.mjs";
-const { layer, loop, largest, steps, loopCount } = Astro.props;
+const { layer, loop, largest, steps, loopCount, direct } = Astro.props;
 const count = relationsByLayer.get(layer).length;
 ---
 <div class="layer-station" data-active={steps ? String(steps.length > 0) : undefined}>
-  {steps ? (steps.length ? <a href={`#passo-${steps[0]}`}>
-    <Identificador value={layer} /><span class="layer-count">{steps.length === 1 ? "Passo" : "Passos"} {steps.join(", ")}</span>
-  </a> : <span class="outside-layer"><Identificador value={layer} /></span>) : <a href={rota(`governanca/?camada=${encodeURIComponent(layer)}#catalogo`)}>
+  {steps ? (steps.length ? <div class="station-steps">
+    <Identificador value={layer} /><span>{steps.map((number) =>
+      <a href={`#passo-${number}`} aria-label={`Passo ${number} · ${layer}`}>{number}</a>)}</span>
+  </div> : <span class="outside-layer"><Identificador value={layer} /></span>) : <a href={rota(`governanca/?camada=${encodeURIComponent(layer)}#catalogo`)}>
     <Identificador value={layer} />
     <span class="layer-count">{count} {count === 1 ? "relação" : "relações"}</span>
   </a>}
-  {(!steps || steps.length > 0) && layerRoles.has(layer) && <span>{layerRoles.get(layer)}</span>}
-  {loop && <span class="station-loop"><TracoCamada edge={loop} {largest} shape="loop" count={loopCount} />
-    {loopCount !== 0 && ((loopCount ?? loop.pairs) === 1 ? "par interno" : "pares internos")}</span>}
+  {!steps && layerRoles.has(layer) && <span>{layerRoles.get(layer)}</span>}
+  {direct?.map((edge) => <span class="direct-input"><Identificador value={edge.source} /><TracoCamada {edge} {largest} shape="right" count={edge.pairs} /><span>aqui</span></span>)}
+  {loop && (!steps || loopCount > 0) && <span class="station-loop"><TracoCamada edge={loop} {largest} shape="loop" count={loopCount} />
+    {steps ? "na mesma camada" : loop.pairs === 1 ? "par interno" : "pares internos"}</span>}
 </div>

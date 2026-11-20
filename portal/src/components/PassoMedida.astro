@@ -1,5 +1,7 @@
 ---
 import Identificador from "./Identificador.astro";
+import MudancaDeColuna from "./MudancaDeColuna.astro";
+import { changedInputs } from "../lib/percurso-da-medida.mjs";
 import Md from "./Md.astro";
 import { pacote, rotaDaColuna, rotaDaRelacao, rota, mdDoPacote, travessias } from "../lib/portal.mjs";
 import { separarColuna } from "../lib/definicoes.mjs";
@@ -8,6 +10,7 @@ const { step, numbers, question } = Astro.props;
 const { id, layer } = step;
 const r = pacote.relations[id];
 const columns = [...step.columns.values()];
+const changes = columns.map((c) => ({ name: c.name, groups: changedInputs(c) })).filter((c) => c.groups.length);
 const isView = id === question.view;
 const selected = columns[0].name;
 const role = isView ? "View que responde à pergunta" : question.facts.includes(id) ? "Fato da pergunta" :
@@ -25,13 +28,13 @@ const terminalText = { source: "A linhagem chega às colunas desta fonte.", seed
   generated: "O próprio modelo gera o valor aqui." };
 const crossings = travessias.filter((t) => t.relacoes.includes(id));
 ---
-<li id={`passo-${numbers.get(id)}`} data-relation={id} tabindex="-1">
+<li id={`passo-${numbers.get(id)}`} data-relation={id} data-layer={layer} tabindex="-1">
   <article>
     <header>
       <span class="step-role">{role}</span>
       <h4>{r ? <a href={rotaDaRelacao(id)}><Identificador value={id} /></a> : <Identificador value={id} />}</h4>
     </header>
-    {excerpt && <blockquote>
+    {excerpt && !(isView && changes.some((c) => c.name === selected)) && <blockquote>
       <Md html={await mdDoPacote(excerpt)} />
       <cite><a href={citation}>{isView ? "Descrição da medida na origem" : "Descrição na ficha"}</a></cite>
     </blockquote>}
@@ -44,6 +47,7 @@ const crossings = travessias.filter((t) => t.relacoes.includes(id));
         {terminal && !commonTerminal && <span> · {terminalLabel[terminal]}</span>}
         {gap && <span class="ausente">{gap}</span>}
       </li>)}</ul>
+    {changes.map(({ name, groups }) => <MudancaDeColuna {id} {name} {groups} {numbers} />)}
     {commonTerminal && <p class="terminal-note"><strong>Origem terminal</strong> · {terminalText[commonTerminal]}</p>}
     {inputs.length > 0 && <>
       <p class="branch-label">{inputs.length === 1 ? "O valor vem do passo" : "O valor vem destes ramos"}</p>
