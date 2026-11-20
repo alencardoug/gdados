@@ -314,3 +314,56 @@ acender as camadas e os traços percorridos por uma pergunta. O esquema estrela 
 rodada 4, para manter cada rodada com um tema.
 
 Decisão do Owner: (pendente)
+
+### Rodada 3 — Da pergunta à origem · 19/11/2026
+
+**Construção do Codex.** As 16 perguntas abrem com um percurso. A pessoa escolhe uma das
+medidas declaradas em `questions.*.measures` e segue o valor da coluna da view pelas folhas
+imediatas de `lineage.relations.*.columns.*.leaves`. A medida inicial é a primeira com papel
+`metric` em `view_rules`. Se faltar esse papel, abre a primeira com origem `source` em
+`origins` ou, na ausência de ambas, a primeira declarada. É uma escolha de navegação do portal.
+As demais medidas têm endereço próprio. O build gera o mapa e a lista em HTML e SVG.
+
+**Como ler.** Comece pela **P02**, em `/governanca/pergunta/P02/`. A definição da origem
+explica o ticket médio. No mapa da inicial, usado também aqui, as setas apontam no sentido em
+que os valores passam. Para investigar a resposta, o leitor parte de `consumption` e percorre
+as setas acesas ao contrário. O número em cada uma conta os pares de relações daquela medida.
+As estações numeradas levam à lista.
+
+- Cada relação ocupa um passo, mesmo quando fornece várias colunas. Os links “Passo” indicam o
+  próximo insumo de cada ramo. Na P02, o terceiro passo, `trusted.order_items`, recebe valores
+  de `staging.stg_retail__order_items` e de `trusted.legado__order_items`. No mesmo passo,
+  `source_system` tem origem gerada. É possível seguir os dois ramos só pela lista.
+- Cada passo reúne o papel, o grão quando declarado em `relations` ou `view_rules`, as colunas
+  destacadas e a ficha. Os trechos citados vêm das descrições da relação e da coluna da view.
+  “Ver as ligações coluna a coluna” abre os insumos individuais. “Abrir este passo no grafo”
+  leva ao Cytoscape com essas mesmas colunas e seus insumos imediatos, inclusive quando o
+  recorte se resume a uma coluna terminal.
+- Fontes, seeds e valores gerados encerram caminhos. Nos 88 percursos da `v2.3.0` (`2bceb47`),
+  aparecem fontes e valores gerados. A seed tem cobertura em unidade. A montagem da view
+  permite investigar filtros e junções que a linhagem de valores não alcança. Nos passos de
+  fonte, a travessia identifica se foi declarada para a camada ou para a relação.
+- Na inicial, a legenda identifica a trilha do legado em ocre nos dois temas e reúne numa frase
+  as estações sem entrada de outra camada.
+
+**Verificação local de 19/11/2026.** Passaram 78 casos de unidade e 34 verificações estáticas.
+A cópia da origem conferiu nos 97 arquivos. Nas 551 páginas, 46.557 links e âncoras resolveram.
+Nos 88 percursos, a conferência do HTML contou 626 passos e 916 ligações entre colunas, contando
+as ocorrências em cada percurso. As origens terminais coincidiram com `origins` de cada medida.
+
+Três builds produziram o mesmo SHA-256 de `dist/`
+(`1c4290639441e43c360ccf9e67fa78dec1acdc7c0efbd24e8b91f853752eb12d`). Duraram 7,18 s,
+7,23 s e 7,18 s. Em gzip nível 6, o HTML e as folhas de estilo somaram 12.308 bytes na P02
+e até 14.120 bytes na P08, em `gross_margin_pct`. A E3 de navegador fica com o Claude.
+A suíte inclui a medição de primeira renderização e transferência da P02 e o percurso por
+teclado em 390 px, nos dois temas, até o grafo e de volta.
+
+**Entrega.** Legenda em `83af14d`, percursos em `f47e2b6` e verificações em `af4a396`.
+Bundle em `.cache/layout-rodada-3/rodada-3.bundle`, baseado em `4cb1f30`.
+
+**Pergunta ao Owner.** Na P02, a partir de `trusted.order_items`, dá para identificar quais
+valores vêm das duas origens e qual nasce ali?
+
+Crítica do Claude: (pendente)
+
+Decisão do Owner: (pendente)
