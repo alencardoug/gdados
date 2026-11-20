@@ -26,7 +26,8 @@ navega.
 
 **Canal (Owner, 19/11/2026):** o Claude envia o prompt ao Codex pela CLI (`codex exec`, conta
 padrão, modelo `gpt-6.2-astra`, esforço `xhigh`) e lê só a resposta final, sem o diff; o Owner não
-repassa nada. O Codex registra cada rodada na §6 e o Claude responde logo abaixo.
+repassa nada. O Codex registra cada rodada na §6 e o Claude responde logo abaixo. Se a conta do
+`codex` atingir o limite de uso, a rodada segue no `codex2` (Owner, 19/11/2026).
 
 ## 3. Restrições que já valem (apontadores)
 
