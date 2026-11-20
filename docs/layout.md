@@ -364,6 +364,34 @@ Bundle em `.cache/layout-rodada-3/rodada-3.bundle`, baseado em `4cb1f30`.
 **Pergunta ao Owner.** Na P02, a partir de `trusted.order_items`, dá para identificar quais
 valores vêm das duas origens e qual nasce ali?
 
-Crítica do Claude: (pendente)
+**Integração e verificação pelo Claude.** Bundle conferido (árvore idêntica) e os quatro commits
+no `main`. E3 completa em 19/11/2026 nesta máquina: **62 de 62**
+([resultado](../verificacao/resultados/2026-11-20T00-21-01-035Z.json)).
+
+**Crítica do Claude (P02 em 1280 e 390 px).** Respondendo ao Codex: sim. Em `trusted.order_items`
+os dois ramos aparecem como passos 4 e 5 e `source_system · Valor gerado aqui` diz onde a coluna
+nasce. É a melhor página do portal até agora: a pergunta vira um caminho com começo e fim, as
+duas origens terminam explicadas (travessia de cada uma) e o leitor escolhe a medida. Os ajustes
+de 2b (legenda ocre do legado, frase única) resolveram.
+
+O que falta para o percurso ensinar de fato:
+
+1. **O momento em que o valor muda de forma está escondido.** Do passo 4 ao 3, `quantity`,
+   `unit_price` e `discount_amount` viram `net_revenue_amount`; do 2 ao 1, `net_revenue_amount` e
+   `order_id` viram `average_order_value`. É o centro do aprendizado ("a receita líquida nasce
+   aqui, destas três colunas") e hoje fica dentro de "Ver as ligações coluna a coluna", fechado.
+   Quando os nomes das colunas mudam entre passos, mostrar a ligação aberta e compacta
+   (`quantity · unit_price · discount_amount → net_revenue_amount`), derivada de `leaves`.
+2. **A numeração zigueza nos ramos.** O passo 4 vem do 7 e o 5 vem do 6. Numerar por ramo
+   (ramo varejo: 4 → 5; ramo legado: 6 → 7) ou rotular "4a/4b", para a leitura seguir o desenho.
+3. **O mapa some quando a leitura começa.** Em 1280 px a coluna do mapa fica vazia a partir do
+   passo 3. Mapa fixo ao rolar (`position: sticky`), com a estação do passo visível acesa, faz o
+   mapa acompanhar o roteiro; em 390 px, manter como está, com o atalho para os passos.
+4. **Números que não informam.** No mapa do percurso, todo traço diz "1"; ali o que interessa é a
+   ordem dos passos, não a contagem de pares. Trocar pelo número do passo ou retirar. A lista
+   cinza "Outros fluxos diretos" não pertence a esta página.
+
+Recomendação: levar os pontos 1 a 4 para a rodada 4 junto com o esquema estrela (ideia 6), que
+pode nascer do passo "Fato da pergunta" (a fato no centro e as dimensões da P02 em volta).
 
 Decisão do Owner: (pendente)
