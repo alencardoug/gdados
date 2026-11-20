@@ -20,6 +20,7 @@ import {
   rotaDaReferencia, mdDoPacote, mdDoPacoteEmLinha, relacaoDaColuna, nomeDaColuna, metricasPorColuna,
   camadasComChave, naoNulas, modeloER, rotaDoER, amostras, dataHora,
 } from "../../../lib/portal.mjs";
+import { exampleForRelation, caseUrl, legacyUrl, rawByBridge } from "../../../lib/legado-no-portal.mjs";
 import { MARCADOR_PESSOAL } from "../../../lib/origem.mjs";
 
 export function getStaticPaths() {
@@ -76,6 +77,7 @@ const adr0056 = rotaDaReferencia("docs/adr/0056-chaves-declaradas-em-analytics.m
 const semChave = x.chavePrimaria.length === 0 && x.chavesEstrangeiras.length === 0;
 // Amostra de registros (D06, ADR-0058 da origem): exibida como exportada, sem reordenar nem completar.
 const amostra = amostras.relations[x.id];
+const sampleCase = exampleForRelation(x.id);
 const mascaradas = new Set(amostra.masked_columns);
 const adr0058 = rotaDaReferencia("docs/adr/0058-amostras-de-registros-para-o-publico.md");
 const sameOrder = (a, b) => a.length === b.length && a.every((c, i) => c === b[i]);
@@ -202,8 +204,8 @@ const sustentacao = auditoria ? [
 <div class="rolagem sample-scroll" role="region" aria-labelledby="amostra" tabindex="0"><table class="amostra">
 <thead><tr>{amostra.columns.map((c) => <th scope="col"><a href={`#coluna-${c}`}><Identificador value={c} /></a>{mascaradas.has(c) && <div class="suave">personal</div>}</th>)}</tr></thead>
 <tbody>
-{amostra.rows.map((linha) => (
-  <tr>{linha.map((v) => (
+{amostra.rows.map((linha, i) => (
+  <tr id={`linha-amostra-${i + 1}`} tabindex="-1">{linha.map((v) => (
     <td><div class="sample-value">{v === null
       ? <span class="suave">nulo</span>
       : v === MARCADOR_PESSOAL
@@ -223,6 +225,9 @@ const sustentacao = auditoria ? [
   ({adr0058 ? <a href={adr0058}>ADR-0058 da origem</a> : "ADR-0058 da origem"}); o nulo continua nulo. A máscara é uma concessão ao público anônimo, não uma mudança de classificação.
   {amostra.order.defect_first && " Nesta relação, o conteúdo que um defeito do legado deslocou para uma coluna não pessoal aparece como está, por decisão do Owner."}
 </p>
+
+{sampleCase ? <p><a href={caseUrl(sampleCase)}>Comparar antes e depois · <Identificador value={sampleCase.code} /></a></p> :
+  (rawByBridge.has(x.id) || r.schema === "raw_legacy" || amostra.order.defect_first) && <p><a href={legacyUrl()}>Explorar os achados nas amostras do legado</a></p>}
 
 <h2 id="testes"><Conceito id="teste">Testes</Conceito></h2>
 {x.testes.length === 0 ? <p><span class="ausente">Nenhum teste declarado para esta relação.</span></p> : (

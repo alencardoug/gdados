@@ -1,0 +1,31 @@
+.defect-index { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: .75rem; padding: 0; list-style: none; }
+.defect-index li, .legacy-case { padding: 1rem; border: 1px solid var(--borda); border-radius: .45rem; background: var(--superficie); }
+.defect-index li { display: flex; align-content: start; align-items: baseline; flex-wrap: wrap; gap: .3rem .75rem; }
+.defect-index a { font-weight: 650; }
+.defect-index p { flex-basis: 100%; margin: 0; }
+.defect-count, .legacy-case header > span, .case-note, .legacy-provenance { color: var(--suave); font-size: .9rem; }
+.legacy-case, .treatment-rule, .legacy-provenance { max-width: 54rem; }
+.legacy-case { margin-block: 1rem; }
+.legacy-case h2, .case-finding p, .treatment-rule p { margin: 0 0 .3rem; }
+.legacy-case:target, .legacy-case:focus-visible { outline: 3px solid var(--realce); outline-offset: 1px; }
+.finding-field { margin-block: .75rem .4rem; }
+.finding-field mark { background: var(--track-surface); color: var(--texto); border-inline-start: 3px solid var(--track); padding: .1rem .4rem; font-weight: bold; }
+.finding-field code, .comparison code { background: transparent; padding: 0; }
+.comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin: .5rem 0; }
+.comparison > div { min-width: 0; border: 1px solid var(--borda); border-radius: .3rem; padding: .65rem .8rem; background: var(--fundo); }
+.comparison dt { font-weight: 650; }
+.comparison small { color: var(--suave); font-weight: 400; }
+.comparison dd { margin: .3rem 0 0; }
+.sample-payload { margin: 0; padding: 0; background: transparent; }
+.sample-payload code, .sample-literal { white-space: pre-wrap; overflow-wrap: anywhere; }
+.case-finding, .treatment-rule { border-inline-start: 3px solid var(--track); padding: .4rem .8rem; }
+.case-finding blockquote { margin: .25rem 0; }
+.finding-context { margin: .25rem 0; }
+.finding-context > div { display: flex; flex-wrap: wrap; gap: .4rem; }
+.finding-context dd { margin: 0; }
+.case-trail { margin-bottom: 0; }
+.legacy-provenance { border-top: 1px solid var(--borda); padding-top: .8rem; margin-top: 1.5rem; }
+@media (max-width: 40rem) {
+  .comparison { grid-template-columns: minmax(0, 1fr); }
+  .legacy-case { padding: .8rem; }
+}

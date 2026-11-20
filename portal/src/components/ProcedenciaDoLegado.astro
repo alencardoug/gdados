@@ -1,0 +1,9 @@
+---
+import { amostras, dataHora, rotaDaReferencia } from "../lib/portal.mjs";
+const p = amostras.provenance;
+---
+<p class="legacy-provenance">Amostras de <code>amostras_de_registros.json</code>, exportadas em {dataHora(amostras.exported_at)}.
+  Build <code>{p.built_from_commit?.slice(0, 7)}</code> de {dataHora(p.built_at)}, ambiente <code>{amostras.environment}</code>,
+  dados até {amostras.as_of_date ?? "data ausente"}. A origem preserva o nulo e mascara os campos pessoais com <code>{amostras.masking.marker}</code>.
+  O conteúdo deslocado para um campo não pessoal aparece como exportado.
+  <a href={rotaDaReferencia("docs/adr/0058-amostras-de-registros-para-o-publico.md")}>Critérios da exportação (ADR-0058)</a>.</p>

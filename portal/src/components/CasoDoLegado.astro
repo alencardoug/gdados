@@ -1,0 +1,41 @@
+---
+import Identificador from "./Identificador.astro";
+import Md from "./Md.astro";
+import { amostras, mdDoPacoteEmLinha, rotaDaRelacao } from "../lib/portal.mjs";
+import { quarantineId, stepsByRaw } from "../lib/legado-no-portal.mjs";
+const { item } = Astro.props;
+const context = item.context && typeof item.context === "object" ? Object.entries(item.context) : [];
+const step = stepsByRaw.get(item.raw);
+const measured = item.action === "correct" ? "Correção registrada" : item.action === "reject" ? "Rejeição registrada" : item.action;
+const compared = item.field != null;
+const masked = item.before === amostras.masking.marker || item.after === amostras.masking.marker;
+const equal = compared && item.before !== undefined && item.before === item.after;
+const values = [["Antes", "original_payload", item.before], ["Depois", item.evidence === "achados" ? item.field : "cleaned_payload", item.after]];
+---
+<article class="legacy-case" tabindex="-1" id={item.anchor} data-code={item.code}>
+  <header>
+    <h2>{item.table ? <Identificador value={item.table} /> : "Tabela de origem não identificada"}{item.rowId != null && <> · linha {item.rowId}</>}</h2>
+    <span>Captura {item.capture ?? "não informada"}{item.version != null && <> · catálogo aplicado v{item.version}</>}</span>
+  </header>
+  <p class="finding-field">{compared ? <>Campo com achado · <mark><Identificador value={item.field} /></mark></> : <mark>Achado da linha inteira</mark>}</p>
+  <dl class="comparison">{values.map(([label, source, value]) => <div>
+    <dt>{label} <small><Identificador value={source} /></small></dt>
+    <dd>{value === undefined ? <span class="ausente">campo ausente na carga</span> : value === null ? <em>nulo</em> :
+      typeof value === "object" ? <pre class="sample-payload"><code>{JSON.stringify(value, null, 2)}</code></pre> :
+      <code class="sample-literal">{value === amostras.masking.marker ? value : JSON.stringify(value)}</code>}</dd>
+  </div>)}</dl>
+  {masked ? <p class="case-note">A máscara da exportação impede comparar o conteúdo pessoal.</p> :
+    equal && <p class="case-note">O campo conserva o mesmo valor nas duas etapas.</p>}
+  <div class="case-finding">
+    <strong>{measured ?? "Achado registrado"}</strong> · <code>{item.code}</code>
+    {item.reason && <blockquote><Md em="span" html={await mdDoPacoteEmLinha(item.reason)} /></blockquote>}
+    {context.length > 0 && <dl class="finding-context">{context.map(([key, value]) =>
+      <div><dt><Identificador value={key} /></dt><dd><code>{JSON.stringify(value)}</code></dd></div>)}</dl>}
+    {item.classification && <p>Classificação da linha · <code>{item.classification}</code></p>}
+    {item.action === "reject" && item.classification === "rejected" && quarantineId && <p><a href={rotaDaRelacao(quarantineId) + "#ficha"}>Destino das linhas rejeitadas</a></p>}
+    <a href={rotaDaRelacao(item.relation) + "#linha-amostra-" + item.rowNumber}>Linha {item.rowNumber} da amostra de <Identificador value={item.relation} /></a>
+    {" "}(<code>{item.evidence}</code>)
+  </div>
+  {step && <p class="case-trail">Por onde entram as linhas aptas desta tabela?
+    <a href={step.href}>{step.question}, passo {step.number} · <Identificador value={step.relation} /></a></p>}
+</article>

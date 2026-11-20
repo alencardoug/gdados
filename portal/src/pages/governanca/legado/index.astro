@@ -1,0 +1,41 @@
+---
+import { getEntry } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import Identificador from "../../../components/Identificador.astro";
+import Md from "../../../components/Md.astro";
+import CasoDoLegado from "../../../components/CasoDoLegado.astro";
+import ProcedenciaDoLegado from "../../../components/ProcedenciaDoLegado.astro";
+import { amostras, renderizarEmLinha, rota, rotaDaReferencia } from "../../../lib/portal.mjs";
+import { byCode, catalogPath, legacyUrl, stepsByRaw } from "../../../lib/legado-no-portal.mjs";
+import "../../../styles/legado.css";
+const catalog = (await getEntry("catalogoLegado", "falhas"))?.data.value ?? {};
+const types = [...byCode].sort(([a], [b]) => a.localeCompare(b));
+// Uma correção curta, legível e explicada na própria linha abre a página.
+const corrected = types.flatMap(([, items]) => items).filter((item) =>
+  item.action === "correct" && item.reason && typeof item.before === "string" && typeof item.after === "string" &&
+  ![item.before, item.after].includes(amostras.masking.marker) && item.before !== item.after);
+const length = (item) => item.before.length + item.after.length;
+const firstCase = corrected.toSorted((a, b) => length(a) - length(b))[0];
+const total = types.reduce((n, [, items]) => n + items.length, 0);
+---
+<Base titulo="Qualidade do legado" secao="governanca">
+<p class="migalhas"><a href={rota("governanca/")}>Governança</a> › Qualidade do legado</p>
+<h1>Qualidade do legado</h1>
+<p class="lead">O que a limpeza conseguiu recuperar? Escolha um achado para ler o valor que chegou, o que ficou depois da limpeza e a regra aplicada.</p>
+{firstCase && <><a href="#tipos">Ir ao índice de defeitos</a>
+  <CasoDoLegado item={firstCase} />
+  <a href={legacyUrl(firstCase.code)}>Ver a regra de <Identificador value={firstCase.code} /> e suas aparições</a></>}
+<h2 id="tipos">Tipos de defeito nas amostras</h2>
+<p><strong>{types.length} tipos · {total} aparições.</strong> Cada entrada em <code>achados</code>, <code>value_findings</code> ou <code>findings</code> conta uma vez na linha exportada. Uma ocorrência pode aparecer em várias relações, capturas ou versões do tratamento.</p>
+<p>As definições vêm de <a href={rotaDaReferencia(catalogPath)}>falhas, no catálogo da origem</a>.</p>
+<ul class="defect-index" role="list">{types.map(async ([code, items]) => <li data-code={code}>
+  <a href={legacyUrl(code)}><Identificador value={code} /></a>
+  <span class="defect-count">{items.length} {items.length === 1 ? "aparição" : "aparições"}</span>
+  <p>{catalog[code]?.deteccao ? <Md em="span" html={await renderizarEmLinha(catalog[code].deteccao)} /> : "O catálogo da origem não define este tipo."}</p>
+</li>)}</ul>
+{stepsByRaw.size > 0 && <details class="legacy-paths" id="percursos"><summary>Onde as linhas aptas do legado entram nos percursos</summary>
+  <ul>{[...stepsByRaw.values()].map((step) =>
+    <li><a href={step.href}>{step.question}, passo {step.number} · <Identificador value={step.relation} /></a> · <Identificador value={step.measure} /></li>)}</ul>
+</details>}
+<ProcedenciaDoLegado />
+</Base>

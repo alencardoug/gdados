@@ -1,0 +1,39 @@
+---
+import { getEntry } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import Identificador from "../../../components/Identificador.astro";
+import CasoDoLegado from "../../../components/CasoDoLegado.astro";
+import ProcedenciaDoLegado from "../../../components/ProcedenciaDoLegado.astro";
+import Md from "../../../components/Md.astro";
+import { amostras, rotaDaReferencia, rotaDaRelacao, renderizarEmLinha } from "../../../lib/portal.mjs";
+import { byCode, catalogPath, legacyUrl, quarantineId } from "../../../lib/legado-no-portal.mjs";
+import "../../../styles/legado.css";
+export function getStaticPaths() {
+  return [...byCode.keys()].map((code) => ({ params: { codigo: code } }));
+}
+const code = Astro.params.codigo;
+const rule = (await getEntry("catalogoLegado", "falhas"))?.data.value?.[code];
+const version = (await getEntry("catalogoLegado", "versao"))?.data.value;
+// Começa por uma mudança legível com motivo registrado, quando a amostra a oferece.
+function score(item) {
+  const visible = item.before !== undefined && item.after !== undefined &&
+    item.before !== amostras.masking.marker && item.after !== amostras.masking.marker;
+  return Number(visible && item.before !== item.after) * 2 + Number(Boolean(item.reason));
+}
+const cases = byCode.get(code).toSorted((a, b) => score(b) - score(a));
+---
+<Base titulo={code + " · Qualidade do legado"} secao="governanca">
+<p class="migalhas"><a href={legacyUrl()}>Qualidade do legado</a> › Antes e depois</p>
+<h1><Identificador value={code} /></h1>
+{rule?.deteccao ? <p class="lead"><Md em="span" html={await renderizarEmLinha(rule.deteccao)} /></p> :
+  <p>O catálogo da origem não define este tipo.</p>}
+<div class="treatment-rule">
+  {rule?.rejeicao && <p><strong>Regra de rejeição</strong> · <Md em="span" html={await renderizarEmLinha(rule.rejeicao)} />
+    {quarantineId && <> <a href={rotaDaRelacao(quarantineId) + "#ficha"}>Destino declarado dos rejeitados em quarentena</a>.</>}</p>}
+  {rule?.conversao && <p><strong>Regra de conversão</strong> · <Md em="span" html={await renderizarEmLinha(rule.conversao)} /></p>}
+  <a href={rotaDaReferencia(catalogPath)}>Catálogo da origem{version != null && <> · versão {version}</>}</a>
+</div>
+<p>{cases.length} {cases.length === 1 ? "aparição nas amostras" : "aparições nas amostras"} · <a href={legacyUrl() + "#tipos"}>Ver os demais tipos</a></p>
+{cases.map((item) => <CasoDoLegado {item} />)}
+<ProcedenciaDoLegado />
+</Base>

@@ -8,10 +8,13 @@ import { changedInputs } from "../lib/percurso-da-medida.mjs";
 import Md from "./Md.astro";
 import { pacote, rotaDaColuna, rotaDaRelacao, rota, mdDoPacote, travessias } from "../lib/portal.mjs";
 import { separarColuna } from "../lib/definicoes.mjs";
+import { caseUrl, exampleForRelation, legacyUrl, rawByBridge } from "../lib/legado-no-portal.mjs";
 import { layerRoles } from "../lib/fluxo-de-camadas.mjs";
 const { step, numbers, question } = Astro.props;
 const { id, layer } = step;
 const r = pacote.relations[id];
+const legacyStep = rawByBridge.has(id);
+const sampleCase = legacyStep && exampleForRelation(id);
 const columns = [...step.columns.values()];
 const changes = columns.map((c) => ({ name: c.name, groups: changedInputs(c) })).filter((c) => c.groups.length);
 const isView = id === question.view;
@@ -63,6 +66,10 @@ const crossings = travessias.filter((t) => t.relacoes.includes(id));
         })}</ul>
       </li>)}</ul>
     </details>}
+    {legacyStep && <p class="legacy-step">Aqui entram as linhas aptas da tabela legada.
+      {sampleCase ? <a href={caseUrl(sampleCase)}>Comparar um achado desta tabela · <Identificador value={sampleCase.code} /></a> :
+        <a href={legacyUrl()}>Ver exemplos de tratamento em outras tabelas do legado</a>}
+    </p>}
     {crossings.map((crossing) => <p class="crossing-note">Antes desta fonte, a <a href={rota("estrutura/#travessias")}>travessia</a> de
       {" "}{crossing.origem} por {crossing.mecanismo} é declarada para {crossing.tipo === "camada" ? "a camada" : "a relação"} <Identificador value={crossing.destino} />.
       A travessia não identifica colunas.</p>)}

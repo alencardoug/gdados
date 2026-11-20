@@ -237,3 +237,6 @@ table.amostra { border-collapse: separate; border-spacing: 0; }
   .outputs.connected::after { top: auto; bottom: 100%; }
   .sample-hint { display: block; }
 }
+
+.amostra tr:target > td { box-shadow: inset 0 -2px var(--track); }
+.amostra tr:focus-visible { outline: 2px solid var(--realce); outline-offset: -2px; }

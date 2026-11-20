@@ -4,6 +4,9 @@ resumo: >-
   únicos onde devem ser e coerentes com as regras do negócio.
 exemplos:
   - tipo: pagina
+    ref: "governanca/legado/"
+    nota: achados nas amostras, com o valor recebido e o valor depois da limpeza
+  - tipo: pagina
     ref: "governanca/evidencias/#testes"
     nota: os testes de dados do dbt
   - tipo: arquivo
