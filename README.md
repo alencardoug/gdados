@@ -95,10 +95,14 @@ O histórico desta conversa não é necessário para compreender o escopo docume
 - frente de layout: as nove ideias da §5 de [docs/layout.md](docs/layout.md) foram construídas em
   11 rodadas (1 a 5 pelo Codex, 6 a 11 pelo Claude, depois que o Owner pediu para seguir sem o
   Codex), mais o tema escuro escolhível e as cores das camadas. Cada rodada tem verificação, crítica e
-  "Decisão do Owner: (pendente)" na §6. A E3 local passou 81 de 81 em 20/11/2026, e tudo foi
-  publicado com o "pode" do Owner;
+  decisão do Owner na §6: em 20/11/2026 ele aprovou todas como publicadas. A E3 local passou 81 de 81
+  em 20/11/2026, e tudo foi publicado com o "pode" do Owner;
 - direção nova, só anotada: [docs/multicloud_e_nl_sql.md](docs/multicloud_e_nl_sql.md), com avisos
-  deixados no `alinhamento.md` da origem e do `nl_sql`.
+  deixados no `alinhamento.md` da origem e do `nl_sql`. As três decisões do Owner (fonte do `nl_sql`,
+  páginas com o declarado, ordem Databricks → AWS → Snowflake) estão na §6 de lá;
+- roteiro de aprendizado: degrau 2, modelagem dimensional, feito em 20/11/2026
+  ([página de conceitos §10](docs/pagina_de_conceitos.md#10-roteiro-de-aprendizado-pedido-de-17112026));
+  o degrau 3 espera o Owner indicar o assunto.
 
 **Estado em 18/11/2026, ao fim da sessão:**
 

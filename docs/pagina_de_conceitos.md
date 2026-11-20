@@ -260,8 +260,24 @@ aqui", ligada do índice de conceitos e da página inicial:
 - a build recusa termo desconhecido ou repetido, ciclo nos pré-requisitos e termo que dependa de outro
   fora do roteiro ou num degrau posterior (`portal/src/lib/roteiro.mjs`, `portal/test/roteiro.test.mjs`).
 
-Ficam para degraus seguintes: o "já li" no navegador, os percursos da §5 como trilhas e o preenchimento
+Ficam para degraus seguintes: o "já li" no navegador (feito na trilha da rodada 11 do layout), os percursos da §5 como trilhas e o preenchimento
 dos pré-requisitos dos demais termos. O próximo degrau espera o Owner estudar este e indicar o assunto.
+
+**Degrau 2, modelagem dimensional (20/11/2026, "pode fazer" do Owner, que escolheu o assunto entre
+as alternativas propostas).** Mesmo formato, no mesmo arquivo e na mesma página:
+
+- objetivo: abrir uma tabela fato e dizer que acontecimento cada linha registra, quais dimensões o
+  descrevem, quais colunas são medidas e se cada medida pode ser somada ao agrupar por uma dimensão;
+- exemplo didático rotulado: uma pequena estrela de vendas em que o valor soma entre categorias e a
+  contagem de pedidos não, o mesmo caso que a origem anota na P01;
+- termos, nesta ordem: fato, dimensão, esquema estrela, medida e métrica, aditividade. Os
+  pré-requisitos foram preenchidos só para eles e apontam para o degrau 1 (grão, chave, entidade e
+  relacionamento);
+- prática em `analytics.fact_sales_order_item` (a estrela das sete dimensões),
+  `analytics.dim_sales_channel`, na pergunta P01 e na métrica `average_order_value`; quatro perguntas
+  respondidas pelas descrições e notas do pacote fixado.
+
+O degrau 3 espera o Owner estudar este e indicar o assunto.
 
 **Condições:**
 
