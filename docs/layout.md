@@ -481,3 +481,64 @@ depois: `original_payload`, `cleaned_payload` e `findings` lado a lado, com o de
 usa as amostras da D06 e é o melhor material para ensinar qualidade de dados.
 
 Decisão do Owner: (pendente)
+
+### Rodada 5 — O que entra na conta e o que a limpeza consegue recuperar · 19/11/2026
+
+**Estrela.** Na P02, o centro reúne `net_revenue_amount`, `order_id` e `source_system`, as três
+colunas do passo da fato que entram no ticket médio. O grão do passo 1 combina cinco campos da view.
+Na estrela, `customer_segment_name` aparece no braço de cliente, `sales_channel_name` no de canal e
+`month_number`, `year_month` e `year_number` no de data. Para colocar um campo ali, o build exige
+que uma folha imediata da coluna da view em `lineage.relations` aponte para aquela dimensão. O
+destaque vem de `questions.*.dimensions` e independe dessa prova. “Mais 4 dimensões desta fato”
+abre as demais na P02.
+
+Na ficha de `analytics.fact_shipment`, `date_key` e `delivered_date_key` chegam a uma só caixa
+`dim_date`, por dois braços. As descrições das FKs na origem distinguem despacho e chegada,
+inclusive a data usada quando a remessa ainda aguarda despacho. A altura das caixas acompanha
+o conteúdo, as chaves permanecem inteiras e a tabela conserva cada par FK → PK.
+
+**Antes e depois.** Em `/governanca/legado/MONEY_LOCALE/`, a linha 9 de `coupon_redemptions`,
+captura 94, traz `"R$ 195,00"` antes e `"195.00"` depois. O campo marcado é `discount_amount`.
+O motivo da correção e a classificação da linha vêm da mesma amostra de
+`trusted.legacy_eligible_records`. Em `TEXT_DELIMITER`, o leitor encontra também a linha 2 de
+`support_agents`, com o conteúdo deslocado preservado e a regra de rejeição citada.
+
+A vista fica em Governança para que cada comparação abra a linha exata da ficha. Há entrada
+também pelo conceito Qualidade de dados e pelos passos `trusted.legado__*`. Onde a linhagem
+identifica a mesma tabela bruta em um percurso, há um link ao passo das linhas aptas.
+Essa ligação é por tabela. A classificação de uma ocorrência vem de sua própria linha.
+
+O índice lê três formas de evidência em `amostras_de_registros.json`. Em staging, compara
+`original_payload` à coluna limpa indicada por `achados`. Em trusted e na quarentena, compara
+`original_payload` a `cleaned_payload`, pelo campo de `value_findings` ou de `findings`.
+Um achado de linha inteira mostra as duas cargas e o vínculo exportado com a ocorrência canônica.
+O índice conta cada aparição em sua relação e linha. A mesma ocorrência física pode reaparecer.
+Detecção, conversão e rejeição vêm de `falhas` em `src/mvp_ed1/legacy/catalogo.yml`, acrescentado
+à cópia da D03 no mesmo commit `2bceb47`. A página distingue a regra do catálogo da ação e da
+versão registradas na linha. A exportação da D06 fornece todos os valores, inclusive os nulos e
+o marcador `<personal>`.
+
+**Verificação local.** Conferiram os 98 arquivos da origem e as amostras das 283 relações.
+Passaram 87 casos de unidade e 39 verificações estáticas. Nas 575 páginas, resolveram 50.218 links
+e âncoras. O HTML reproduziu 57 braços nas 11 fichas de fatos e 84 estrelas nos passos.
+O índice trouxe 19 tipos e 76 aparições. A estática conferiu os valores de 75 achados de campo
+(14 com máscara) e as duas cargas do achado de linha inteira. Conferiu também 17 links dos casos
+a passos do percurso da mesma tabela de origem.
+
+Três builds duraram 7,48 s, 7,51 s e 7,39 s, com mediana de 7,48 s e o mesmo SHA-256 de `dist/`
+(`033581c9a31ef71f5c92014517a86aab3872ba81e85705e0cd3f87b26757a58a`). O HTML e os recursos
+referenciados diretamente, em gzip nível 6, somaram 8.168 bytes no índice do legado, 6.370 na
+página `MONEY_LOCALE` e 15.183 na P02. A E3 de navegador fica com o Claude, incluindo a leitura
+em 390 px nos dois temas, a abertura por teclado das dimensões recolhidas, o foco na linha da
+amostra após o salto e as metas de renderização e transferência.
+
+**Entrega.** Estrelas em `294ec40`, catálogo da origem em `95c5e91`, vista do legado em
+`079082d` e verificações em `4a81fcb`. Bundle em `.cache/layout-rodada-5/rodada-5.bundle`,
+com base em `75f428c`.
+
+**Pergunta ao Owner.** Ao passar de `MONEY_LOCALE` a `TEXT_DELIMITER`, fica claro por que a origem
+corrige o primeiro valor e preserva o segundo ao indicar a rejeição?
+
+Crítica do Claude: (pendente)
+
+Decisão do Owner: (pendente)
