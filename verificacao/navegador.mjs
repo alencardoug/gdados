@@ -58,6 +58,11 @@ async function rodadaDeDesempenho(nav, cpu, { view, expandir, maiorPermitido }) 
     await contexto.close();
   }
   {
+    const { contexto, m } = await abrir(nav, "/governanca/legado/", { cpu });
+    r.legado = m;
+    await contexto.close();
+  }
+  {
     const { contexto, pagina, m } = await abrir(nav, "/governanca/", { cpu, pronto: "html[data-busca-pronta]" });
     await pagina.locator("#busca").pressSequentially("receita liquida", { delay: 80 });
     await pagina.waitForTimeout(400);
@@ -107,6 +112,8 @@ async function rodadaDeDesempenho(nav, cpu, { view, expandir, maiorPermitido }) 
 const METAS = [
   ["pergunta.fcp_ms", "Pergunta P02: primeira renderização do percurso", 1500, "ms"],
   ["pergunta.bytes_comprimidos", "Pergunta P02: dados transferidos", 1_000_000, "B"],
+  ["legado.fcp_ms", "Qualidade do legado: primeira renderização com conteúdo", 1500, "ms"],
+  ["legado.bytes_comprimidos", "Qualidade do legado: dados transferidos", 1_000_000, "B"],
   ["catalogo.fcp_ms", "Governança: primeira renderização com conteúdo", 1500, "ms"],
   ["catalogo.bytes_comprimidos", "Governança: dados transferidos", 1_000_000, "B"],
   ["catalogo.busca_max_ms", "Busca: maior tempo por tecla", 150, "ms"],
@@ -316,7 +323,7 @@ async function funcionais(nav, { view, pacote }) {
     await contexto.close();
   }
 
-  const starChecks = [];
+  const starChecks = [], defectChecks = [];
   for (const theme of ["light", "dark"]) {
     const contexto = await nav.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 }, colorScheme: theme });
     const pagina = await contexto.newPage();
@@ -325,6 +332,11 @@ async function funcionais(nav, { view, pacote }) {
     const jump = await pagina.evaluate(() => document.activeElement?.id === "passos");
     const change = await pagina.locator('#passo-3 [data-output="net_revenue_amount"]').isVisible();
     const star = pagina.locator(".fact-star").first();
+    const other = star.locator(".star-others");
+    const folded = await other.locator(".star-arm").first().isHidden();
+    await other.locator("summary").press("Enter");
+    const expanded = await other.locator(".star-arm").first().isVisible();
+    await other.locator("summary").press("Enter");
     const summary = star.locator(".star-table > summary");
     await summary.focus();
     await pagina.keyboard.press("Space");
@@ -334,11 +346,35 @@ async function funcionais(nav, { view, pacote }) {
     await pagina.goto(BASE + "/governanca/relacao/analytics.fact_shipment/#estrela");
     const sheet = await pagina.locator(".fact-star .star-hub").isVisible();
     const sheetWidth = await pagina.evaluate(() => document.documentElement.scrollWidth);
-    starChecks.push({ theme, jump, change, focus, table, width, sheet, sheetWidth });
+    const dateBox = pagina.locator('.fact-star [data-dimension="analytics.dim_date"]');
+    const twoRoles = await dateBox.count() === 1 && await dateBox.locator(".arm-line").count() === 2;
+    starChecks.push({ theme, jump, change, focus, table, width, sheet, sheetWidth, folded, expanded, twoRoles });
+
+    await pagina.goto(BASE + "/governanca/legado/");
+    const card = pagina.locator(".legacy-case").first();
+    const pair = card.locator(".comparison > div");
+    const first = await pair.nth(0).boundingBox(), next = await pair.nth(1).boundingBox();
+    const stacked = first && next && next.y >= first.y + first.height;
+    const pageWidth = await pagina.evaluate(() => document.documentElement.scrollWidth);
+    const cardId = await card.getAttribute("id");
+    const code = await card.getAttribute("data-code");
+    await pagina.locator(`.defect-index a[href="/governanca/legado/${code}/"]`).press("Enter");
+    const firstCase = pagina.locator(`article[id="${cardId}"]`);
+    const repeated = await firstCase.isVisible();
+    const source = firstCase.locator('a[href*="#linha-amostra-"]').first();
+    const target = await source.getAttribute("href");
+    const typeWidth = await pagina.evaluate(() => document.documentElement.scrollWidth);
+    await source.press("Enter");
+    const receipt = await pagina.evaluate(() => document.activeElement?.id === location.hash.slice(1) &&
+      document.activeElement.matches(":focus-visible") && getComputedStyle(document.activeElement).outlineStyle !== "none");
+    defectChecks.push({ theme, stacked, pageWidth, typeWidth, repeated, receipt, source: new URL(pagina.url()).pathname + new URL(pagina.url()).hash === target });
     await contexto.close();
   }
   add(8, "Em 390 px e sem JavaScript, atalho, mudança aberta e tabela da estrela funcionam nos dois temas",
-    starChecks.every((r) => r.jump && r.change && r.focus && r.table && r.sheet && r.width <= 390 && r.sheetWidth <= 390), starChecks);
+    starChecks.every((r) => r.jump && r.change && r.focus && r.table && r.sheet && r.folded && r.expanded && r.twoRoles &&
+      r.width <= 390 && r.sheetWidth <= 390), starChecks);
+  add(8, "Sem JavaScript em 390 px, antes e depois se empilham e o teclado leva do índice à linha exportada nos dois temas",
+    defectChecks.every((r) => r.stacked && r.repeated && r.receipt && r.source && r.pageWidth <= 390 && r.typeWidth <= 390), defectChecks);
 
   // 12. Ida e volta: do recorte da linhagem à explicação e de volta ao mesmo recorte.
   {

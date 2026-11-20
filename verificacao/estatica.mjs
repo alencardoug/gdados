@@ -4,6 +4,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { isDeepStrictEqual } from "node:util";
+import { checkLegacy } from "./legado.mjs";
 import { checkGuides } from "./percursos.mjs";
 // Exceção à independência: a lista dos identificadores mascarados (só hashes) tem um dono, o portal.
 import { mascarar } from "../portal/src/lib/mascara.mjs";
@@ -194,7 +195,10 @@ export function verificarEstatica({ dist, origem }) {
   const mapErrors = [], barErrors = [], orderErrors = [], neighborLayerErrors = [];
   const noteErrors = [], nameErrors = [], sensitivityTargetErrors = [];
   let summarizedTypes = 0;
-  const samples = lerJson(join(origem, "amostras_de_registros.json")).relations;
+  const exported = lerJson(join(origem, "amostras_de_registros.json"));
+  const samples = exported.relations;
+  checkLegacy(pacote, exported, readFileSync(join(origem, "arquivos/src/mvp_ed1/legacy/catalogo.yml"), "utf8"),
+    (path) => html(dist, path), add);
   for (const [id, r] of Object.entries(R)) {
     const page = html(dist, `/governanca/relacao/${id}/`);
     const orientation = page.match(/<section aria-labelledby="linhagem">([\s\S]*?)<\/section>/)?.[1] ?? "";
