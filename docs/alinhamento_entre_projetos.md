@@ -84,6 +84,10 @@ existem no `mvp_eng_dados_1`. Continuam válidas como históricas e não exigem 
   as escolhas do gdados não dependem do protótipo da etapa 2.3 de lá.
 - **`nl_sql`:** não há dependência direta com o gdados. Os achados dele chegam ao portal pelas
   correções da origem e pelo pacote.
+- **Direção de 20/11/2026 (Owner):** páginas futuras de paridade multicloud (Databricks → AWS →
+  Snowflake) voltadas a favorecer o `nl_sql`, e recomendações de como o `nl_sql` pode usar o pacote
+  da origem. Só anotado; dono: [Multicloud e nl_sql](multicloud_e_nl_sql.md). Avisos deixados no
+  `alinhamento.md` da origem e do `nl_sql` (criado em 20/11/2026, com a nota de uso copiada).
 
 ## 6. O que o gdados faz
 

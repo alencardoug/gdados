@@ -41,7 +41,8 @@ Cada assunto tem um dono; os demais documentos apontam para ele.
 | [Mapeamento do pacote](docs/mapeamento_do_pacote.md) | De onde cada página tira cada informação do pacote e as lacunas do formato |
 | [Alinhamento entre projetos](docs/alinhamento_entre_projetos.md) | Índice das pendências que envolvem a origem, o BI e o Owner |
 | [Relatório da E3](docs/relatorio_e3.md) | Resultado datado da verificação local, com a versão avaliada e os limites |
-| [Layout](docs/layout.md) | Frente de layout de 19/11/2026: pedido do Owner, papéis (Codex constrói, Claude critica), ideias e rodadas |
+| [Layout](docs/layout.md) | Frente de layout de 19/11/2026: pedido do Owner, papéis, restrições, ideias e as 11 rodadas, com verificação e crítica |
+| [Multicloud e nl_sql](docs/multicloud_e_nl_sql.md) | Direção anotada em 20/11/2026: páginas de paridade Databricks → AWS → Snowflake e a relação com o `nl_sql` |
 
 ## Fronteira com o projeto de dados
 
@@ -89,14 +90,15 @@ Abra a sessão com `/home/doug/Projetos/gdados` como diretório de trabalho. O a
 `AGENTS.md` e os documentos apontados ali, além da especificação da página de conceitos.
 O histórico desta conversa não é necessário para compreender o escopo documentado.
 
-**Retomada de 19/11/2026 (sessão `claude2`):**
+**Retomada de 20/11/2026 (sessão `claude2`):**
 
-- a sessão anterior refixou na `v2.3.0` e exibiu as amostras de registros (D06), em quatro commits
-  locais até `63d2405`, mais o desta frente; **nada foi enviado**: o push no `main` publica o site e
-  espera o "pode" do Owner;
-- frente nova: o **layout do portal**, com o Codex construindo e o Claude criticando e enriquecendo
-  o conceito, sem revisar linha a linha. Começar por [docs/layout.md](docs/layout.md): o pedido, os
-  papéis, as restrições, as ideias de partida e o canal com o Codex, a confirmar com o Owner.
+- frente de layout: as nove ideias da §5 de [docs/layout.md](docs/layout.md) foram construídas em
+  11 rodadas (1 a 5 pelo Codex, 6 a 11 pelo Claude, depois que o Owner pediu para seguir sem o
+  Codex), mais o tema escuro escolhível e as cores das camadas. Cada rodada tem verificação, crítica e
+  "Decisão do Owner: (pendente)" na §6. A E3 local passou 81 de 81 em 20/11/2026, e tudo foi
+  publicado com o "pode" do Owner;
+- direção nova, só anotada: [docs/multicloud_e_nl_sql.md](docs/multicloud_e_nl_sql.md), com avisos
+  deixados no `alinhamento.md` da origem e do `nl_sql`.
 
 **Estado em 18/11/2026, ao fim da sessão:**
 
