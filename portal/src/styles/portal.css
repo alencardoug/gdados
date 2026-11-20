@@ -158,46 +158,8 @@ footer.procedencia p { margin: 0.25rem 0; }
 .bloco > .rotulo code, .bloco > .rotulo a { text-transform: none; letter-spacing: 0; }
 .legenda .amostra.losango { background: #475569; border-radius: 0; transform: rotate(45deg) scale(0.8); }
 
-/* Fluxo entre camadas. Cada traço do mapa corresponde a um par de camadas na linhagem. */
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 code.identifier, .amostra code.identifier { white-space: normal; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .identifier > span { white-space: nowrap; }
-.layer-map { border-block: 1px solid var(--borda); padding-block: 1rem; }
-.flow-spine { max-width: 52rem; }
-.spine-stop, .spine-edge { --station-width: 40%; }
-.spine-stop { display: grid; grid-template-columns: minmax(0, var(--station-width)) minmax(0, 1fr); }
-.layer-station { display: flex; flex-direction: column; justify-content: center; padding: 0.5rem 0.8rem; border: 1px solid var(--borda); border-inline-start: 3px solid var(--track); border-radius: 0.35rem; background: var(--superficie); }
-.layer-station a { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.7rem; font-weight: 700; text-decoration: none; }
-.layer-station code { padding: 0; background: none; text-decoration: underline; text-underline-offset: 0.15em; }
-.layer-station > span, .layer-station small, .layer-count { font-size: 0.82rem; line-height: 1.35; }
-.layer-count, .layer-station small { color: var(--suave); font-weight: 400; }
-.flow-spine ul, .extra-flows ul { list-style: none; padding: 0; margin: 0; }
-.flow-branches { --fork: 1rem; align-self: center; position: relative; }
-.flow-branches::before { content: ""; position: absolute; top: 50%; width: var(--fork); border-top: 2px solid var(--track); }
-.flow-branches li { position: relative; display: grid; grid-template-columns: clamp(2.6rem, 8vw, 5rem) minmax(0, 1fr); align-items: center; padding: 0.16rem 0 0.16rem var(--fork); }
-.flow-branches li::before { content: ""; position: absolute; left: var(--fork); inset-block: 0; border-left: 2px solid var(--track); }
-.flow-branches li:first-child::before { top: 50%; }
-.flow-branches li:last-child::before { bottom: 50%; }
-.branch-edge, .spine-edge { position: relative; display: grid; place-items: center; color: var(--track); }
-.branch-edge::before { content: ""; position: absolute; inset-inline: 0; border-top: 2px solid var(--track); }
-.branch-edge b, .spine-edge b, .extra-flows b { position: relative; background: var(--track-surface); color: var(--track); border-radius: 1rem; padding: 0 0.3em; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
-.branch-edge::after, .spine-edge::after { content: ""; position: absolute; width: 0.38rem; height: 0.38rem; border: solid var(--track); border-width: 2px 2px 0 0; }
-.branch-edge::after { right: 2px; transform: rotate(45deg); }
-.branch-edge.incoming::after { left: 2px; right: auto; transform: rotate(-135deg); }
-.spine-edge { width: var(--station-width); height: 2.3rem; }
-.spine-edge::before { content: ""; position: absolute; inset-block: 0; border-left: 2px solid var(--track); }
-.spine-edge::after { bottom: 2px; transform: rotate(135deg); }
-.flow-gap, .detached-stations p { font-size: 0.85rem; color: var(--suave); }
-.extra-flows, .detached-stations { margin-top: 1rem; }
-.extra-flows h3 { margin: 0 0 0.3rem; font-size: 0.9rem; }
-.extra-flows ul { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.extra-flows li { padding: 0.15rem 0.45rem; border: 1px solid var(--borda); border-radius: 0.3rem; font-size: 0.9rem; }
-.extra-flows code { background: none; padding: 0; }
-@media (max-width: 36rem) {
-  .spine-stop, .spine-edge { --station-width: 41%; }
-  .flow-branches { --fork: 0.4rem; }
-  .layer-station { padding: 0.45rem; }
-}
 
 /* A ficha mantém os termos ligados às explicações e os valores declarados juntos. */
 .identity-card { margin-top: 1rem; border: 1px solid var(--borda); border-top: 0.25rem solid var(--track); border-radius: 0.6rem; background: var(--superficie); }

@@ -1,0 +1,100 @@
+.map-trace .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.layer-map { border-block: 1px solid var(--borda); padding-block: 0.9rem 1rem; }
+.map-key, .map-layout { display: grid; gap: 1rem 2rem; }
+.map-key { margin-bottom: 1.2rem; }
+.map-key p { margin: 0; }
+.pair-example { border-inline-start: 3px solid var(--track); padding-inline-start: 0.8rem; }
+.map-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+}
+.station-cell { min-width: 0; display: flex; flex-direction: column; }
+.station-cell:is([data-layer="raw"], [data-layer="raw_legacy"]) .layer-station { flex: 1; }
+.station-stem { flex: 1; align-self: center; background: var(--track); }
+.layer-station {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--borda);
+  border-inline-start: 3px solid var(--track);
+  border-radius: 0.35rem;
+  background: var(--superficie);
+}
+.layer-station a { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.6rem; font-weight: 700; text-decoration: none; }
+.layer-station code { padding: 0; background: none; text-decoration: underline; text-underline-offset: 0.15em; }
+.layer-station > span, .layer-station small, .layer-count { display: block; font-size: 0.82rem; line-height: 1.35; }
+.layer-count, .layer-station small { color: var(--suave); }
+.layer-count { font-weight: 400; }
+.station-cell[data-layer="raw_legacy"] .layer-station { border-inline-start-color: var(--realce); }
+
+.map-trace {
+  --head: max(0.7rem, calc(var(--stroke) + 5px));
+  position: relative;
+  display: grid;
+  place-items: center;
+  color: var(--track);
+}
+.map-trace[data-from="raw_legacy"] { color: var(--realce); }
+.map-trace b {
+  position: relative;
+  line-height: 1.25;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  background: var(--fundo);
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.2rem;
+}
+.map-trace svg { display: block; position: absolute; width: 100%; height: 100%; }
+.map-trace path { fill: none; stroke: currentColor; stroke-width: var(--stroke); }
+.map-trace polygon { fill: currentColor; }
+.map-trace:not(.loop)::after { content: ""; position: absolute; background: currentColor; }
+.map-trace:is(.down, .bend) { min-height: 3rem; }
+.map-trace:is(.down, .bend)::after {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--head);
+  height: 0.5rem;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.map-trace.down::before, .map-trace:is(.right, .left)::before { content: ""; position: absolute; background: currentColor; }
+.map-trace.down::before { top: 0; height: calc(100% - 0.45rem); width: var(--stroke); }
+.map-trace.bend svg { top: 0; height: calc(100% - 0.45rem); }
+.map-trace.bend::after { left: 4%; }
+.map-trace.bend b { transform: translateY(-0.225rem); }
+.map-trace:is(.left, .right) { height: 1.9rem; }
+.map-trace.left { align-self: start; margin-top: 0.35rem; }
+.map-trace:is(.left, .right)::after { width: 0.5rem; height: var(--head); }
+.map-trace:is(.left, .right)::before { width: calc(100% - 0.45rem); height: var(--stroke); }
+.map-trace.left::before { right: 0; }
+.map-trace.left::after { left: 0; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+.map-trace.right::before { left: 0; }
+.map-trace.right::after { right: 0; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.layer-station .station-loop { display: flex; align-items: center; flex-wrap: wrap; gap: 0 0.35rem; margin-top: 0.3rem; color: var(--suave); }
+.station-cell[data-layer="trusted"] .layer-station:has(.station-loop) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 0.5rem;
+}
+.station-cell[data-layer="trusted"] .layer-station > :not(.station-loop) { grid-column: 1; }
+.station-cell[data-layer="trusted"] .station-loop { grid-area: 1 / 2 / span 3 / 3; align-self: center; margin: 0; }
+.map-trace.loop { width: 4.25rem; height: 2.375rem; }
+.map-trace.loop b { background: transparent; padding: 0; }
+
+.extra-flows h3, .other-stations h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+.extra-flows ul { list-style: none; margin: 0; padding: 0; }
+.extra-flows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.35rem;
+  border-bottom: 1px solid var(--borda);
+}
+.extra-flows code { background: none; padding: 0; }
+.other-stations { margin-top: 1rem; }
+@media (min-width: 54rem) {
+  .map-key { grid-template-columns: 1fr 1fr; align-items: start; }
+  .map-layout { grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr); align-items: start; }
+}
+@media (max-width: 36rem) {
+  .layer-station { padding: 0.4rem; }
+}

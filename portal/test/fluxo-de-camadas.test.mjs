@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { layerFlows, planLayerMap, neighborLayers } from "../src/lib/fluxo-de-camadas.mjs";
+import { examplePair, flowWidth, layerFlows, planLayerMap, neighborLayers } from "../src/lib/fluxo-de-camadas.mjs";
 
 const layerOf = (id) => ({ a: "raw", b: "trusted", c: "trusted", d: "trusted" })[id];
 const edges = [
@@ -19,15 +19,42 @@ test("a faixa agrupa cada direção pela camada declarada e preserva o vizinho s
   const outputs = neighborLayers(edges.filter((e) => e.source === "a"), "target", layerOf);
   assert.deepEqual(outputs, [{ layer: "trusted", items: [{ id: "b", n: 7 }, { id: "c", n: 2 }] }]);
 });
-test("o desenho só usa ligações exportadas e conserva saltos, voltas e camadas isoladas", () => {
-  const edge = (source, target) => ({ source, target, pairs: 1 });
+const edge = (source, target, pairs = 1) => ({ source, target, pairs });
+
+test("um traço só ocupa o mapa se o par existir na linhagem", () => {
   const flows = [edge("raw", "trusted"), edge("trusted", "extra"), edge("extra", "staging"),
-    edge("controle", "staging"), edge("staging", "trusted"), edge("trusted", "trusted")];
-  const { stations, detached, extra } = planLayerMap(["raw", "staging", "trusted", "extra", "controle", "isolada"], flows);
-  assert.equal(stations[0].next, undefined);
-  assert.deepEqual(stations[1].next, flows[4]);
-  assert.deepEqual(stations[1].branches, [{ layer: "controle", edge: flows[3] }]);
-  assert.deepEqual(stations[2].branches, [{ layer: "extra", edge: flows[1] }]);
-  assert.deepEqual(extra, [flows[0], flows[2], flows[5]]);
-  assert.deepEqual(detached, ["isolada"]);
+    edge("controle", "staging"), edge("staging", "trusted"), edge("trusted", "trusted"), edge("extra", "extra")];
+  const layers = ["raw", "raw_legacy", "staging", "trusted", "extra", "controle", "isolada"];
+  const { stations, others, routes, extra } = planLayerMap(layers, flows);
+  assert.deepEqual(routes.map((r) => r.edge), [flows[4]]);
+  assert.deepEqual(extra, flows.slice(0, 4));
+  assert.deepEqual(others.map((s) => s.layer), ["extra", "controle", "isolada"]);
+  assert.deepEqual([...stations, ...others].flatMap((s) => s.loop ?? []), flows.slice(5));
+});
+
+test("as duas entradas têm saídas próprias e só a entrega a trusted contorna staging", () => {
+  const layers = ["raw", "raw_legacy", "staging", "trusted"];
+  const flows = [edge("raw", "staging"), edge("raw_legacy", "staging"), edge("raw_legacy", "trusted")];
+  const { stations, routes, extra } = planLayerMap(layers, flows);
+  assert.deepEqual(stations.slice(0, 2).map((s) => s.layer), ["raw", "raw_legacy"]);
+  assert.deepEqual(routes.map((r) => [r.edge, r.shape]), [[flows[0], "down"], [flows[1], "bend"], [flows[2], "down"]]);
+  assert.deepEqual(extra, []);
+});
+
+test("a espessura aumenta em passos iguais desde um par até o maior fluxo", () => {
+  assert.deepEqual([1, 2, 5, 9].map((n) => flowWidth(n, 9)), [1, 2.125, 5.5, 10]);
+  assert.equal(flowWidth(1, 1), 1);
+});
+
+test("o exemplo escolhe um par do desvio com várias ligações e nomes curtos", () => {
+  const layers = { a: "raw", b: "raw_legacy", c: "trusted", longo: "trusted" };
+  const pairs = [{ source: "a", target: "c", n: 8 }, { source: "b", target: "longo", n: 9 }, { source: "b", target: "c", n: 3 }];
+  assert.equal(examplePair(pairs, (id) => layers[id]), pairs[2]);
+});
+
+test("sem exemplo no desvio, a legenda exige fichas e usa um par existente ou omite o exemplo", () => {
+  const pairs = [{ source: "fora", target: "c", n: 7 }, { source: "a", target: "b", n: 1 }, { source: "a", target: "c", n: 4 }];
+  assert.equal(examplePair(pairs, layerOf), pairs[2]);
+  assert.equal(examplePair(pairs.slice(0, 2), layerOf), pairs[1]);
+  assert.equal(examplePair(pairs.slice(0, 1), layerOf), undefined);
 });

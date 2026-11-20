@@ -1,44 +1,53 @@
 ---
+import "../styles/mapa-de-camadas.css";
 import EstacaoCamada from "./EstacaoCamada.astro";
 import Identificador from "./Identificador.astro";
-import { arestasDeRelacoes, relacaoPorId, relationsByLayer } from "../lib/portal.mjs";
-import { layerFlows, planLayerMap } from "../lib/fluxo-de-camadas.mjs";
-const flows = layerFlows(arestasDeRelacoes, (id) => relacaoPorId.get(id)?.camada);
-const { stations, detached, extra } = planLayerMap([...relationsByLayer.keys()], flows);
-const extraGroups = [
-  { title: "Outros fluxos diretos", edges: extra.filter((f) => f.source !== f.target) },
-  { title: "Entre relações da mesma camada", edges: extra.filter((f) => f.source === f.target) },
-];
+import TracoCamada from "./TracoCamada.astro";
+import { arestasDeRelacoes, relacaoPorId, relationsByLayer, rotaDaRelacao } from "../lib/portal.mjs";
+import { examplePair, flowWidth, layerFlows, planLayerMap } from "../lib/fluxo-de-camadas.mjs";
+const layerOf = (id) => relacaoPorId.get(id)?.camada;
+const flows = layerFlows(arestasDeRelacoes, layerOf);
+const { stations, others, routes, extra } = planLayerMap([...relationsByLayer.keys()], flows);
+const largest = Math.max(1, ...flows.map((f) => f.pairs));
+const example = examplePair(arestasDeRelacoes, layerOf);
 ---
 <div class="layer-map">
-  <div class="flow-spine">
-    {stations.map(({ layer, next, branches }, i) => <Fragment>
-      <div class="spine-stop">
-        <EstacaoCamada {layer} {flows} />
-        {branches.length > 0 && <ul class="flow-branches" role="list" aria-label={`Ramais de ${layer}`}>
-          {branches.map(({ layer: branch, edge }) => <li>
-            <span class:list={["branch-edge", { incoming: edge.target === layer }]} data-from={edge.source} data-to={edge.target}>
-              <span class="sr-only">{edge.source} para {edge.target}, </span><b>{edge.pairs}</b><span class="sr-only"> pares de relações</span>
-            </span>
-            <EstacaoCamada layer={branch} {flows} />
-          </li>)}
-        </ul>}
-      </div>
-      {next ? <div class="spine-edge" data-from={next.source} data-to={next.target}>
-        <span class="sr-only">{next.source} para {next.target}, </span><b>{next.pairs}</b><span class="sr-only"> pares de relações</span>
-      </div> : i < stations.length - 1 && <p class="flow-gap">A linhagem não informa ligação direta de {layer} para {stations[i + 1].layer}.</p>}
-    </Fragment>)}
+  <div class="map-key">
+    <p>Siga as setas no sentido dos valores. Cada estação abre sua camada no catálogo.<br />
+      {largest > 1 ? <>Escala linear de 1 px (1 par) a 10 px ({largest} pares).</>
+        : <>Cada traço representa um par de relações e tem 1 px de espessura.</>}
+    </p>
+    {example && <p class="pair-example">
+      <a href={rotaDaRelacao(example.source)}><Identificador value={example.source} /></a>{" fornece valores a "}
+      <a href={rotaDaRelacao(example.target)}><Identificador value={example.target} /></a>{" por "}{example.n}
+      {example.n === 1 ? " ligação entre colunas" : " ligações entre colunas"}.
+      O par conta <strong>1</strong>, independentemente do número de colunas.
+    </p>}
   </div>
-  {detached.length > 0 && <div class="detached-stations">
-    <p>Camadas sem ligação direta com a linha principal na linhagem exportada</p>
-    {detached.map((layer) => <EstacaoCamada {layer} {flows} />)}
+  <div class="map-layout">
+    <div class="map-grid">
+      {stations.map(({ layer, area, loop }) => {
+        // Se a vizinha lateral tiver mais texto, a linha ocupa a diferença de altura fora da caixa.
+        const stem = routes.find((r) => r.shape === "down" && r.edge.source === layer);
+        return <div class="station-cell" data-layer={layer} style={{ gridArea: area }}>
+          <EstacaoCamada {layer} {flows} {loop} {largest} />
+          {stem && ["staging", "analytics"].includes(layer) &&
+            <span class="station-stem" aria-hidden="true" style={{ width: `${flowWidth(stem.edge.pairs, largest)}px` }} />}
+        </div>;
+      })}
+      {routes.map(({ edge, shape, area }) => <TracoCamada {edge} {shape} {area} {largest} />)}
+    </div>
+    {extra.length > 0 && <div class="extra-flows">
+      <h3>Outros fluxos diretos</h3>
+      <ul role="list">{extra.map((edge) => <li>
+        <Identificador value={edge.source} /><TracoCamada {edge} {largest} shape="right" /><Identificador value={edge.target} />
+      </li>)}</ul>
+    </div>}
+  </div>
+  {others.length > 0 && <div class="other-stations">
+    <h3>Demais camadas do pacote</h3>
+    {others.map(({ layer, loop }) => <EstacaoCamada {layer} {flows} {loop} {largest} />)}
   </div>}
-  {extraGroups.filter((g) => g.edges.length).map(({ title, edges }) => <div class="extra-flows">
-    <h3>{title}</h3>
-    <ul role="list">{edges.map((f) => <li data-from={f.source} data-to={f.target}>
-      <Identificador value={f.source} /> <span aria-label="para">→</span> <Identificador value={f.target} /> <b>{f.pairs}</b>
-    </li>)}</ul>
-  </div>)}
 </div>
 <details class="lineage-table"><summary>Ler todos os fluxos em tabela</summary>
   <div class="rolagem"><table>
