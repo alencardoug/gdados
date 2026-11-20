@@ -1,5 +1,7 @@
 ---
 import Identificador from "./Identificador.astro";
+import EsquemaEstrela from "./EsquemaEstrela.astro";
+import { factStar } from "../lib/estrela.mjs";
 import MudancaDeColuna from "./MudancaDeColuna.astro";
 import { changedInputs } from "../lib/percurso-da-medida.mjs";
 import Md from "./Md.astro";
@@ -12,6 +14,7 @@ const r = pacote.relations[id];
 const columns = [...step.columns.values()];
 const changes = columns.map((c) => ({ name: c.name, groups: changedInputs(c) })).filter((c) => c.groups.length);
 const isView = id === question.view;
+const star = question.facts.includes(id) && factStar(pacote, id);
 const selected = columns[0].name;
 const role = isView ? "View que responde à pergunta" : question.facts.includes(id) ? "Fato da pergunta" :
   question.dimensions.includes(id) ? "Dimensão da pergunta" : layerRoles.get(layer) ?? r?.resource_type;
@@ -38,7 +41,7 @@ const crossings = travessias.filter((t) => t.relacoes.includes(id));
       <Md html={await mdDoPacote(excerpt)} />
       <cite><a href={citation}>{isView ? "Descrição da medida na origem" : "Descrição na ficha"}</a></cite>
     </blockquote>}
-    {(r?.grain || grain.length > 0) && <p class="step-grain"><b>Grão</b> · {r?.grain ?? <>Uma combinação de {grain.map((c, i) =>
+    {!star && (r?.grain || grain.length > 0) && <p class="step-grain"><b>Grão</b> · {r?.grain ?? <>Uma combinação de {grain.map((c, i) =>
       <>{i > 0 && ", "}<Identificador value={c} /></>)} (regra da view).</>}</p>}
     <p class="column-label">{columns.length === 1 ? "Coluna que carrega o valor" : "Colunas que carregam o valor"}</p>
     <ul class="value-columns" role="list">{columns.map(({ name, terminal, gap }) =>
@@ -49,6 +52,7 @@ const crossings = travessias.filter((t) => t.relacoes.includes(id));
       </li>)}</ul>
     {changes.map(({ name, groups }) => <MudancaDeColuna {id} {name} {groups} {numbers} />)}
     {commonTerminal && <p class="terminal-note"><strong>Origem terminal</strong> · {terminalText[commonTerminal]}</p>}
+    {star && <><h5 class="star-title">Esquema estrela</h5><EsquemaEstrela {star} dimensions={question.dimensions} /></>}
     {inputs.length > 0 && <>
       <p class="branch-label">{inputs.length === 1 ? "O valor vem do passo" : "O valor vem destes ramos"}</p>
       <ul class="step-branches">{inputs.map((input) =>

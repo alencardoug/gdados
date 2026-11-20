@@ -1,6 +1,8 @@
 ---
 // Página de uma relação (PLANO §2.1): significado, ficha, colunas com sensibilidade e domínio de
 // valores, linhagem imediata, testes, auditoria e as perguntas que a usam.
+import EsquemaEstrela from "../../../components/EsquemaEstrela.astro";
+import { factStar } from "../../../lib/estrela.mjs";
 import Identificador from "../../../components/Identificador.astro";
 import { commonNotice, terminalNotice } from "../../../lib/notas-de-tabela.mjs";
 import { wrapInlineIdentifiers } from "../../../lib/identificadores.mjs";
@@ -25,6 +27,7 @@ export function getStaticPaths() {
 }
 const x = relacaoPorId.get(Astro.params.id);
 const r = x.r;
+const star = factStar(pacote, x.id);
 const meta = r.meta ?? {};
 const viewGrain = Object.keys(x.regras?.grain ?? {});
 const descricao = x.semDescricao ? null : await mdDoPacote(r.description);
@@ -105,11 +108,12 @@ const sustentacao = auditoria ? [
   </dl>
 </header>
 <nav class="relation-nav" aria-label="Nesta relação">
-  <a href="#linhagem">Onde estou</a><a href="#ficha">Definição e acesso</a><a href="#colunas">Colunas</a><a href="#amostra">Amostra</a><a href="#testes">Testes</a>
+  <a href="#linhagem">Onde estou</a>{star && <a href="#estrela">Esquema estrela</a>}<a href="#ficha">Definição e acesso</a><a href="#colunas">Colunas</a><a href="#amostra">Amostra</a><a href="#testes">Testes</a>
   {auditoria && <a href="#auditoria">Auditoria</a>}
 </nav>
 
 <MinimapaRelacao relation={x} />
+{star && <><h2 id="estrela">Esquema estrela</h2><EsquemaEstrela {star} /></>}
 
 <h2 id="ficha">Definição e acesso</h2>
 {x.semDescricao

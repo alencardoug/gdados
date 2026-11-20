@@ -1,0 +1,80 @@
+.fact-star { container-type: inline-size; --branch-gap: 1.5rem; --row-gap: 0.45rem; margin-bottom: 1rem; }
+.star-key, .star-er { font-size: 0.9rem; }
+.star-layout {
+  display: grid;
+  grid-template-areas: "before" "hub" "after";
+  padding: 0.75rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.45rem;
+  background: var(--fundo);
+}
+.star-hub {
+  grid-area: hub;
+  align-self: center;
+  justify-self: center;
+  width: min(100%, 16rem);
+  padding: 0.75rem;
+  border: 2px solid var(--track);
+  border-radius: 0.45rem;
+  color: var(--texto);
+  background: var(--track-surface);
+}
+.star-hub strong, .star-hub small, .star-arm > span, .star-arm > a, .star-table small { display: block; }
+.star-layout code { background: transparent; padding: 0; }
+.star-hub p { margin: 0.4rem 0; }
+.star-hub > span, .star-arm > span, .star-hub small { font-size: 0.82rem; color: var(--suave); }
+.before-hub { grid-area: before; }
+.after-hub { grid-area: after; }
+.star-nodes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--row-gap) var(--branch-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.star-arm {
+  position: relative;
+  align-self: stretch;
+  padding: 0.5rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.35rem;
+  background: var(--superficie);
+  line-height: 1.32;
+}
+.star-arm[data-used] { border-color: var(--track); background: var(--track-surface); }
+.star-arm > a:first-child { font-weight: 700; }
+.arm-keys { margin-block: 0.3rem; font-size: 0.88rem; }
+.star-arm .snapshot-link, .dimension-in-question { display: block; font-size: 0.78rem; }
+.dimension-in-question { color: var(--track); }
+.star-fan { display: none; }
+.star-table { margin-block: 0.6rem; }
+.star-table table { table-layout: fixed; }
+.star-table th { position: static; }
+
+/* Em uma coluna estreita, os braços se encontram no eixo entre os cartões.
+   O primeiro e o último terminam na altura da ligação, sem ponta solta. */
+@container (max-width: 35.99rem) {
+  .star-arm::after { content: ""; position: absolute; top: 50%; left: 100%; width: calc(var(--branch-gap) / 2 + 1px); border-top: 1px solid var(--suave); }
+  .star-arm:nth-child(even)::after { left: auto; right: 100%; }
+  .star-arm[data-used]::after { border-color: var(--track); border-width: 2px; }
+  .star-arm:nth-child(odd)::before { content: ""; position: absolute; left: calc(100% + var(--branch-gap) / 2); top: calc(-1 * var(--row-gap) - 2px); bottom: -1px; border-left: 1px solid var(--suave); }
+  .before-hub .star-arm:first-child::before { top: 50%; }
+  .after-hub .star-arm:first-child::before { top: -1px; }
+  .after-hub .star-arm:nth-last-child(-n+2):nth-child(odd)::before { bottom: 50%; }
+}
+@container (min-width: 36rem) {
+  .star-layout { grid-template: "before hub after" auto / minmax(0, 1fr) minmax(0, 27%) minmax(0, 1fr); }
+  .star-side { display: grid; grid-template-columns: minmax(0, 1fr) 16%; }
+  .after-hub { grid-template-columns: 16% minmax(0, 1fr); }
+  .after-hub .star-nodes { grid-column: 2; }
+  .star-fan { display: block; grid-area: 1 / 2; width: 100%; height: 100%; min-height: 0; overflow: visible; }
+  .after-hub .star-fan { grid-column: 1; }
+  .star-fan line { stroke: var(--suave); stroke-width: 1.5; }
+  .star-fan .used { stroke: var(--track); stroke-width: 2.5; }
+  .star-nodes { grid-row: 1; grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .star-arm { margin-block: 0.2rem; }
+  .star-hub { width: 100%; }
+}
+.star-title { font-size: 1rem; margin: 1rem 0 0; }
