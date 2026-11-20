@@ -116,8 +116,11 @@ export function verificarEstatica({ dist, origem }) {
     const pair = `${source}→${target}`;
     expectedFlows.set(pair, (expectedFlows.get(pair) ?? 0) + 1);
   }
-  const drawn = [...homeHtml.matchAll(/data-from="([^"]+)" data-to="([^"]+)">[\s\S]*?<b>(\d+)<\/b>/g)]
-    .map(([, source, target, n]) => [`${source}→${target}`, Number(n)]);
+  const traces = [...homeHtml.matchAll(/<span class="map-trace (\w+)" style="([^"]+)" data-from="([^"]+)" data-to="([^"]+)">([\s\S]*?)<b>(\d+)<\/b>/g)]
+    .map(([, shape, style, source, target, body, n]) => ({
+      shape, style, source, target, body, pairs: Number(n), width: Number(style.match(/--stroke:([\d.]+)px/)?.[1]),
+    }));
+  const drawn = traces.map((t) => [`${t.source}→${t.target}`, t.pairs]);
   const flowTable = homeHtml.match(/Ler todos os fluxos em tabela<\/summary>([\s\S]*?)<\/table>/)?.[1] ?? "";
   const tabulated = [...flowTable.matchAll(/<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>(\d+)<\/td><\/tr>/gs)]
     .map(([, source, target, n]) => [`${textoDe(source).trim()}→${textoDe(target).trim()}`, Number(n)]);
@@ -127,6 +130,59 @@ export function verificarEstatica({ dist, origem }) {
       ![...expectedFlows.keys()].some((key) => key.endsWith("→" + layer) && key !== `${layer}→${layer}`));
   add(2, "Traços, ramais, saltos e tabela contam os pares dirigidos entre as camadas", sameFlows(drawn) && sameFlows(tabulated) && !missingIncoming.length,
     { fluxos: expectedFlows.size, pares: esperado.size, ausencias_divergentes: missingIncoming.map(([layer]) => layer) });
+
+  // A faixa do desvio começa sob o legado, passa ao lado de staging e termina no topo de trusted.
+  const gridArea = (style) => style?.match(/grid-area:([\d /]+)/)?.[1].split("/").map(Number) ?? [];
+  const cells = new Map([...homeHtml.matchAll(/class="station-cell" data-layer="([^"]+)" style="([^"]+)"/g)]
+    .map(([, layer, style]) => [layer, gridArea(style)]));
+  const raw = cells.get("raw"), legacy = cells.get("raw_legacy"), stage = cells.get("staging"), trusted = cells.get("trusted");
+  const peers = !(layers.raw && layers.raw_legacy) ||
+    (raw && legacy && raw[0] === 1 && legacy[0] === raw[0] && raw[3] <= legacy[1]);
+  const direct = traces.find((t) => t.source === "raw_legacy" && t.target === "trusted");
+  const [top, left, bottom, right] = gridArea(direct?.style);
+  const x = (left + right) / 2;
+  const bypass = !expectedFlows.has("raw_legacy→trusted") || (legacy && trusted && direct?.shape === "down" &&
+    top === legacy[2] && bottom === trusted[0] && legacy[1] < x && x < legacy[3] && trusted[1] < x && x < trusted[3] &&
+    (!stage || (top <= stage[0] && stage[2] <= bottom && stage[3] <= left)));
+  const viaStage = !expectedFlows.has("raw_legacy→staging") ||
+    traces.some((t) => t.source === "raw_legacy" && t.target === "staging" && t.shape === "bend" && t.body.includes("<path "));
+  add(2, "As entradas dividem o topo e o traço do legado chega a trusted por fora de staging", Boolean(peers && bypass && viaStage),
+    { entradas: [raw, legacy], desvio: direct?.pairs });
+
+  const largest = Math.max(1, ...expectedFlows.values());
+  const widthsMatch = traces.every((t) => {
+    const count = expectedFlows.get(`${t.source}→${t.target}`);
+    const expected = largest === 1 ? 1 : 1 + (count - 1) * 9 / (largest - 1);
+    return Math.abs(t.width - expected) < 0.00001;
+  });
+  const key = homeHtml.match(/class="map-key">([\s\S]*?)<\/div>/)?.[1] ?? "";
+  const legendMatches = largest === 1 ? key.includes("1 px de espessura") : key.includes(`1 px (1 par) a 10 px (${largest} pares)`);
+  add(2, "Todos os traços seguem a escala linear explicada junto ao mapa", sameFlows(drawn) && widthsMatch && legendMatches,
+    { maior_fluxo: largest, espessuras_distintas: new Set(traces.map((t) => t.width)).size });
+
+  const example = key.match(/class="pair-example">([\s\S]*?)<\/p>/)?.[1] ?? "";
+  const exampleIds = [...example.matchAll(/href="[^"]*\/relacao\/([^"/]+)\/"/g)].map((m) => m[1]);
+  const exampleText = textoDe(example).trim();
+  const linksBetweenColumns = Number(exampleText.match(/por (\d+) ligaç(?:ões|ão) entre colunas/)?.[1]);
+  const exampleMatches = esperado.size ? exampleIds.length === 2 &&
+    esperado.get(exampleIds.join("→")) === linksBetweenColumns && exampleText.includes("O par conta 1") : !example;
+  add(2, "O exemplo da legenda liga as duas fichas e confere com as folhas entre suas colunas", exampleMatches,
+    { exemplo: exampleIds, ligacoes_entre_colunas: linksBetweenColumns });
+
+  const loops = [];
+  for (const match of homeHtml.matchAll(/class="layer-station"><a href="[^"]*\?camada=([^"#]+)#catalogo">([\s\S]*?)<\/div>/g)) {
+    for (const loop of match[2].matchAll(/class="map-trace loop"[^>]*data-from="([^"]+)" data-to="([^"]+)">[\s\S]*?<svg [\s\S]*?<path [\s\S]*?<\/svg><b>(\d+)<\/b>/g)) {
+      loops.push([match[1], loop[1], loop[2], Number(loop[3])]);
+    }
+  }
+  const expectedLoops = [...expectedFlows].filter(([pair]) => {
+    const [source, target] = pair.split("→");
+    return source === target;
+  });
+  add(2, "Cada fluxo interno forma um laço numerado dentro da estação correspondente",
+    loops.length === expectedLoops.length && expectedLoops.every(([pair, n]) =>
+      loops.some(([layer, source, target, count]) => layer === source && `${source}→${target}` === pair && count === n)),
+    { lacos: loops.map(([layer, , , pairs]) => [layer, pairs]) });
 
   const mapErrors = [], barErrors = [], orderErrors = [], neighborLayerErrors = [];
   const noteErrors = [], nameErrors = [], sensitivityTargetErrors = [];
