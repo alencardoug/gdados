@@ -297,6 +297,49 @@ async function funcionais(nav, { view, pacote }) {
   add(8, "Percurso em 390 px nos dois temas: escolha por teclado, ramo, recorte terminal no grafo e volta",
     guideChecks.every((r) => r.width <= 390 && r.focus && r.selected === r.measure && r.inputsMatch && r.onBranch && r.exact && r.restored), guideChecks);
 
+  // A estação segue a leitura inclusive quando se volta para outro ramo.
+  {
+    const { contexto, pagina, erros } = await abrir(nav, "/governanca/pergunta/P02/", { cache: true });
+    const positions = [];
+    for (const number of [2, 4, 3]) {
+      const id = "passo-" + number;
+      await pagina.locator("#" + id).evaluate((el) => el.scrollIntoView({ block: "start" }));
+      const link = pagina.locator(`.station-steps a[href="#${id}"][aria-current="step"]`);
+      await link.waitFor();
+      positions.push(await pagina.locator(".guide-map-panel").evaluate((el) => ({
+        top: el.getBoundingClientRect().top, sticky: getComputedStyle(el).position === "sticky",
+      })));
+    }
+    add(8, "Ao rolar a P02 nos dois sentidos o mapa fica fixo e marca o passo em leitura",
+      positions.every((p) => p.sticky && p.top >= 0 && Math.abs(p.top - positions[0].top) < 2), positions);
+    errosDeConsole.push(...erros);
+    await contexto.close();
+  }
+
+  const starChecks = [];
+  for (const theme of ["light", "dark"]) {
+    const contexto = await nav.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 }, colorScheme: theme });
+    const pagina = await contexto.newPage();
+    await pagina.goto(BASE + "/governanca/pergunta/P02/");
+    await pagina.locator(".jump-steps").press("Enter");
+    const jump = await pagina.evaluate(() => document.activeElement?.id === "passos");
+    const change = await pagina.locator('#passo-3 [data-output="net_revenue_amount"]').isVisible();
+    const star = pagina.locator(".fact-star").first();
+    const summary = star.locator("summary");
+    await summary.focus();
+    await pagina.keyboard.press("Space");
+    const focus = await summary.evaluate((el) => el.matches(":focus-visible") && getComputedStyle(el).outlineStyle !== "none");
+    const table = await star.locator("table").isVisible();
+    const width = await pagina.evaluate(() => document.documentElement.scrollWidth);
+    await pagina.goto(BASE + "/governanca/relacao/analytics.fact_shipment/#estrela");
+    const sheet = await pagina.locator(".fact-star .star-hub").isVisible();
+    const sheetWidth = await pagina.evaluate(() => document.documentElement.scrollWidth);
+    starChecks.push({ theme, jump, change, focus, table, width, sheet, sheetWidth });
+    await contexto.close();
+  }
+  add(8, "Em 390 px e sem JavaScript, atalho, mudança aberta e tabela da estrela funcionam nos dois temas",
+    starChecks.every((r) => r.jump && r.change && r.focus && r.table && r.sheet && r.width <= 390 && r.sheetWidth <= 390), starChecks);
+
   // 12. Ida e volta: do recorte da linhagem à explicação e de volta ao mesmo recorte.
   {
     const { contexto, pagina, erros } = await abrir(nav, `/governanca/linhagem/?modo=relacao&r=${view}&e=analytics.fact_sales_order_item`, { pronto: "#linhagem[data-pronto]", cache: true });
