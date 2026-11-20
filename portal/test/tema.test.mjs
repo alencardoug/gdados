@@ -34,7 +34,7 @@ for (const [nome, t] of [["claro", claro], ["escuro", escuro]]) {
     const falhas = [];
     const exigir = (a, b, minimo) => { const c = contraste(t[a], t[b]); if (c < minimo) falhas.push(`${a}/${b} ${c.toFixed(2)}`); };
     for (const fundo of ["fundo", "superficie"]) {
-      for (const texto of ["texto", "suave", "realce", "ok", "alerta", "class-personal", "class-confidential", "track"]) exigir(texto, fundo, 4.5);
+      for (const texto of ["texto", "suave", "realce", "ok", "alerta", "class-personal", "class-confidential", "track", "lado-local", "lado-gcp"]) exigir(texto, fundo, 4.5);
       for (let i = 0; i < TAMANHO_DA_PALETA; i++) exigir(`camada-${i}`, fundo, 3);
     }
     exigir("ausente", "ausente-fundo", 4.5);

@@ -7,6 +7,7 @@ import { isDeepStrictEqual } from "node:util";
 import { checkLegacy } from "./legado.mjs";
 import { checkRealRows } from "./linhas-reais.mjs";
 import { checkHeatmap } from "./calor.mjs";
+import { checkParity } from "./paridade.mjs";
 import { checkGuides } from "./percursos.mjs";
 // Exceção à independência: a lista dos identificadores mascarados (só hashes) tem um dono, o portal.
 import { mascarar } from "../portal/src/lib/mascara.mjs";
@@ -203,6 +204,7 @@ export function verificarEstatica({ dist, origem }) {
     (path) => html(dist, path), add);
   checkRealRows(pacote, exported, dist, (path) => html(dist, path), add);
   checkHeatmap(pacote, exported, (path) => html(dist, path), add);
+  checkParity(pacote, origem, (path) => html(dist, path), add);
   for (const [id, r] of Object.entries(R)) {
     const page = html(dist, `/governanca/relacao/${id}/`);
     const orientation = page.match(/<section aria-labelledby="linhagem">([\s\S]*?)<\/section>/)?.[1] ?? "";
