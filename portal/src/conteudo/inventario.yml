@@ -129,6 +129,7 @@
   termos: [fact, fact table, tabela fato, fato transacional]
   definicoes: [{ arquivo: docs/glossario.md, termo: "Fato transacional" }]
   leituras: ["docs/modelo_de_dados.md#31-tabelas-fato--11"]
+  prerequisitos: [grao, chave]
 - id: dimensao
   titulo: Dimensão
   grupo: dimensional
@@ -137,11 +138,13 @@
     - { arquivo: docs/glossario.md, termo: "Dimensão conformada" }
     - { arquivo: docs/glossario.md, termo: "Dimensão degenerada" }
   leituras: ["docs/modelo_de_dados.md#32-dimensões--15"]
+  prerequisitos: [entidade-e-relacionamento, chave]
 - id: esquema-estrela
   titulo: Esquema estrela
   grupo: dimensional
   termos: [star schema]
   definicoes: [{ arquivo: docs/glossario.md, termo: "Esquema estrela" }]
+  prerequisitos: [fato, dimensao]
 - id: grao
   titulo: Grão
   grupo: dimensional
@@ -154,11 +157,13 @@
   grupo: dimensional
   termos: [measure, metric, metrics, ratio, difference, razão, diferença]
   leituras: ["docs/glossario_de_negocio/README.md"]
+  prerequisitos: [fato]
 - id: aditividade
   titulo: Aditividade
   grupo: dimensional
   termos: [additivity, additive, semi_additive, non_additive, aditiva, semiaditiva, não aditiva]
   leituras: ["docs/modelo_de_dados.md#31-tabelas-fato--11"]
+  prerequisitos: [medida-e-metrica, grao]
 - id: denominador-zero
   titulo: Razão e denominador zero
   grupo: dimensional
