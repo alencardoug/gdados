@@ -573,3 +573,30 @@ nem o deslocamento. Ajustes:
 Recomendação: rodada 6, construída pelo Claude, com esses três pontos.
 
 Decisão do Owner: (pendente)
+
+### Rodada 6 — O legado mostra a diferença e o destino · 19/11/2026
+
+**Construção do Claude** (primeira rodada depois da mudança de papéis), sobre os três pontos da
+crítica da rodada 5. Commits `26845c9`, `d6ee4d0` e `a6aba63`.
+
+| Ponto | O que o leitor encontra | Artefato |
+|---|---|---|
+| Diferença marcada | No "antes", riscado o que sai (`R$ `, a vírgula); no "depois", sublinhado o que entra (o ponto). O texto lido continua o literal exportado. Só em textos de até 300 caracteres com algo em comum. | Diferença por caractere entre os dois literais da amostra (D06). |
+| Delimitador e rejeição | Em `TEXT_DELIMITER`, o `;` aparece marcado dentro do valor, com o número de trechos, e a lista dos campos que chegaram nulos na mesma carga, com o aviso de que a carga não informa a ordem das colunas. Quando o valor não muda, a nota diz que o catálogo declara rejeição, não conversão. | `delimitador` e `rejeicao` do catálogo; `original_payload` da amostra. |
+| Uma linha, um caso | A mesma linha (tabela, `legacy_row_id`, `snapshot_id`) num bloco só, com as etapas em sequência: "Achado na padronização" (staging) ↓ "Classificação em trusted". Cada etapa mantém a âncora antiga. 11 linhas reúnem mais de uma etapa. | Identidade descrita pela origem em `raw_legacy` (uma linha por ocorrência física em cada captura). |
+| Índice pelo destino | Grupos "A limpeza recupera o valor", "troca por nulo de verdade" e "A linha é rejeitada", com tipos e aparições; cada tipo mostra aparições, linhas e a família do catálogo. | `conversao` + `recuperacao` ou `rejeicao`, mutuamente exclusivas no catálogo. |
+
+**Verificação local de 19/11/2026.** Unidade: 93 de 93 (seis novos casos). Estáticas: 42 de 42,
+com três novas: a diferença marcada é real (sem os trechos marcados, os dois lados coincidem;
+29 comparações) e o delimitador marcado é o declarado (`;`); cada bloco reúne uma só linha, sem
+repetição na página; o grupo de cada tipo no índice é o tratamento lido diretamente do YAML. E3
+completa: **75 de 75** ([resultado](../verificacao/resultados/2026-11-20T01-27-51-872Z.json)).
+
+**Limitações.** A amostra da quarentena não traz as linhas dos casos de delimitador (são de outra
+captura), então o caso aponta para o destino declarado, não para a linha rejeitada. A lista de
+nulos pode incluir nulos legítimos, como a página avisa.
+
+**Pergunta ao Owner.** Ao abrir `TEXT_DELIMITER`, dá para ver por que a linha não tem conserto e é
+rejeitada, enquanto `MONEY_LOCALE` é corrigido?
+
+Decisão do Owner: (pendente)
