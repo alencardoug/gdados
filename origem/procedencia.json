@@ -3,7 +3,7 @@
   "ref": "v2.3.0",
   "commit": "2bceb477f9f854c034b58353ce252334b149b330",
   "commit_date": "2026-11-19T15:46:32-03:00",
-  "copied_at": "2026-11-19T22:12:12+00:00",
+  "copied_at": "2026-11-20T01:01:45+00:00",
   "decision": "D03 em docs/decisoes.md",
   "list": "scripts/arquivos_da_origem.txt",
   "files": [
@@ -252,6 +252,12 @@
       "source_path": "docs/registro_fase_gcp.md",
       "sha256": "a29505e53d3309fad3a1ef4c594c8df7c3282a73fa31e000bf7026304d349db5",
       "bytes": 240046
+    },
+    {
+      "path": "arquivos/src/mvp_ed1/legacy/catalogo.yml",
+      "source_path": "src/mvp_ed1/legacy/catalogo.yml",
+      "sha256": "c467d748c6daed4a1fa06574be9b38ac2b55e45a8799d1ba50eb5bf9a2b52c93",
+      "bytes": 21459
     },
     {
       "path": "arquivos/streaming/fluxo.yml",

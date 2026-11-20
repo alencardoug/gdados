@@ -83,4 +83,11 @@ const roteiro = defineCollection({
   }),
 });
 
-export const collections = { grupos, inventario, conceitos, limitacoes, percursos, roteiro };
+// O catálogo da origem é YAML. O loader nativo mantém cada seção sob sua chave.
+const catalogoLegado = defineCollection({
+  loader: file("../origem/arquivos/src/mvp_ed1/legacy/catalogo.yml"),
+  // O Astro expõe objetos em entry.data, inclusive para a seção escalar versao.
+  schema: z.unknown().transform((value) => ({ value })),
+});
+
+export const collections = { catalogoLegado, grupos, inventario, conceitos, limitacoes, percursos, roteiro };

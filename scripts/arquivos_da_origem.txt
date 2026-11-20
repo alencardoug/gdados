@@ -43,3 +43,6 @@ docs/glossario.md
 
 # view_audits.*.reference
 tests/auditoria/
+
+# Significado e tratamento dos achados exportados nas amostras do legado
+src/mvp_ed1/legacy/catalogo.yml

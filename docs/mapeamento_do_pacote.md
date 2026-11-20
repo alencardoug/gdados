@@ -80,6 +80,7 @@ O pacote aponta para arquivos da origem que ele não carrega:
 | `open_items[].anchor` | `docs/pendencias.md#d63--…` |
 | `view_audits.*.reference` | `tests/auditoria/<view>.sql` |
 | `tests.*.declared_in` e `checks.*.module` | `dbt/models/analytics/_analytics__models.yml`, `tests/test_acesso.py` |
+| Códigos de achado nas amostras da D06 | `src/mvp_ed1/legacy/catalogo.yml`, seção `falhas` (detecção, conversão ou rejeição) |
 | Decisões já tomadas, como a D66 | `docs/adr/0053-…`, `docs/pendencias.md` |
 
 Esses textos chegam ao portal pela cópia da D03, em `origem/arquivos/`, a partir de
