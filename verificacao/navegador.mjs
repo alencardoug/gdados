@@ -1,6 +1,6 @@
 // Verificações da E3 no navegador (Chrome do sistema, via Playwright): desempenho contra as metas do
 // PLANO, E3, item 9, e os itens funcionais 7, 8 e 12. Serve portal/dist com gzip, cache desligado.
-import { chromium } from "playwright";
+import { chromium, errors } from "playwright";
 import { servir } from "./servidor.mjs";
 
 const PORTA = 4321;
@@ -358,16 +358,32 @@ async function funcionais(nav, { view, pacote }) {
     const pageWidth = await pagina.evaluate(() => document.documentElement.scrollWidth);
     const cardId = await card.getAttribute("id");
     const code = await card.getAttribute("data-code");
-    await pagina.locator(`.defect-index a[href="/governanca/legado/${code}/"]`).press("Enter");
+    const typePath = `/governanca/legado/${code}/`;
+    await pagina.locator(`.defect-index a[href="${typePath}"]`).press("Enter");
+    await pagina.waitForURL(BASE + typePath);
     const firstCase = pagina.locator(`article[id="${cardId}"]`);
     const repeated = await firstCase.isVisible();
     const source = firstCase.locator('a[href*="#linha-amostra-"]').first();
     const target = await source.getAttribute("href");
     const typeWidth = await pagina.evaluate(() => document.documentElement.scrollWidth);
     await source.press("Enter");
-    const receipt = await pagina.evaluate(() => document.activeElement?.id === location.hash.slice(1) &&
-      document.activeElement.matches(":focus-visible") && getComputedStyle(document.activeElement).outlineStyle !== "none");
-    defectChecks.push({ theme, stacked, pageWidth, typeWidth, repeated, receipt, source: new URL(pagina.url()).pathname + new URL(pagina.url()).hash === target });
+    // A URL pode mudar antes de o navegador terminar de aplicar o foco nativo ao fragmento.
+    await pagina.waitForURL(BASE + target, { waitUntil: "load" });
+    try {
+      await pagina.locator("table.amostra tbody tr:target:focus-visible").waitFor({ state: "visible", timeout: 5000 });
+    } catch (error) {
+      if (!(error instanceof errors.TimeoutError)) throw error;
+      // Em caso de falha, guarda as condições separadas para o relatório dos dois temas.
+    }
+    const focusState = await pagina.evaluate(() => {
+      const row = document.querySelector("table.amostra tbody tr:target");
+      return { rowId: row?.id ?? null, activeElement: document.activeElement?.id || document.activeElement?.tagName,
+        rowFocused: row !== null && row === document.activeElement, focusVisible: row?.matches(":focus-visible") ?? false,
+        outlineStyle: row ? getComputedStyle(row).outlineStyle : null };
+    });
+    const receipt = focusState.rowId === new URL(target, BASE).hash.slice(1) && focusState.rowFocused &&
+      focusState.focusVisible && focusState.outlineStyle !== "none";
+    defectChecks.push({ theme, stacked, pageWidth, typeWidth, repeated, receipt, focusState, source: pagina.url() === BASE + target });
     await contexto.close();
   }
   add(8, "Em 390 px e sem JavaScript, atalho, mudança aberta e tabela da estrela funcionam nos dois temas",
