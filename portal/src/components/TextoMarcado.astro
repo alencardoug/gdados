@@ -1,0 +1,10 @@
+---
+// Um valor literal com os trechos que a limpeza mudou e o delimitador declarado marcados.
+// O texto lido em sequência é exatamente o literal exportado; a marcação só acrescenta ênfase.
+const { trechos, lado } = Astro.props;
+const rotulo = lado === "antes" ? "sai na limpeza" : "entra na limpeza";
+---
+<code class="sample-literal">{trechos.map((t) =>
+  t.tipo === "mudou" ? <span class={"diff-" + lado} title={rotulo}>{t.texto}</span> :
+  t.tipo === "delimitador" ? <span class="diff-delimitador" title="delimitador declarado no catálogo">{t.texto}</span> :
+  t.texto)}</code>

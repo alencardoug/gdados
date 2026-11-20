@@ -1,31 +1,62 @@
 ---
+// Uma etapa de uma linha do legado: o achado registrado numa relação (staging ou trusted), com o
+// valor antes e depois, a diferença marcada e o tratamento. O cabeçalho da linha fica em
+// LinhaDoLegado; aqui só a etapa, com a âncora própria de cada achado.
 import Identificador from "./Identificador.astro";
 import Md from "./Md.astro";
-import { amostras, mdDoPacoteEmLinha, rotaDaRelacao } from "../lib/portal.mjs";
+import TextoMarcado from "./TextoMarcado.astro";
+import { amostras, mdDoPacoteEmLinha, pacote, rotaDaRelacao } from "../lib/portal.mjs";
 import { quarantineId, stepsByRaw } from "../lib/legado-no-portal.mjs";
-const { item } = Astro.props;
+import { camposNulos, diferencaDeTexto, marcarDelimitador, tratamentoDoTipo } from "../lib/casos-do-legado.mjs";
+const { item, regra, delimitador, mostrarTrilha = true } = Astro.props;
 const context = item.context && typeof item.context === "object" ? Object.entries(item.context) : [];
-const step = stepsByRaw.get(item.raw);
+const step = mostrarTrilha ? stepsByRaw.get(item.raw) : undefined;
 const measured = item.action === "correct" ? "Correção registrada" : item.action === "reject" ? "Rejeição registrada" : item.action;
 const compared = item.field != null;
-const masked = item.before === amostras.masking.marker || item.after === amostras.masking.marker;
+const marker = amostras.masking.marker;
+const masked = item.before === marker || item.after === marker;
 const equal = compared && item.before !== undefined && item.before === item.after;
-const values = [["Antes", "original_payload", item.before], ["Depois", item.evidence === "achados" ? item.field : "cleaned_payload", item.after]];
+const tratamento = tratamentoDoTipo(regra);
+const schema = pacote.relations[item.relation]?.schema;
+const etapa = schema === "staging" ? "Achado na padronização" : schema === "trusted" ? "Classificação em trusted" : "Achado";
+
+// A diferença é calculada sobre o mesmo literal exibido (JSON), para que o texto lido seja o exportado.
+const literal = (v) => typeof v === "string" && v !== marker ? JSON.stringify(v) : undefined;
+const diff = !masked ? diferencaDeTexto(literal(item.before), literal(item.after)) : null;
+const delimitado = item.code === "TEXT_DELIMITER" && typeof delimitador === "string" && delimitador !== "" &&
+  typeof item.before === "string" && item.before.includes(delimitador);
+const trechos = (lado, v) => {
+  const base = diff ? diff[lado] : literal(v) !== undefined ? [{ tipo: "igual", texto: literal(v) }] : null;
+  return base && delimitado ? marcarDelimitador(base, delimitador) : diff ? base : null;
+};
+const values = [["Antes", "original_payload", item.before, "antes"], ["Depois", item.evidence === "achados" ? item.field : "cleaned_payload", item.after, "depois"]];
+const nulosDaCarga = delimitado && compared ? camposNulos(item.payload, item.field) : [];
 ---
 <article class="legacy-case" tabindex="-1" id={item.anchor} data-code={item.code}>
   <header>
-    <h2>{item.table ? <Identificador value={item.table} /> : "Tabela de origem não identificada"}{item.rowId != null && <> · linha {item.rowId}</>}</h2>
-    <span>Captura {item.capture ?? "não informada"}{item.version != null && <> · catálogo aplicado v{item.version}</>}</span>
+    <h3>{etapa} · <Identificador value={item.relation} /></h3>
+    {item.version != null && <span>catálogo aplicado v{item.version}</span>}
   </header>
   <p class="finding-field">{compared ? <>Campo com achado · <mark><Identificador value={item.field} /></mark></> : <mark>Achado da linha inteira</mark>}</p>
-  <dl class="comparison">{values.map(([label, source, value]) => <div>
-    <dt>{label} <small><Identificador value={source} /></small></dt>
-    <dd>{value === undefined ? <span class="ausente">campo ausente na carga</span> : value === null ? <em>nulo</em> :
-      typeof value === "object" ? <pre class="sample-payload"><code>{JSON.stringify(value, null, 2)}</code></pre> :
-      <code class="sample-literal">{value === amostras.masking.marker ? value : JSON.stringify(value)}</code>}</dd>
-  </div>)}</dl>
+  <dl class="comparison">{values.map(([label, source, value, lado]) => {
+    const marcados = trechos(lado, value);
+    return <div>
+      <dt>{label} <small><Identificador value={source} /></small></dt>
+      <dd>{value === undefined ? <span class="ausente">campo ausente na carga</span> : value === null ? <em>nulo</em> :
+        typeof value === "object" ? <pre class="sample-payload"><code>{JSON.stringify(value, null, 2)}</code></pre> :
+        marcados ? <TextoMarcado trechos={marcados} lado={lado} /> :
+        <code class="sample-literal">{value === marker ? value : JSON.stringify(value)}</code>}</dd>
+    </div>;
+  })}</dl>
+  {diff && <p class="case-note diff-legenda"><span class="diff-antes">riscado</span> sai na limpeza · <span class="diff-depois">sublinhado</span> entra</p>}
   {masked ? <p class="case-note">A máscara da exportação impede comparar o conteúdo pessoal.</p> :
-    equal && <p class="case-note">O campo conserva o mesmo valor nas duas etapas.</p>}
+    equal && (tratamento === "rejeita" ?
+      <p class="case-note">O valor não muda: o catálogo não declara conversão para este tipo, e sim rejeição. Quem resolve é a classificação da linha, não a limpeza do campo.</p> :
+      <p class="case-note">O campo conserva o mesmo valor nas duas etapas.</p>)}
+  {delimitado && <div class="case-delimiter">
+    <p>O <span class="diff-delimitador">{delimitador}</span> marcado é o delimitador declarado no catálogo da origem. O valor tem {item.before.split(delimitador).length} trechos separados por ele.</p>
+    {nulosDaCarga.length > 0 && <p>Na mesma carga original, chegaram nulos: {nulosDaCarga.map((c, k) => <>{k > 0 && ", "}<code>{c}</code></>)}. O catálogo descreve que os campos seguintes da linha ficam vazios; a carga não informa a ordem das colunas, então a lista pode incluir nulos legítimos.</p>}
+  </div>}
   <div class="case-finding">
     <strong>{measured ?? "Achado registrado"}</strong> · <code>{item.code}</code>
     {item.reason && <blockquote><Md em="span" html={await mdDoPacoteEmLinha(item.reason)} /></blockquote>}

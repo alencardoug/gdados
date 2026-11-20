@@ -2,10 +2,11 @@
 import { getEntry } from "astro:content";
 import Base from "../../../layouts/Base.astro";
 import Identificador from "../../../components/Identificador.astro";
-import CasoDoLegado from "../../../components/CasoDoLegado.astro";
+import LinhaDoLegado from "../../../components/LinhaDoLegado.astro";
 import ProcedenciaDoLegado from "../../../components/ProcedenciaDoLegado.astro";
 import Md from "../../../components/Md.astro";
-import { amostras, rotaDaReferencia, rotaDaRelacao, renderizarEmLinha } from "../../../lib/portal.mjs";
+import { amostras, pacote, rotaDaReferencia, rotaDaRelacao, renderizarEmLinha } from "../../../lib/portal.mjs";
+import { agruparPorLinha } from "../../../lib/casos-do-legado.mjs";
 import { byCode, catalogPath, legacyUrl, quarantineId } from "../../../lib/legado-no-portal.mjs";
 import "../../../styles/legado.css";
 export function getStaticPaths() {
@@ -14,6 +15,7 @@ export function getStaticPaths() {
 const code = Astro.params.codigo;
 const rule = (await getEntry("catalogoLegado", "falhas"))?.data.value?.[code];
 const version = (await getEntry("catalogoLegado", "versao"))?.data.value;
+const delimitador = (await getEntry("catalogoLegado", "delimitador"))?.data.value;
 // Começa por uma mudança legível com motivo registrado, quando a amostra a oferece.
 function score(item) {
   const visible = item.before !== undefined && item.after !== undefined &&
@@ -21,6 +23,7 @@ function score(item) {
   return Number(visible && item.before !== item.after) * 2 + Number(Boolean(item.reason));
 }
 const cases = byCode.get(code).toSorted((a, b) => score(b) - score(a));
+const linhas = agruparPorLinha(cases, (rel) => pacote.relations[rel]?.schema);
 ---
 <Base titulo={code + " · Qualidade do legado"} secao="governanca">
 <p class="migalhas"><a href={legacyUrl()}>Qualidade do legado</a> › Antes e depois</p>
@@ -33,7 +36,7 @@ const cases = byCode.get(code).toSorted((a, b) => score(b) - score(a));
   {rule?.conversao && <p><strong>Regra de conversão</strong> · <Md em="span" html={await renderizarEmLinha(rule.conversao)} /></p>}
   <a href={rotaDaReferencia(catalogPath)}>Catálogo da origem{version != null && <> · versão {version}</>}</a>
 </div>
-<p>{cases.length} {cases.length === 1 ? "aparição nas amostras" : "aparições nas amostras"} · <a href={legacyUrl() + "#tipos"}>Ver os demais tipos</a></p>
-{cases.map((item) => <CasoDoLegado {item} />)}
+<p>{cases.length} {cases.length === 1 ? "aparição" : "aparições"} nas amostras, em {linhas.length} {linhas.length === 1 ? "linha" : "linhas"} do legado · <a href={legacyUrl() + "#tipos"}>Ver os demais tipos</a></p>
+{linhas.map((grupo) => <LinhaDoLegado {grupo} regra={rule} {delimitador} />)}
 <ProcedenciaDoLegado />
 </Base>

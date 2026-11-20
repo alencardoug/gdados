@@ -48,6 +48,7 @@ export function legacyObservations(pkg, samples) {
           table: row.source_table ?? pkg.relations[raw]?.name, capture: row.snapshot_id,
           rowId: row.legacy_row_id, version: row.catalog_version, classification: row.classification,
           action: finding.action, reason: finding.reason, context: finding.context,
+          payload: isMap(row.original_payload) ? row.original_payload : undefined,
         };
         if (!byCode.has(item.code)) byCode.set(item.code, []);
         byCode.get(item.code).push(item);

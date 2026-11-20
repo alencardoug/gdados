@@ -1,0 +1,22 @@
+---
+// Uma linha do legado (tabela, ocorrência física e captura) com as etapas em que o mesmo achado
+// aparece, na ordem das camadas. A identidade (tabela, legacy_row_id, snapshot_id) segue a
+// descrição de raw_legacy na origem: uma linha por ocorrência física em cada captura. Cada etapa mantém a própria âncora (CasoDoLegado).
+import Identificador from "./Identificador.astro";
+import CasoDoLegado from "./CasoDoLegado.astro";
+const { grupo, regra, delimitador } = Astro.props;
+const [primeiro] = grupo.itens;
+const varias = grupo.itens.length > 1;
+---
+<section class="legacy-row" aria-label={`Linha ${primeiro.rowId ?? ""} de ${primeiro.table ?? "tabela não identificada"}`}>
+  <header>
+    <h2>{primeiro.table ? <Identificador value={primeiro.table} /> : "Tabela de origem não identificada"}{primeiro.rowId != null && <> · linha {primeiro.rowId}</>}</h2>
+    <span>Captura {primeiro.capture ?? "não informada"}{varias && <> · a mesma linha em {grupo.itens.length} etapas</>}</span>
+  </header>
+  {varias && <p class="legacy-row-note">Mesma tabela, mesma ocorrência (<code>legacy_row_id</code>) e mesma captura (<code>snapshot_id</code>): é a linha que a origem descreve em <code>raw_legacy</code>, uma por ocorrência física em cada captura.</p>}
+  <ol class={"legacy-stages" + (varias ? " legacy-stages--varias" : "")} role="list">
+    {grupo.itens.map((item, k) => <li>
+      <CasoDoLegado {item} {regra} {delimitador} mostrarTrilha={k === grupo.itens.length - 1} />
+    </li>)}
+  </ol>
+</section>
