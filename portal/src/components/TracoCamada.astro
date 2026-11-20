@@ -1,10 +1,11 @@
 ---
 import { flowWidth } from "../lib/fluxo-de-camadas.mjs";
-const { edge, largest, shape, area } = Astro.props;
-const width = flowWidth(edge.pairs, largest);
+const { edge, largest, shape, area, count } = Astro.props;
+const pairs = count ?? edge.pairs;
+const width = flowWidth(pairs, largest, count === undefined ? 1 : 3);
 ---
 <span class:list={["map-trace", shape]} style={{ gridArea: area, "--stroke": `${width}px` }}
-  data-from={edge.source} data-to={edge.target}>
+  data-from={edge.source} data-to={edge.target} data-active={count === undefined ? undefined : String(pairs > 0)} aria-hidden={pairs ? undefined : "true"}>
   <span class="sr-only">{edge.source} para {edge.target}, </span>
   {shape === "bend" && <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
     <path d="M 96 0 V 30 Q 96 50 87 50 H 13 Q 4 50 4 70 V 100" vector-effect="non-scaling-stroke" />
@@ -13,5 +14,5 @@ const width = flowWidth(edge.pairs, largest);
     <path d="M 9 18 Q 9 6 23 6 H 47 A 13 13 0 0 1 47 32 H 14" vector-effect="non-scaling-stroke" />
     <polygon points="17,25 5,32 17,38" />
   </svg>}
-  <b>{edge.pairs}</b><span class="sr-only">{edge.pairs === 1 ? " par de relações" : " pares de relações"}</span>
+  {pairs > 0 && <><b>{pairs}</b><span class="sr-only">{pairs === 1 ? " par de relações" : " pares de relações"}</span></>}
 </span>

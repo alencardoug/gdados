@@ -67,8 +67,9 @@ export function planLayerMap(layers, flows) {
 }
 
 // Interpolação linear entre o menor traço legível e o espaço reservado às setas.
-export function flowWidth(pairs, largest) {
-  return largest <= 1 ? 1 : 1 + 9 * (pairs - 1) / (largest - 1);
+export function flowWidth(pairs, largest, minimum = 1) {
+  if (!pairs) return 1; // Traço de contexto, fora da medida selecionada.
+  return largest <= 1 ? minimum : minimum + (10 - minimum) * (pairs - 1) / (largest - 1);
 }
 
 export function examplePair(edges, layerOf) {

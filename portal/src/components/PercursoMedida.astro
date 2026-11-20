@@ -1,0 +1,50 @@
+---
+import Identificador from "./Identificador.astro";
+import MapaCamadas from "./MapaCamadas.astro";
+import Md from "./Md.astro";
+import { pacote, mdDoPacote, rota, rotaDaPergunta, rotaDaRelacao } from "../lib/portal.mjs";
+import { measureTrail } from "../lib/percurso-da-medida.mjs";
+import PassoMedida from "./PassoMedida.astro";
+import "../styles/percurso-da-medida.css";
+const { id, measure, first } = Astro.props;
+const question = pacote.questions[id];
+const trail = measureTrail(question.view, measure, pacote);
+const numbers = new Map(trail.steps.map((s, i) => [s.id, i + 1]));
+const description = pacote.relations[question.view]?.description?.trim().split(/\n\s*\n/)[0];
+const href = (m) => rotaDaPergunta(id) + (m === first ? "" : encodeURIComponent(m) + "/") + "#percurso";
+const lineage = pacote.lineage.relations[question.view]?.columns ?? {};
+const reachesSource = (name) => lineage[name]?.origins.some((o) => o.kind === "source");
+const alternative = !reachesSource(measure) && question.measures.find((m) => reachesSource(m.column));
+---
+<section class="measure-guide" aria-labelledby="percurso" data-measure={measure}>
+  <h2 id="percurso" tabindex="-1">Da pergunta à origem</h2>
+  {description && <blockquote class="view-quote">
+    <Md html={await mdDoPacote(description)} />
+    <cite><a href={rotaDaRelacao(question.view) + "#ficha"}>Descrição da view na origem</a></cite>
+  </blockquote>}
+  <h3 id="escolha" tabindex="-1">Qual medida você quer seguir?</h3>
+  <nav class="measure-picker" aria-labelledby="escolha">
+    {question.measures.map(({ column }) =>
+      <a href={href(column)} aria-current={column === measure ? "page" : undefined}><Identificador value={column} /></a>)}
+  </nav>
+  <p>O percurso acompanha o valor de <strong><Identificador value={measure} /></strong> da resposta até seus insumos.
+    Junções e filtros também podem escolher quais linhas entram no cálculo. A linhagem por coluna não cobre todas essas dependências.
+    <a href="#montagem">Consultar a montagem da view</a>.</p>
+  <div class="guide-layout">
+    <div class="guide-map-panel">
+      <h3>Camadas do percurso</h3>
+      <a href="#passos" class="jump-steps">Ir aos passos em lista</a>
+      <MapaCamadas {trail} />
+    </div>
+    <div>
+      <h3 id="passos" tabindex="-1">Percurso em {trail.steps.length === 1 ? "um passo" : `${trail.steps.length} passos`}</h3>
+      <p class="guide-reading">Cada passo reúne uma relação. O grão diz o que uma linha representa e aparece quando a origem o declara no campo de grão ou na regra da view.</p>
+      <ol class="guide-steps">
+        {trail.steps.map((step) => <PassoMedida {step} {numbers} {question} />)}
+      </ol>
+      {alternative && <p>Para acompanhar outra medida desta pergunta até uma fonte, siga
+        {" "}<a href={href(alternative.column)}><Identificador value={alternative.column} /></a>.</p>}
+      <p class="guide-end"><a href="#escolha">Escolher outra medida</a> · <a href={rota("estrutura/#travessias")}>Consultar as travessias</a></p>
+    </div>
+  </div>
+</section>

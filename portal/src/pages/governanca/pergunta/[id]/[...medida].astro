@@ -1,15 +1,25 @@
 ---
 // Pergunta → view → montagem (view_rules) → fatos e dimensões → linhagem (PLANO §2.1; conceitos §5.2).
-import Conceito from "../../../components/Conceito.astro";
-import Base from "../../../layouts/Base.astro";
-import Md from "../../../components/Md.astro";
+import Conceito from "../../../../components/Conceito.astro";
+import Base from "../../../../layouts/Base.astro";
+import Md from "../../../../components/Md.astro";
 import {
   pacote, rota, rotaDaRelacao, rotaDaColuna, rotaDaMetrica, rotaDoFiltro, rotaDaReferencia, mdDoPacoteEmLinha,
-} from "../../../lib/portal.mjs";
+} from "../../../../lib/portal.mjs";
+
+import PercursoMedida from "../../../../components/PercursoMedida.astro";
+import { initialMeasure } from "../../../../lib/percurso-da-medida.mjs";
 
 export function getStaticPaths() {
-  return Object.keys(pacote.questions).map((id) => ({ params: { id } }));
+  return Object.entries(pacote.questions).flatMap(([id, question]) => {
+    const first = initialMeasure(question, pacote);
+    const measures = question.measures.map((m) => m.column);
+    return (measures.length ? measures : [undefined]).map((measure) => ({
+      params: { id, medida: measure === first ? undefined : measure }, props: { measure, first },
+    }));
+  });
 }
+const { measure, first } = Astro.props;
 const id = Astro.params.id;
 const q = pacote.questions[id];
 const regras = pacote.view_rules[q.view] ?? null;
@@ -23,6 +33,13 @@ const motivo = ref ? await mdDoPacoteEmLinha(ref.reason) : null;
 <Base titulo={`${id} — ${q.title}`} secao="governanca">
 <p class="migalhas"><a href={rota("governanca/")}>Governança</a> › <a href={rota("governanca/perguntas/")}>Perguntas</a></p>
 <h1>{id} — {q.title}</h1>
+<nav class="relation-nav" aria-label="Nesta pergunta">
+  <a href="#percurso">Da pergunta à origem</a><a href="#definicao">Definição e auditoria</a><a href="#montagem">Montagem da view</a>
+</nav>
+{measure ? <PercursoMedida {id} {measure} {first} /> :
+  <p id="percurso">O pacote não declara medidas para traçar o percurso desta pergunta.</p>}
+
+<h2 id="definicao">Definição e auditoria</h2>
 <dl class="ficha">
   <dt>View</dt><dd><a href={rotaDaRelacao(q.view)}><code>{q.view}</code></a></dd>
   <dt>Fatos</dt><dd>{q.facts.map((f) => <div><a href={rotaDaRelacao(f)}><code>{f}</code></a></div>)}</dd>
@@ -48,7 +65,7 @@ const motivo = ref ? await mdDoPacoteEmLinha(ref.reason) : null;
 </tbody></table></div>
 <p class="suave">Aditividade é a declarada para a coluna nesta view. O grão da view pode mudá-la: uma medida aditiva na fato pode deixar de ser somável na view.</p>
 
-<h2>Montagem da view</h2>
+<h2 id="montagem">Montagem da view</h2>
 {regras == null ? <p><span class="ausente">A montagem desta view não está em <code>view_rules</code>.</span></p> : ref ? (
   <>
   <p>Esta view é <strong>conferida por referência</strong>: o montador do projeto não a monta a partir das medidas. Ela é comparada com uma consulta de referência.</p>

@@ -10,11 +10,23 @@ const flows = layerFlows(arestasDeRelacoes, layerOf);
 const withoutInput = [...relationsByLayer.keys()].filter((layer) =>
   !flows.some((f) => f.target === layer && f.source !== layer));
 const { stations, others, routes, extra } = planLayerMap([...relationsByLayer.keys()], flows);
-const largest = Math.max(1, ...flows.map((f) => f.pairs));
-const example = examplePair(arestasDeRelacoes, layerOf);
+const { trail } = Astro.props;
+const example = !trail && examplePair(arestasDeRelacoes, layerOf);
+const focused = trail ? layerFlows(trail.edges, layerOf) : [];
+const largest = Math.max(1, ...(trail ? focused : flows).map((f) => f.pairs));
+const stepsAt = (layer) => trail?.steps.flatMap((s, i) => s.layer === layer ? [i + 1] : []);
+const pairsInTrail = (edge) => trail && edge
+  ? focused.find((f) => f.source === edge.source && f.target === edge.target)?.pairs ?? 0 : undefined;
 ---
-<div class="layer-map">
-  <div class="map-key">
+<div class:list={["layer-map", trail && "guided-map"]}>
+  {trail && <p class="guide-key">Comece em <code>consumption</code>, na base do mapa.
+    {focused.length ? <> Para voltar à origem, percorra as setas acesas da ponta para o início. Cada uma conta os pares de relações do percurso.
+      {largest > 1 && " Quanto mais pares, mais larga a seta."}</>
+      : <> A linhagem desta medida fica na própria estação.</>}
+    {" "}As estações numeradas abrem o primeiro passo da camada. As cinzas ficam fora do percurso.
+    {focused.some((f) => f.source === "raw_legacy") && <span class="legacy-key">Trilha do legado</span>}
+  </p>}
+  {!trail && <div class="map-key">
     <p>Siga as setas no sentido dos valores. Cada estação abre sua camada no catálogo.<br />
       {largest > 1 ? <>Escala linear de 1 px (1 par) a 10 px ({largest} pares).</>
         : <>Cada traço representa um par de relações e tem 1 px de espessura.</>}
@@ -28,37 +40,38 @@ const example = examplePair(arestasDeRelacoes, layerOf);
       {example.n === 1 ? " ligação entre colunas" : " ligações entre colunas"}.
       O par conta <strong>1</strong>, independentemente do número de colunas.
     </p>}
-  </div>
+  </div>}
   <div class="map-layout">
     <div class="map-grid">
       {stations.map(({ layer, area, loop }) => {
         // Se a vizinha lateral tiver mais texto, a linha ocupa a diferença de altura fora da caixa.
         const stem = routes.find((r) => r.shape === "down" && r.edge.source === layer);
         return <div class="station-cell" data-layer={layer} style={{ gridArea: area }}>
-          <EstacaoCamada {layer} {loop} {largest} />
+          <EstacaoCamada {layer} {loop} {largest} steps={stepsAt(layer)} loopCount={pairsInTrail(loop)} />
           {stem && ["staging", "analytics"].includes(layer) &&
-            <span class="station-stem" aria-hidden="true" style={{ width: `${flowWidth(stem.edge.pairs, largest)}px` }} />}
+            <span class="station-stem" data-active={trail ? String(Boolean(pairsInTrail(stem.edge))) : undefined}
+              aria-hidden="true" style={{ width: `${flowWidth(pairsInTrail(stem.edge) ?? stem.edge.pairs, largest, trail ? 3 : 1)}px` }} />}
         </div>;
       })}
-      {routes.map(({ edge, shape, area }) => <TracoCamada {edge} {shape} {area} {largest} />)}
+      {routes.map(({ edge, shape, area }) => <TracoCamada {edge} {shape} {area} {largest} count={pairsInTrail(edge)} />)}
     </div>
     {extra.length > 0 && <div class="extra-flows">
       <h3>Outros fluxos diretos</h3>
-      <ul role="list">{extra.map((edge) => <li>
-        <Identificador value={edge.source} /><TracoCamada {edge} {largest} shape="right" /><Identificador value={edge.target} />
+      <ul role="list">{extra.map((edge) => <li data-active={trail ? String(Boolean(pairsInTrail(edge))) : undefined}>
+        <Identificador value={edge.source} /><TracoCamada {edge} {largest} shape="right" count={pairsInTrail(edge)} /><Identificador value={edge.target} />
       </li>)}</ul>
     </div>}
   </div>
   {others.length > 0 && <div class="other-stations">
     <h3>Demais camadas do pacote</h3>
-    {others.map(({ layer, loop }) => <EstacaoCamada {layer} {loop} {largest} />)}
+    {others.map(({ layer, loop }) => <EstacaoCamada {layer} {loop} {largest} steps={stepsAt(layer)} loopCount={pairsInTrail(loop)} />)}
   </div>}
 </div>
-<details class="lineage-table"><summary>Ler todos os fluxos em tabela</summary>
+{!trail && <details class="lineage-table"><summary>Ler todos os fluxos em tabela</summary>
   <div class="rolagem"><table>
     <thead><tr><th scope="col">Camada que fornece</th><th scope="col">Camada que recebe</th><th scope="col">Pares de relações</th></tr></thead>
     <tbody>{flows.map(({ source, target, pairs }) => <tr>
       <td><Identificador value={source} /></td><td><Identificador value={target} /></td><td>{pairs}</td>
     </tr>)}</tbody>
   </table></div>
-</details>
+</details>}

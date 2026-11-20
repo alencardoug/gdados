@@ -1,0 +1,66 @@
+---
+import Identificador from "./Identificador.astro";
+import Md from "./Md.astro";
+import { pacote, rotaDaColuna, rotaDaRelacao, rota, mdDoPacote, travessias } from "../lib/portal.mjs";
+import { separarColuna } from "../lib/definicoes.mjs";
+import { layerRoles } from "../lib/fluxo-de-camadas.mjs";
+const { step, numbers, question } = Astro.props;
+const { id, layer } = step;
+const r = pacote.relations[id];
+const columns = [...step.columns.values()];
+const isView = id === question.view;
+const selected = columns[0].name;
+const role = isView ? "View que responde à pergunta" : question.facts.includes(id) ? "Fato da pergunta" :
+  question.dimensions.includes(id) ? "Dimensão da pergunta" : layerRoles.get(layer) ?? r?.resource_type;
+const description = isView ? r?.columns[selected]?.description : r?.description;
+const excerpt = description?.trim().split(/\n\s*\n/)[0];
+const citation = isView ? rotaDaColuna(id, selected) : rotaDaRelacao(id) + "#ficha";
+const grain = Object.keys(pacote.view_rules[id]?.grain ?? {});
+const graph = new URLSearchParams({ modo: "coluna", r: id });
+for (const { name } of columns) graph.append("c", name);
+const inputs = [...step.inputs].sort((a,b) => numbers.get(a) - numbers.get(b));
+const terminalLabel = { source: "Origem na fonte", seed: "Origem em seed", generated: "Valor gerado aqui" };
+const commonTerminal = columns.every((c) => c.terminal === columns[0].terminal) ? columns[0].terminal : null;
+const terminalText = { source: "A linhagem chega às colunas desta fonte.", seed: "O valor vem do arquivo de seed.",
+  generated: "O próprio modelo gera o valor aqui." };
+const crossings = travessias.filter((t) => t.relacoes.includes(id));
+---
+<li id={`passo-${numbers.get(id)}`} data-relation={id} tabindex="-1">
+  <article>
+    <header>
+      <span class="step-role">{role}</span>
+      <h4>{r ? <a href={rotaDaRelacao(id)}><Identificador value={id} /></a> : <Identificador value={id} />}</h4>
+    </header>
+    {excerpt && <blockquote>
+      <Md html={await mdDoPacote(excerpt)} />
+      <cite><a href={citation}>{isView ? "Descrição da medida na origem" : "Descrição na ficha"}</a></cite>
+    </blockquote>}
+    {(r?.grain || grain.length > 0) && <p class="step-grain"><b>Grão</b> · {r?.grain ?? <>Uma combinação de {grain.map((c, i) =>
+      <>{i > 0 && ", "}<Identificador value={c} /></>)} (regra da view).</>}</p>}
+    <p class="column-label">{columns.length === 1 ? "Coluna que carrega o valor" : "Colunas que carregam o valor"}</p>
+    <ul class="value-columns" role="list">{columns.map(({ name, terminal, gap }) =>
+      <li data-column={name} data-terminal={terminal ?? undefined}>
+        {r?.columns[name] ? <a href={rotaDaColuna(id, name)}><Identificador value={name} /></a> : <Identificador value={name} />}
+        {terminal && !commonTerminal && <span> · {terminalLabel[terminal]}</span>}
+        {gap && <span class="ausente">{gap}</span>}
+      </li>)}</ul>
+    {commonTerminal && <p class="terminal-note"><strong>Origem terminal</strong> · {terminalText[commonTerminal]}</p>}
+    {inputs.length > 0 && <>
+      <p class="branch-label">{inputs.length === 1 ? "O valor vem do passo" : "O valor vem destes ramos"}</p>
+      <ul class="step-branches">{inputs.map((input) =>
+        <li><a href={`#passo-${numbers.get(input)}`}>Passo {numbers.get(input)} · <Identificador value={input} /></a></li>)}</ul>
+    </>}
+    {columns.some((c) => c.leaves.length) && <details class="column-pairs"><summary>Ver as ligações coluna a coluna</summary>
+      <ul>{columns.filter((c) => c.leaves.length).map((c) => <li><Identificador value={c.name} /> recebe de
+        <ul>{c.leaves.map((leaf) => {
+          const { relacao, coluna } = separarColuna(leaf);
+          return <li data-value={c.name} data-input={leaf}><a href={`#passo-${numbers.get(relacao)}`}>Passo {numbers.get(relacao)}</a> · <Identificador value={coluna} /></li>;
+        })}</ul>
+      </li>)}</ul>
+    </details>}
+    {crossings.map((crossing) => <p class="crossing-note">Antes desta fonte, a <a href={rota("estrutura/#travessias")}>travessia</a> de
+      {" "}{crossing.origem} por {crossing.mecanismo} é declarada para {crossing.tipo === "camada" ? "a camada" : "a relação"} <Identificador value={crossing.destino} />.
+      A travessia não identifica colunas.</p>)}
+    {r && <a class="step-graph" href={rota("governanca/linhagem/?" + graph)}>Abrir este passo no grafo</a>}
+  </article>
+</li>

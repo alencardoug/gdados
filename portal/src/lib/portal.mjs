@@ -6,9 +6,11 @@ import { mascarar } from "./mascara.mjs";
 import { criarRenderizador } from "./markdown.mjs";
 import { camadasPorCaminhoMaisLongo } from "../cliente/camadas.js";
 import { chavesEstrangeiras, colunasNaoNulas, relacoesDoModelo } from "./er.mjs";
+import { ligarTravessias } from "./travessias.mjs";
 
 const { procedencia, pacote, amostras, arquivos } = carregarOrigem();
 export { procedencia, pacote, amostras };
+export const { travessias } = ligarTravessias(pacote.crossings, pacote.relations);
 
 // ---------- endereços ----------
 const BASE = import.meta.env?.BASE_URL ?? "/";

@@ -63,6 +63,7 @@ const modo = params.get("modo") ?? "relacao";
 for (const a of raiz.querySelectorAll("a.modo")) {
   const u = new URL(a.href);
   u.searchParams.set("r", params.get("r") ?? raiz.dataset.padrao);
+  if (a.dataset.modo === "coluna") for (const c of params.getAll("c")) u.searchParams.append("c", c);
   a.href = u.toString();
   if (a.dataset.modo === modo) a.setAttribute("aria-current", "page");
 }

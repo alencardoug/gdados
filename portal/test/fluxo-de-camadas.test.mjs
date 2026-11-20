@@ -44,6 +44,7 @@ test("as duas entradas têm saídas próprias e só a entrega a trusted contorna
 test("a espessura aumenta em passos iguais desde um par até o maior fluxo", () => {
   assert.deepEqual([1, 2, 5, 9].map((n) => flowWidth(n, 9)), [1, 2.125, 5.5, 10]);
   assert.equal(flowWidth(1, 1), 1);
+  assert.deepEqual([0, 1, 2, 3].map((n) => flowWidth(n, 3, 3)), [1, 3, 6.5, 10]);
 });
 
 test("o exemplo escolhe um par do desvio com várias ligações e nomes curtos", () => {

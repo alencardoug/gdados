@@ -7,6 +7,7 @@
 // Conteúdo do pacote entra no DOM só como texto.
 import cytoscape from "cytoscape";
 import { posicoesEmCamadas, corDaCamada } from "./camadas.js";
+import { columnsInFocus } from "./recorte-de-colunas.js";
 
 const LIMITE_DE_NOS = 300;
 const relacaoDaColuna = (c) => c.split(".").slice(0, 2).join(".");
@@ -22,6 +23,8 @@ export async function iniciarLinhagem(raiz) {
   const nos = new Map(grafo.nodes.map((n) => [n.id, n]));
   const indiceDaCamada = new Map(grafo.camadas.map((c, i) => [c, i]));
   const foco = nos.has(params.get("r")) ? params.get("r") : raiz.dataset.padrao;
+  const requested = params.getAll("c");
+  let focusedColumns = [];
   // Travessias fora do dbt: nó próprio, ligado às relações por destino exato ou por camada.
   const travessias = new Map((grafo.travessias ?? []).map((t) => [t.id, t]));
   const travessiaDe = new Map();
@@ -128,6 +131,7 @@ export async function iniciarLinhagem(raiz) {
     cy.layout({ name: "preset", positions: (n) => pos.get(n.id()), animate: false, fit: true, padding: 24 }).run();
     for (const id of expandidos) cy.getElementById(id).addClass("expandido");
     cy.getElementById(foco).addClass("foco");
+    for (const id of focusedColumns) cy.getElementById(id).addClass("foco");
     atualizarTabela();
     atualizarUrl();
   };
@@ -243,14 +247,21 @@ export async function iniciarLinhagem(raiz) {
     $("#nos-bloco").hidden = true;
   } else if (modo === "coluna") {
     const cols = await colunasDe(foco);
-    const colunas = Object.keys(cols ?? {}).map((c) => `${foco}.${c}`);
-    if (!cols) {
+    const available = cols ? Object.keys(cols) : nos.get(foco)?.colunas ?? [];
+    const colunas = columnsInFocus(requested, available).map((c) => `${foco}.${c}`);
+    if (requested.length) focusedColumns = colunas;
+    if (requested.length && !colunas.length) {
+      aviso.textContent = "Nenhuma das colunas solicitadas consta desta relação no recorte.";
+    } else if (!cols && !requested.length) {
       aviso.textContent = `${foco} não tem linhagem por coluna no pacote: uma source é origem, não tem insumo no dbt.`;
       adicionar([no(foco, "relacao")]);
     } else if (!adicionar((await Promise.all(colunas.map(insumosDaColuna))).flat())) {
       const excesso = aviso.textContent;
       adicionar(colunas.map((c) => no(c, "coluna")));
       aviso.textContent = `${excesso} Mostrando só as colunas de ${foco}; expanda uma coluna por vez.`;
+    }
+    if (requested.length && colunas.length && !aviso.textContent) {
+      aviso.textContent = `Colunas em foco em ${foco}: ${colunas.map((c) => c.slice(foco.length + 1)).join(", ")}. O grafo inclui os insumos imediatos declarados.`;
     }
     for (const id of expandidos) if (cy.getElementById(id).nonempty()) await expandirUm(id);
   } else {

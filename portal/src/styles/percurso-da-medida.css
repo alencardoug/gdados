@@ -1,0 +1,48 @@
+.measure-guide { margin-block-end: 2rem; }
+.measure-guide h3 { margin-block: 1.2rem 0.5rem; }
+.measure-guide .md > :first-child { margin-top: 0; }
+.measure-guide .md > :last-child { margin-bottom: 0; }
+.measure-guide blockquote { margin: 0.65rem 0; }
+.measure-guide cite { display: block; margin-top: 0.2rem; font-style: normal; font-size: 0.85rem; }
+.view-quote { max-width: 54rem; padding-inline-start: 0.9rem; border-inline-start: 3px solid var(--track); }
+.measure-picker, .value-columns { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.measure-picker a, .value-columns li { padding: 0.2rem 0.45rem; border: 1px solid var(--borda); border-radius: 0.3rem; }
+.measure-picker a[aria-current] { color: var(--texto); box-shadow: inset 0 -3px var(--track); font-weight: 700; background: var(--track-surface); }
+.measure-picker code, .value-columns code, .guide-steps h4 code { background: transparent; padding: 0; }
+.guide-layout { display: grid; gap: 0.75rem 2rem; align-items: start; }
+.guide-layout > * { min-width: 0; }
+.guided-map { margin-top: 0.5rem; }
+.guided-map .map-layout { grid-template-columns: minmax(0, 1fr); }
+.guide-key { margin: 0 0 1rem; font-size: 0.9rem; }
+.guided-map .layer-station[data-active="true"] { background: var(--track-surface); }
+.guided-map .layer-station[data-active="false"] { background: transparent; border: 1px dashed var(--borda); }
+.guided-map .outside-layer code { text-decoration: none; }
+.guided-map .outside-layer, .guided-map .extra-flows li[data-active="false"] { color: var(--suave); font-size: 0.85rem; }
+.guided-map .map-trace[data-active="false"] { color: var(--borda); }
+.guided-map .station-stem[data-active="false"] { background: var(--borda); }
+.guided-map .extra-flows li[data-active="true"] { font-weight: 700; background: var(--track-surface); }
+.guided-map .extra-flows li { padding: 0.1rem 0.4rem; }
+.guide-steps { margin: 0; padding-inline-start: 2rem; }
+.guide-steps > li { padding: 0.7rem 0.9rem; margin-bottom: 0.8rem; border: 1px solid var(--borda); border-radius: 0.35rem; background: var(--superficie); }
+.guide-steps > li::marker { font-weight: 700; color: var(--track); }
+.guide-steps > li:target { border-inline-start: 3px solid var(--track); }
+.measure-guide [tabindex="-1"]:focus-visible { outline: 3px solid var(--realce); outline-offset: 2px; }
+.guide-steps h4 { font-size: 1.12rem; margin: 0; }
+.step-role, .column-label, .branch-label { font-size: 0.85rem; font-weight: 650; }
+.step-role { color: var(--track); }
+.step-grain { color: var(--suave); font-size: 0.9rem; }
+.column-label, .branch-label { margin: 0.75rem 0 0.25rem; }
+.value-columns { margin: 0; padding: 0; list-style: none; }
+.value-columns li { background: var(--track-surface); }
+.value-columns li > span { font-size: 0.85rem; }
+.step-branches { margin: 0; padding-left: 1rem; border-inline-start: 2px solid var(--track); list-style: none; }
+.step-branches li { padding-block: 0.15rem; }
+.column-pairs { margin-block: 0.6rem; }
+.column-pairs ul { padding-inline-start: 1.2rem; }
+.crossing-note { font-size: 0.9rem; }
+.terminal-note { color: var(--track); }
+.guide-reading { margin-top: 0; color: var(--suave); font-size: 0.9rem; }
+.step-graph { display: inline-block; margin-top: 0.5rem; }
+@media (min-width: 60rem) {
+  .guide-layout { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+}
