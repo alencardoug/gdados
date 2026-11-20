@@ -20,7 +20,18 @@ exemplos:
     ref: "estrutura/#entidades"
     nota: o diagrama gerado das chaves primárias e estrangeiras do pacote
 fontes: []
-revisado_em: "2026-11-18"
+linhas_reais:
+  - relacao: analytics.dim_sales_channel
+    colunas: [sales_channel_key, sales_channel_natural_key, sales_channel_code, sales_channel_name, source_system]
+    destaque: [sales_channel_key, sales_channel_natural_key]
+    agrupar_por: sales_channel_natural_key
+    distintas_em: [source_system, sales_channel_key]
+    nota: >-
+      As linhas com o mesmo número têm a mesma chave natural (`sales_channel_natural_key`) e vêm de
+      origens diferentes (`source_system`); cada uma tem a sua chave substituta (`sales_channel_key`).
+      A descrição de `source_system` na origem explica por quê: os dois sistemas numeram as entidades
+      a partir de 1. Por isso o grão é um canal por origem, e só a chave substituta identifica a linha.
+revisado_em: "2026-11-19"
 ---
 
 ## Qual problema resolve

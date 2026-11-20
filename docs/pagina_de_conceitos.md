@@ -124,6 +124,13 @@ Identificar dois tipos de exemplo:
 - **Aplicação real:** vinculada a um objeto ou artefato existente e ao commit de referência.
 - **Exemplo didático:** simplificação explicitamente rotulada, sem números ou relações apresentados
   como medição do projeto.
+- **Linhas reais** (19/11/2026, frente de layout, rodada 7): linhas da amostra exportada pela origem
+  (D06) de uma relação, recortadas nas colunas que o conceito escolhe (`linhas_reais` no
+  frontmatter), com a classificação de cada coluna lida do pacote. A nota editorial só afirma o que a
+  descrição da origem diz ou o que a build confere: `agrupar_por` exige que algum valor se repita e
+  `distintas_em` exige que as colunas indicadas variem dentro de cada grupo. Diferente dos
+  exemplos citados abaixo, um bloco de linhas reais que a amostra fixada deixa de sustentar
+  **derruba a build**, porque o bloco mostraria uma afirmação falsa.
 
 Ilustrações conceituais podem simplificar detalhes, mas não devem parecer prova da execução real.
 Valores didáticos, se necessários, serão identificados como tais e não entrarão nos indicadores do portal.

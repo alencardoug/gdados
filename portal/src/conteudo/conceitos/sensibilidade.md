@@ -22,7 +22,16 @@ divergencias:
       - "docs/governanca_de_dados.md#4-classificação-de-sensibilidade"
     encaminhamento: Encaminhado à origem pelo gdados em 17/11/2026; a origem decide qual texto corrigir.
 fontes: []
-revisado_em: "2026-11-17"
+linhas_reais:
+  - relacao: analytics.dim_customer
+    colunas: [customer_code, city, customer_full_name, customer_document, birth_date]
+    destaque: [customer_full_name, customer_document, birth_date]
+    nota: >-
+      O cabeçalho traz a classificação que o pacote declara para cada coluna. Na exportação, a origem
+      troca o valor das colunas `personal` por `<personal>` e mantém o nulo como nulo, então uma
+      coluna pessoal vazia aparece como nulo, não mascarada. A classificação descreve o dado; quem
+      pode lê-lo está nos papéis de acesso, não aqui.
+revisado_em: "2026-11-19"
 ---
 
 ## Qual problema resolve

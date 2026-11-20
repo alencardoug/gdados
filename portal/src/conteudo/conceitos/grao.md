@@ -20,7 +20,16 @@ didaticos:
       frete três vezes. O erro não está na soma: está em agregar uma coluna num grão que não é o dela.
 fontes:
   - titulo: "Ralph Kimball e Margy Ross, The Data Warehouse Toolkit, 3ª ed. (Wiley, 2013): a declaração do grão no processo de modelagem dimensional"
-revisado_em: "2026-11-17"
+linhas_reais:
+  - relacao: analytics.fact_shipment
+    colunas: [shipment_code, order_id, order_shipment_count, is_split_order, order_to_delivery_days]
+    destaque: [order_shipment_count, order_to_delivery_days]
+    nota: >-
+      Cada linha é uma remessa (`shipment_code`). As colunas destacadas são do pedido, não da remessa:
+      a origem descreve `order_shipment_count` como o número de remessas do pedido, "repetido em cada
+      remessa dele", e diz que o grão de `order_to_delivery_days` é o pedido. Num pedido com duas
+      remessas, esses valores aparecem em duas linhas, e somá-los aqui contaria o pedido duas vezes.
+revisado_em: "2026-11-19"
 ---
 
 ## Qual problema resolve
